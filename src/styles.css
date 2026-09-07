@@ -19,6 +19,17 @@
  */
 
 @theme inline {
+  --color-surface: var(--surface);
+  --color-surface-mid: var(--surface-mid);
+  --color-surface-light: var(--surface-light);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-accent-teal: var(--accent-teal);
+  --color-warn: var(--warn);
+  --color-alert: var(--alert);
+  --color-ok: var(--ok);
+  --font-display: var(--font-display-family);
+  --font-body: var(--font-body-family);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -26,6 +37,7 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
