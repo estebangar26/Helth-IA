@@ -3,9 +3,21 @@
  * Solo presenta datos que recibe por props; no consulta al servidor.
  */
 
+import type { ReactNode } from "react";
+
 import type { Paciente } from "@/lib/copiloto/tipos";
 
-export function Encabezado({ paciente }: { paciente: Paciente }) {
+/**
+ * `accion` permite que cada pantalla decida el botón de la derecha
+ * (subir examen y salir en el panel real, ingresar en la vista de ejemplo).
+ */
+export function Encabezado({
+  paciente,
+  accion,
+}: {
+  paciente: Paciente;
+  accion?: ReactNode;
+}) {
   return (
     <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
       {/* Identidad del sistema + datos del paciente */}
@@ -28,9 +40,7 @@ export function Encabezado({ paciente }: { paciente: Paciente }) {
         <span className="hidden font-display text-sm text-ink-dim sm:inline">
           Actualizado {paciente.actualizado}
         </span>
-        <button className="rounded-[min(1vw,8px)] bg-accent-teal/15 px-4 py-2 font-display text-sm font-medium text-accent-teal ring-1 ring-accent-teal/20 transition-colors hover:bg-accent-teal/25">
-          Subir examen
-        </button>
+        {accion}
       </div>
     </header>
   );

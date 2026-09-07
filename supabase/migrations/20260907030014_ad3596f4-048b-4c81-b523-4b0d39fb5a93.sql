@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.crear_perfil_nuevo_usuario() FROM PUBLIC, anon, authenticated;
