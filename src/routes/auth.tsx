@@ -49,7 +49,7 @@ function PantallaAcceso() {
     setMensaje(null);
 
     if (modo === "registrar") {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: correo,
         password: clave,
         options: {
@@ -60,6 +60,13 @@ function PantallaAcceso() {
       setCargando(false);
       if (error) {
         setMensaje(error.message);
+        return;
+      }
+      // Si la cuenta requiere confirmación por correo no hay sesión todavía.
+      if (!data.session) {
+        setMensaje(
+          "Le enviamos un correo de confirmación. Ábralo para activar su cuenta y luego ingrese.",
+        );
         return;
       }
       navegar({ to: "/panel" });
