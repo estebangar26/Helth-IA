@@ -19,6 +19,17 @@
  */
 
 @theme inline {
+  --color-surface: var(--surface);
+  --color-surface-mid: var(--surface-mid);
+  --color-surface-light: var(--surface-light);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-accent-teal: var(--accent-teal);
+  --color-warn: var(--warn);
+  --color-alert: var(--alert);
+  --color-ok: var(--ok);
+  --font-display: var(--font-display-family);
+  --font-body: var(--font-body-family);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -26,6 +37,7 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -63,8 +75,20 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --font-display-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-body-family: "Source Serif 4", Georgia, serif;
+  --surface: oklch(0.223 0.041 250.5);
+  --surface-mid: oklch(0.294 0.043 250.9);
+  --surface-light: oklch(0.363 0.052 252.4);
+  --ink: oklch(0.917 0.008 80.2);
+  --ink-dim: oklch(0.712 0.019 261.3);
+  --accent-teal: oklch(0.788 0.128 180.3);
+  --warn: oklch(0.769 0.161 70.1);
+  --alert: oklch(0.637 0.208 25.3);
+  --ok: oklch(0.766 0.135 163.2);
+  --background: var(--surface);
+  --foreground: var(--ink);
+
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
