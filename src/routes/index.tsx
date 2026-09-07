@@ -11,7 +11,7 @@
  *   src/routes/index.tsx     → FRONTEND (arma la pantalla con los datos)
  */
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { obtenerPanelPaciente } from "@/lib/copiloto/copiloto.functions";
 import { Biomarcadores } from "@/components/copiloto/Biomarcadores";
@@ -54,7 +54,18 @@ function Index() {
       <Fondo />
 
       <div className="mx-auto min-h-screen max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <Encabezado paciente={panel.paciente} />
+        {/* La vista de inicio es una demostración; el botón lleva al acceso real. */}
+        <Encabezado
+          paciente={panel.paciente}
+          accion={
+            <Link
+              to="/panel"
+              className="rounded-[min(1vw,8px)] bg-accent-teal/15 px-4 py-2 font-display text-sm font-medium text-accent-teal ring-1 ring-accent-teal/20 transition-colors hover:bg-accent-teal/25"
+            >
+              Subir mis exámenes
+            </Link>
+          }
+        />
 
         {/* Columna izquierda: triage · Columna derecha: datos del paciente */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
