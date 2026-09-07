@@ -14,7 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      examenes: {
+        Row: {
+          created_at: string
+          creatinina: number | null
+          fecha: string
+          glucemia_ayunas: number | null
+          hba1c: number | null
+          id: string
+          laboratorio: string | null
+          notas: string | null
+          presion_diastolica: number | null
+          presion_sistolica: number | null
+          titulo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creatinina?: number | null
+          fecha: string
+          glucemia_ayunas?: number | null
+          hba1c?: number | null
+          id?: string
+          laboratorio?: string | null
+          notas?: string | null
+          presion_diastolica?: number | null
+          presion_sistolica?: number | null
+          titulo: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creatinina?: number | null
+          fecha?: string
+          glucemia_ayunas?: number | null
+          hba1c?: number | null
+          id?: string
+          laboratorio?: string | null
+          notas?: string | null
+          presion_diastolica?: number | null
+          presion_sistolica?: number | null
+          titulo?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      perfiles: {
+        Row: {
+          created_at: string
+          documento: string | null
+          edad: number | null
+          id: string
+          nombre: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          documento?: string | null
+          edad?: number | null
+          id: string
+          nombre?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          documento?: string | null
+          edad?: number | null
+          id?: string
+          nombre?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
