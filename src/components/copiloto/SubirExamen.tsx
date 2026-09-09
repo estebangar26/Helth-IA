@@ -9,6 +9,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
 import { crearExamen } from "@/lib/copiloto/examenes.functions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 /** Convierte el texto de un campo numérico en número o `null` si viene vacío. */
 function aNumero(texto: string): number | null {
@@ -80,19 +83,17 @@ export function SubirExamen({
   return (
     <form
       onSubmit={enviar}
-      className="mb-6 rounded-[min(2vw,18px)] bg-white/[0.05] p-5 ring-1 ring-white/10 backdrop-blur-xl"
+      className="mb-6 rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6"
     >
       <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-[11px] font-semibold tracking-[0.12em] uppercase text-ink-dim">
-          Nuevo examen
-        </p>
-        <button
+        <div><p className="font-body text-xs font-semibold uppercase text-brand-blue">Nuevo registro</p><h2 className="mt-1 font-display text-lg font-bold text-ink">Resultados del laboratorio</h2></div>
+        <Button
           type="button"
           onClick={onCerrar}
-          className="font-body text-sm text-ink-dim hover:text-ink"
+          variant="ghost"
         >
           Cancelar
-        </button>
+        </Button>
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -131,13 +132,13 @@ export function SubirExamen({
 
       {error && <p className="mt-4 font-body text-sm text-alert">{error}</p>}
 
-      <button
+      <Button
         type="submit"
         disabled={enviando}
-        className="mt-5 rounded-[min(1vw,8px)] bg-accent-teal/20 px-4 py-2 font-display text-sm font-semibold text-accent-teal ring-1 ring-accent-teal/30 transition-colors hover:bg-accent-teal/30 disabled:opacity-50"
+        className="mt-5"
       >
         {enviando ? "Guardando…" : "Guardar examen"}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -159,19 +160,17 @@ function CampoTexto({
   requerido?: boolean;
 }) {
   return (
-    <label className="block">
-      <span className="font-display text-[10px] font-semibold tracking-[0.1em] uppercase text-ink-dim">
-        {etiqueta}
-      </span>
-      <input
+    <div className="block">
+      <Label className="font-body text-xs font-semibold text-ink-dim">{etiqueta}</Label>
+      <Input
         type={tipo}
         value={valor}
         placeholder={marcador}
         required={requerido}
         inputMode={marcador ? "decimal" : undefined}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-[min(1vw,8px)] bg-white/[0.04] px-3 py-2 font-body text-sm text-ink ring-1 ring-white/10 outline-none placeholder:text-ink-dim focus:ring-accent-teal/40"
+        className="mt-1.5 bg-panel"
       />
-    </label>
+    </div>
   );
 }

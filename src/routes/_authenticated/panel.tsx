@@ -6,6 +6,7 @@
  */
 
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { LogOut, Upload } from "lucide-react";
 import { useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +18,7 @@ import { LineaExamenes } from "@/components/copiloto/LineaExamenes";
 import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
 import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
 import { SubirExamen } from "@/components/copiloto/SubirExamen";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/panel")({
   // El loader corre bajo la capa protegida, así que ya hay sesión.
@@ -67,23 +69,26 @@ function MiPanel() {
     <>
       <Fondo />
 
-      <div className="mx-auto min-h-screen max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+      <div className="mx-auto min-h-screen max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <Encabezado
           paciente={panel.paciente}
           accion={
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 onClick={() => setFormularioAbierto((abierto) => !abierto)}
-                className="rounded-[min(1vw,8px)] bg-accent-teal/15 px-4 py-2 font-display text-sm font-medium text-accent-teal ring-1 ring-accent-teal/20 transition-colors hover:bg-accent-teal/25"
               >
+                <Upload aria-hidden="true" />
                 {formularioAbierto ? "Ocultar formulario" : "Subir examen"}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={salir}
-                className="rounded-[min(1vw,8px)] bg-white/[0.06] px-3 py-2 font-display text-sm text-ink-dim ring-1 ring-white/10 transition-colors hover:text-ink"
+                variant="outline"
+                size="icon"
+                title="Cerrar sesión"
+                aria-label="Cerrar sesión"
               >
-                Salir
-              </button>
+                <LogOut aria-hidden="true" />
+              </Button>
             </div>
           }
         />
@@ -95,10 +100,8 @@ function MiPanel() {
           />
         )}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
-          <PanelRiesgo evaluacion={panel.evaluacion} />
-
-          <main>
+        <main className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
             {panel.biomarcadores.length > 0 && (
               <Biomarcadores biomarcadores={panel.biomarcadores} />
             )}
@@ -106,17 +109,23 @@ function MiPanel() {
             {panel.examenes.length > 0 ? (
               <LineaExamenes examenes={panel.examenes} />
             ) : (
-              <p className="rounded-[min(1.5vw,14px)] bg-white/[0.04] p-5 font-body text-sm text-ink-dim ring-1 ring-white/10">
+              <p className="rounded-lg border border-dashed border-clinical-border bg-panel p-6 font-body text-sm text-ink-dim">
                 Todavía no hay exámenes registrados. Use “Subir examen” para agregar los
                 resultados de su laboratorio y verlos aquí en orden cronológico.
               </p>
             )}
 
-            {panel.recomendaciones.length > 0 && (
-              <Recomendaciones recomendaciones={panel.recomendaciones} />
-            )}
-          </main>
-        </div>
+          </div>
+          <div className="space-y-6">
+            <PanelRiesgo evaluacion={panel.evaluacion} />
+            {panel.recomendaciones.length > 0 && <Recomendaciones recomendaciones={panel.recomendaciones} />}
+            <div className="rounded-lg border border-clinical-border bg-panel p-4">
+              <p className="font-body text-[10px] font-semibold uppercase text-ink-dim">Interoperabilidad</p>
+              <p className="mt-1 font-body text-sm font-semibold text-ink">Datos clínicos estructurados</p>
+              <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Preparado para mapear resultados a recursos HL7 FHIR tras una integración validada.</p>
+            </div>
+          </div>
+        </main>
       </div>
     </>
   );

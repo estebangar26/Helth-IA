@@ -11,6 +11,9 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Fondo } from "@/components/copiloto/Fondo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -108,7 +111,8 @@ function PantallaAcceso() {
           ← Volver al inicio
         </Link>
 
-        <div className="rounded-[min(2vw,18px)] bg-white/[0.05] p-6 ring-1 ring-white/10 backdrop-blur-xl">
+        <div className="rounded-lg border border-clinical-border bg-panel p-6 shadow-md">
+          <div className="mb-5 grid size-12 place-items-center rounded-full bg-brand-blue/10 font-body font-bold text-brand-blue">CS</div>
           <h1 className="font-display text-2xl font-semibold text-ink">
             {modo === "entrar" ? "Ingrese a su copiloto" : "Cree su cuenta"}
           </h1>
@@ -137,35 +141,37 @@ function PantallaAcceso() {
 
             {mensaje && <p className="font-body text-sm text-alert">{mensaje}</p>}
 
-            <button
+            <Button
               type="submit"
               disabled={cargando}
-              className="w-full rounded-[min(1vw,8px)] bg-accent-teal/20 px-4 py-2.5 font-display text-sm font-semibold text-accent-teal ring-1 ring-accent-teal/30 transition-colors hover:bg-accent-teal/30 disabled:opacity-50"
+              className="w-full"
             >
               {cargando ? "Un momento…" : modo === "entrar" ? "Entrar" : "Crear cuenta"}
-            </button>
+            </Button>
           </form>
 
-          <button
+          <Button
             type="button"
             onClick={entrarConGoogle}
-            className="mt-3 w-full rounded-[min(1vw,8px)] bg-white/[0.06] px-4 py-2.5 font-display text-sm font-medium text-ink ring-1 ring-white/10 transition-colors hover:bg-white/[0.1]"
+            variant="outline"
+            className="mt-3 w-full"
           >
             Continuar con Google
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
             onClick={() => {
               setModo(modo === "entrar" ? "registrar" : "entrar");
               setMensaje(null);
             }}
-            className="mt-5 w-full font-body text-sm text-ink-dim underline-offset-4 hover:text-ink hover:underline"
+            variant="link"
+            className="mt-3 w-full"
           >
             {modo === "entrar"
               ? "No tengo cuenta · Registrarme"
               : "Ya tengo cuenta · Ingresar"}
-          </button>
+          </Button>
         </div>
       </div>
     </>
@@ -187,17 +193,15 @@ function Campo({
   requerido?: boolean;
 }) {
   return (
-    <label className="block">
-      <span className="font-display text-[11px] font-semibold tracking-[0.1em] uppercase text-ink-dim">
-        {etiqueta}
-      </span>
-      <input
+    <div className="block">
+      <Label className="font-body text-xs font-semibold text-ink-dim">{etiqueta}</Label>
+      <Input
         type={tipo}
         value={valor}
         required={requerido}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-[min(1vw,8px)] bg-white/[0.04] px-3 py-2 font-body text-sm text-ink ring-1 ring-white/10 outline-none placeholder:text-ink-dim focus:ring-accent-teal/40"
+        className="mt-1.5 bg-panel"
       />
-    </label>
+    </div>
   );
 }
