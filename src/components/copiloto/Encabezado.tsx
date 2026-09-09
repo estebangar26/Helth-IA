@@ -19,25 +19,25 @@ export function Encabezado({
   accion?: ReactNode;
 }) {
   return (
-    <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
+    <header className="mb-6 flex flex-col gap-5 rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
       {/* Identidad del sistema + datos del paciente */}
       <div className="flex items-center gap-3">
-        <div className="grid size-10 shrink-0 place-items-center rounded-[min(1vw,10px)] bg-accent-teal/15 ring-1 ring-accent-teal/20">
-          <span className="font-display font-bold text-accent-teal">CS</span>
+        <div className="grid size-14 shrink-0 place-items-center rounded-full bg-brand-blue/10 ring-1 ring-brand-blue/20">
+          <span className="font-body text-lg font-bold text-brand-blue">CS</span>
         </div>
         <div>
-          <h1 className="font-display text-xl leading-tight font-semibold text-balance text-ink">
+          <h1 className="font-display text-xl leading-tight font-bold text-balance text-ink sm:text-2xl">
             Copiloto de Salud
           </h1>
-          <p className="mt-0.5 font-body text-sm text-ink-dim">
-            {paciente.nombre} · {paciente.edad} años · {paciente.documento}
+          <p className="mt-1 font-body text-sm text-ink-dim">
+            {paciente.nombre} <span aria-hidden="true">·</span> {paciente.edad} años <span aria-hidden="true">·</span> ID {paciente.documento}
           </p>
         </div>
       </div>
 
       {/* Fecha de corte y acción principal */}
-      <div className="flex items-center gap-3">
-        <span className="hidden font-display text-sm text-ink-dim sm:inline">
+      <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+        <span className="font-body text-xs text-ink-dim">
           Actualizado {paciente.actualizado}
         </span>
         {accion}

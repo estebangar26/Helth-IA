@@ -48,9 +48,9 @@ export function intensidadPorPosicion(indice: number): Intensidad {
 }
 
 export const tarjetaIntensidad: Record<Intensidad, string> = {
-  alta: "bg-white/[0.05] ring-white/10",
-  media: "bg-white/[0.04] ring-white/[0.08]",
-  baja: "bg-white/[0.03] ring-white/[0.06]",
+  alta: "opacity-100",
+  media: "opacity-85",
+  baja: "opacity-70",
 };
 
 export const textoIntensidad: Record<Intensidad, string> = {
@@ -60,7 +60,7 @@ export const textoIntensidad: Record<Intensidad, string> = {
 };
 
 export const puntoIntensidad: Record<Intensidad, string> = {
-  alta: "bg-accent-teal",
-  media: "bg-white/40",
-  baja: "bg-white/30",
+  alta: "bg-brand-blue",
+  media: "bg-brand-lime",
+  baja: "bg-ink-dim/40",
 };

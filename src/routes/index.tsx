@@ -12,6 +12,7 @@
  */
 
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Upload } from "lucide-react";
 
 import { obtenerPanelPaciente } from "@/lib/copiloto/copiloto.functions";
 import { Biomarcadores } from "@/components/copiloto/Biomarcadores";
@@ -20,6 +21,7 @@ import { Fondo } from "@/components/copiloto/Fondo";
 import { LineaExamenes } from "@/components/copiloto/LineaExamenes";
 import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
 import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   // El loader llama al backend antes de dibujar la pantalla.
@@ -53,30 +55,33 @@ function Index() {
     <>
       <Fondo />
 
-      <div className="mx-auto min-h-screen max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+      <div className="mx-auto min-h-screen max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         {/* La vista de inicio es una demostración; el botón lleva al acceso real. */}
         <Encabezado
           paciente={panel.paciente}
           accion={
-            <Link
-              to="/panel"
-              className="rounded-[min(1vw,8px)] bg-accent-teal/15 px-4 py-2 font-display text-sm font-medium text-accent-teal ring-1 ring-accent-teal/20 transition-colors hover:bg-accent-teal/25"
-            >
-              Subir mis exámenes
-            </Link>
+            <Button asChild>
+              <Link to="/panel"><Upload aria-hidden="true" /> Subir mis exámenes</Link>
+            </Button>
           }
         />
 
         {/* Columna izquierda: triage · Columna derecha: datos del paciente */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
-          <PanelRiesgo evaluacion={panel.evaluacion} />
-
-          <main>
+        <main className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
             <Biomarcadores biomarcadores={panel.biomarcadores} />
             <LineaExamenes examenes={panel.examenes} />
+          </div>
+          <div className="space-y-6">
+            <PanelRiesgo evaluacion={panel.evaluacion} />
             <Recomendaciones recomendaciones={panel.recomendaciones} />
-          </main>
-        </div>
+            <div className="rounded-lg border border-clinical-border bg-panel p-4">
+              <p className="font-body text-[10px] font-semibold uppercase text-ink-dim">Interoperabilidad</p>
+              <p className="mt-1 font-body text-sm font-semibold text-ink">Datos clínicos estructurados</p>
+              <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Presentación preparada para mapear observaciones a recursos HL7 FHIR.</p>
+            </div>
+          </div>
+        </main>
       </div>
     </>
   );
