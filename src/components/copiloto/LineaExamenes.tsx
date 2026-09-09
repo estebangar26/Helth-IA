@@ -9,7 +9,6 @@ import {
   chipNivel,
   intensidadPorPosicion,
   puntoIntensidad,
-  tarjetaIntensidad,
   textoIntensidad,
   textoNivel,
   textoNivelColor,
