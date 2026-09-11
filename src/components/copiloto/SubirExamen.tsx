@@ -1,23 +1,32 @@
 /**
- * FRONTEND · Formulario para registrar un examen real
- * ---------------------------------------------------
- * Recoge los valores del laboratorio y los envía al backend con `crearExamen`.
- * No calcula nada clínico: el nivel de riesgo lo determina el servidor.
+ * FRONTEND · Carga de un examen como archivo (PDF o imagen)
+ * --------------------------------------------------------
+ * El paciente solo elige el archivo del laboratorio: no escribe ningún valor.
+ * El archivo se envía al backend, que lo analiza y guarda los resultados.
  */
 
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { FileText, Loader2, UploadCloud } from "lucide-react";
+import { useRef, useState } from "react";
 
-import { crearExamen } from "@/lib/copiloto/examenes.functions";
+import { analizarYGuardarExamen } from "@/lib/copiloto/examenes.functions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-/** Convierte el texto de un campo numérico en número o `null` si viene vacío. */
-function aNumero(texto: string): number | null {
-  if (texto.trim() === "") return null;
-  const valor = Number(texto.replace(",", "."));
-  return Number.isFinite(valor) ? valor : null;
+/** Tipos de archivo que el análisis acepta. */
+const TIPOS_ACEPTADOS = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+const TAMANO_MAXIMO = 10 * 1024 * 1024; // 10 MB
+
+/** Convierte el archivo elegido en base64 sin el prefijo `data:`. */
+function aBase64(archivo: File): Promise<string> {
+  return new Promise((resolver, rechazar) => {
+    const lector = new FileReader();
+    lector.onerror = () => rechazar(new Error("No se pudo leer el archivo."));
+    lector.onload = () => {
+      const resultado = String(lector.result);
+      resolver(resultado.slice(resultado.indexOf(",") + 1));
+    };
+    lector.readAsDataURL(archivo);
+  });
 }
 
 export function SubirExamen({
@@ -27,150 +36,128 @@ export function SubirExamen({
   onGuardado: () => void | Promise<void>;
   onCerrar: () => void;
 }) {
-  const guardar = useServerFn(crearExamen);
+  const analizar = useServerFn(analizarYGuardarExamen);
+  const entradaArchivo = useRef<HTMLInputElement>(null);
 
-  const [titulo, setTitulo] = useState("Panel de control");
-  const [laboratorio, setLaboratorio] = useState("");
-  const [fecha, setFecha] = useState(() => new Date().toISOString().slice(0, 10));
-  const [glucemia, setGlucemia] = useState("");
-  const [hba1c, setHba1c] = useState("");
-  const [sistolica, setSistolica] = useState("");
-  const [diastolica, setDiastolica] = useState("");
-  const [creatinina, setCreatinina] = useState("");
-  const [notas, setNotas] = useState("");
+  const [arrastrando, setArrastrando] = useState(false);
+  const [nombre, setNombre] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [enviando, setEnviando] = useState(false);
+  const [procesando, setProcesando] = useState(false);
 
-  async function enviar(evento: React.FormEvent) {
-    evento.preventDefault();
+  /** Valida, analiza y guarda el archivo elegido. */
+  async function procesar(archivo: File) {
     setError(null);
 
-    const sistolicaNum = aNumero(sistolica);
-    const diastolicaNum = aNumero(diastolica);
-    if ((sistolicaNum == null) !== (diastolicaNum == null)) {
-      setError("Escriba los dos valores de la presión arterial o ninguno.");
+    if (!TIPOS_ACEPTADOS.includes(archivo.type)) {
+      setError("Solo aceptamos archivos PDF, JPG, PNG o WEBP.");
       return;
     }
-    if (!glucemia && !hba1c && sistolicaNum == null && !creatinina) {
-      setError("Registre al menos un resultado del examen.");
+    if (archivo.size > TAMANO_MAXIMO) {
+      setError("El archivo supera los 10 MB. Suba una versión más liviana.");
       return;
     }
 
-    setEnviando(true);
+    setNombre(archivo.name);
+    setProcesando(true);
     try {
-      await guardar({
+      const contenido = await aBase64(archivo);
+      await analizar({
         data: {
-          titulo,
-          laboratorio,
-          fecha,
-          glucemiaAyunas: aNumero(glucemia),
-          hba1c: aNumero(hba1c),
-          presionSistolica: sistolicaNum == null ? null : Math.round(sistolicaNum),
-          presionDiastolica: diastolicaNum == null ? null : Math.round(diastolicaNum),
-          creatinina: aNumero(creatinina),
-          notas,
+          nombre: archivo.name,
+          mime: archivo.type as (typeof TIPOS_ACEPTADOS)[number],
+          contenido,
         },
       });
       await onGuardado();
       onCerrar();
-    } catch {
-      setError("No se pudo guardar el examen. Revise los valores e intente de nuevo.");
+    } catch (fallo) {
+      setError(
+        fallo instanceof Error && fallo.message
+          ? fallo.message
+          : "No pudimos leer el examen. Intente con otro archivo.",
+      );
     } finally {
-      setEnviando(false);
+      setProcesando(false);
     }
   }
 
   return (
-    <form
-      onSubmit={enviar}
-      className="mb-6 rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6"
-    >
+    <section className="mb-6 rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6">
       <div className="flex items-center justify-between gap-3">
-        <div><p className="font-body text-xs font-semibold uppercase text-brand-blue">Nuevo registro</p><h2 className="mt-1 font-display text-lg font-bold text-ink">Resultados del laboratorio</h2></div>
-        <Button
-          type="button"
-          onClick={onCerrar}
-          variant="ghost"
-        >
+        <div>
+          <p className="font-body text-xs font-semibold uppercase text-brand-blue">Nuevo registro</p>
+          <h2 className="mt-1 font-display text-lg font-bold text-ink">
+            Suba el examen de su laboratorio
+          </h2>
+          <p className="mt-1 font-body text-sm text-ink-dim">
+            Adjunte el PDF o la foto del resultado. Leemos los valores por usted; no tiene que
+            escribir nada.
+          </p>
+        </div>
+        <Button type="button" onClick={onCerrar} variant="ghost">
           Cancelar
         </Button>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <CampoTexto etiqueta="Nombre del examen" valor={titulo} onChange={setTitulo} requerido />
-        <CampoTexto etiqueta="Laboratorio" valor={laboratorio} onChange={setLaboratorio} />
-        <CampoTexto etiqueta="Fecha" valor={fecha} onChange={setFecha} tipo="date" requerido />
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setArrastrando(true);
+        }}
+        onDragLeave={() => setArrastrando(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setArrastrando(false);
+          const archivo = e.dataTransfer.files?.[0];
+          if (archivo && !procesando) void procesar(archivo);
+        }}
+        className={`mt-5 rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
+          arrastrando ? "border-brand-blue bg-panel-soft" : "border-clinical-border bg-panel-soft"
+        }`}
+      >
+        {procesando ? (
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 aria-hidden="true" className="size-8 animate-spin text-brand-blue" />
+            <p className="font-body text-sm font-semibold text-ink">Analizando su examen…</p>
+            <p className="font-body text-xs text-ink-dim">{nombre}</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <UploadCloud aria-hidden="true" className="size-8 text-brand-blue" />
+            <p className="font-body text-sm text-ink-dim">
+              Arrastre aquí su archivo o elíjalo desde su dispositivo
+            </p>
+            <Button type="button" onClick={() => entradaArchivo.current?.click()}>
+              <FileText aria-hidden="true" />
+              Elegir archivo
+            </Button>
+            <p className="font-body text-xs text-ink-dim">PDF, JPG, PNG o WEBP · hasta 10 MB</p>
+          </div>
+        )}
 
-        <CampoTexto
-          etiqueta="Glucemia ayunas (mg/dL)"
-          valor={glucemia}
-          onChange={setGlucemia}
-          marcador="108"
+        <input
+          ref={entradaArchivo}
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            const archivo = e.target.files?.[0];
+            e.target.value = "";
+            if (archivo) void procesar(archivo);
+          }}
         />
-        <CampoTexto etiqueta="HbA1c (%)" valor={hba1c} onChange={setHba1c} marcador="7.8" />
-        <CampoTexto
-          etiqueta="Creatinina (mg/dL)"
-          valor={creatinina}
-          onChange={setCreatinina}
-          marcador="0.9"
-        />
-
-        <CampoTexto
-          etiqueta="Presión sistólica"
-          valor={sistolica}
-          onChange={setSistolica}
-          marcador="142"
-        />
-        <CampoTexto
-          etiqueta="Presión diastólica"
-          valor={diastolica}
-          onChange={setDiastolica}
-          marcador="88"
-        />
-        <CampoTexto etiqueta="Notas" valor={notas} onChange={setNotas} />
       </div>
 
-      {error && <p className="mt-4 font-body text-sm text-alert">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-4 font-body text-sm text-alert">
+          {error}
+        </p>
+      )}
 
-      <Button
-        type="submit"
-        disabled={enviando}
-        className="mt-5"
-      >
-        {enviando ? "Guardando…" : "Guardar examen"}
-      </Button>
-    </form>
-  );
-}
-
-/** Campo de texto del formulario, con la tipografía del sistema de diseño. */
-function CampoTexto({
-  etiqueta,
-  valor,
-  onChange,
-  tipo = "text",
-  marcador,
-  requerido,
-}: {
-  etiqueta: string;
-  valor: string;
-  onChange: (v: string) => void;
-  tipo?: string;
-  marcador?: string;
-  requerido?: boolean;
-}) {
-  return (
-    <div className="block">
-      <Label className="font-body text-xs font-semibold text-ink-dim">{etiqueta}</Label>
-      <Input
-        type={tipo}
-        value={valor}
-        placeholder={marcador}
-        required={requerido}
-        inputMode={marcador ? "decimal" : undefined}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 bg-panel"
-      />
-    </div>
+      <p className="mt-4 font-body text-xs leading-relaxed text-ink-dim">
+        La lectura automática puede equivocarse. Revise los valores mostrados y confírmelos con su
+        equipo de salud.
+      </p>
+    </section>
   );
 }

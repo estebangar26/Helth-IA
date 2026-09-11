@@ -61,6 +61,65 @@ export const crearExamen = createServerFn({ method: "POST" })
     return { ok: true, id: fila.id };
   });
 
+/** Validación del archivo que sube el paciente (PDF o imagen del laboratorio). */
+const esquemaArchivo = z.object({
+  nombre: z.string().trim().min(1).max(200),
+  mime: z.enum(["application/pdf", "image/jpeg", "image/png", "image/webp"]),
+  // Base64 sin el prefijo `data:`; ~13.4 MB de base64 ≈ 10 MB de archivo.
+  contenido: z.string().min(100).max(14_000_000),
+});
+
+/**
+ * Lee un examen desde el archivo que subió el paciente (PDF o foto), extrae los
+ * valores con el modelo multimodal y lo guarda en su historia. El paciente no
+ * escribe ningún dato a mano.
+ */
+export const analizarYGuardarExamen = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((entrada: unknown) => esquemaArchivo.parse(entrada))
+  .handler(async ({ data, context }): Promise<{ ok: true; id: string }> => {
+    const { analizarArchivoExamen } = await import("./analisis.server");
+    const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
+
+    const sinValores =
+      extraido.glucemiaAyunas == null &&
+      extraido.hba1c == null &&
+      extraido.creatinina == null &&
+      (extraido.presionSistolica == null || extraido.presionDiastolica == null);
+
+    if (sinValores) {
+      throw new Error(
+        "No encontramos resultados de laboratorio legibles en el archivo. Suba el documento completo o una foto más nítida.",
+      );
+    }
+
+    const { error, data: fila } = await context.supabase
+      .from("examenes")
+      .insert({
+        user_id: context.userId,
+        titulo: extraido.titulo ?? "Examen de laboratorio",
+        laboratorio: extraido.laboratorio,
+        fecha: extraido.fecha ?? new Date().toISOString().slice(0, 10),
+        glucemia_ayunas: extraido.glucemiaAyunas,
+        hba1c: extraido.hba1c,
+        presion_sistolica:
+          extraido.presionSistolica != null && extraido.presionDiastolica != null
+            ? extraido.presionSistolica
+            : null,
+        presion_diastolica:
+          extraido.presionSistolica != null && extraido.presionDiastolica != null
+            ? extraido.presionDiastolica
+            : null,
+        creatinina: extraido.creatinina,
+        notas: extraido.notas,
+      })
+      .select("id")
+      .single();
+
+    if (error || !fila) throw new Error("No se pudo guardar el examen analizado.");
+    return { ok: true, id: fila.id };
+  });
+
 /** Borra un examen propio (por si se registró con datos equivocados). */
 export const borrarExamen = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
