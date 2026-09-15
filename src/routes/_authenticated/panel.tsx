@@ -67,7 +67,7 @@ function MiPanel() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    router.navigate({ to: "/auth", search: {}, replace: true });
+    router.navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
   }
 
   return (
