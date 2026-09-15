@@ -5,13 +5,15 @@
  * un examen nuevo; al guardarlo, la línea de tiempo se actualiza sola.
  */
 
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { LogOut, Upload } from "lucide-react";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { LogOut, Stethoscope, Upload } from "lucide-react";
 import { useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { obtenerMiPanel } from "@/lib/copiloto/examenes.functions";
 import { Biomarcadores } from "@/components/copiloto/Biomarcadores";
+import { CompartirConDoctora } from "@/components/copiloto/CompartirConDoctora";
 import { Encabezado } from "@/components/copiloto/Encabezado";
 import { Fondo } from "@/components/copiloto/Fondo";
 import { LineaExamenes } from "@/components/copiloto/LineaExamenes";
@@ -57,12 +59,15 @@ export const Route = createFileRoute("/_authenticated/panel")({
 function MiPanel() {
   const panel = Route.useLoaderData();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [formularioAbierto, setFormularioAbierto] = useState(panel.examenes.length === 0);
 
   /** Cierra la sesión y vuelve a la pantalla de acceso. */
   async function salir() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
-    router.navigate({ to: "/auth" });
+    router.navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
   }
 
   return (
@@ -118,12 +123,16 @@ function MiPanel() {
           </div>
           <div className="space-y-6">
             <PanelRiesgo evaluacion={panel.evaluacion} />
+            <CompartirConDoctora />
             {panel.recomendaciones.length > 0 && <Recomendaciones recomendaciones={panel.recomendaciones} />}
             <div className="rounded-lg border border-clinical-border bg-panel p-4">
               <p className="font-body text-[10px] font-semibold uppercase text-ink-dim">Interoperabilidad</p>
               <p className="mt-1 font-body text-sm font-semibold text-ink">Datos clínicos estructurados</p>
               <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Preparado para mapear resultados a recursos HL7 FHIR tras una integración validada.</p>
             </div>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/medico"><Stethoscope aria-hidden="true" /> Vista para doctora</Link>
+            </Button>
           </div>
         </main>
       </div>

@@ -16,6 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: search["redirect"] === "/medico" ? "/medico" : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Ingresar · Copiloto de Salud" },
@@ -38,6 +41,7 @@ export const Route = createFileRoute("/auth")({
 
 function PantallaAcceso() {
   const navegar = useNavigate();
+  const { redirect } = Route.useSearch();
   const [modo, setModo] = useState<"entrar" | "registrar">("entrar");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
@@ -72,7 +76,7 @@ function PantallaAcceso() {
         );
         return;
       }
-      navegar({ to: "/panel" });
+      navegar({ to: redirect ?? "/panel" });
       return;
     }
 
@@ -85,7 +89,7 @@ function PantallaAcceso() {
       setMensaje("Correo o contraseña incorrectos.");
       return;
     }
-    navegar({ to: "/panel" });
+    navegar({ to: redirect ?? "/panel" });
   }
 
   /** Ingreso con Google gestionado por Lovable Cloud. */
@@ -99,7 +103,7 @@ function PantallaAcceso() {
       return;
     }
     if (resultado.redirected) return;
-    navegar({ to: "/panel" });
+    navegar({ to: redirect ?? "/panel" });
   }
 
   return (
@@ -117,7 +121,7 @@ function PantallaAcceso() {
             {modo === "entrar" ? "Ingrese a su copiloto" : "Cree su cuenta"}
           </h1>
           <p className="mt-1 font-body text-sm text-ink-dim">
-            Sus exámenes quedan guardados de forma privada y solo usted puede verlos.
+            Sus exámenes son privados y solo los ven usted y los profesionales que autorice.
           </p>
 
           <form onSubmit={enviar} className="mt-6 space-y-4">
