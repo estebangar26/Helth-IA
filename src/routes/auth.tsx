@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
-    redirect: search.redirect === "/medico" ? "/medico" : undefined,
+    redirect: search["redirect"] === "/medico" ? "/medico" : undefined,
   }),
   head: () => ({
     meta: [

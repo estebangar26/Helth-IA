@@ -6,6 +6,7 @@
  */
 
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Stethoscope, Upload } from "lucide-react";
 import { useState } from "react";
 
@@ -58,12 +59,15 @@ export const Route = createFileRoute("/_authenticated/panel")({
 function MiPanel() {
   const panel = Route.useLoaderData();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [formularioAbierto, setFormularioAbierto] = useState(panel.examenes.length === 0);
 
   /** Cierra la sesión y vuelve a la pantalla de acceso. */
   async function salir() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
-    router.navigate({ to: "/auth" });
+    router.navigate({ to: "/auth", search: {}, replace: true });
   }
 
   return (
