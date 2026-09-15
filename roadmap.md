@@ -5,4 +5,4 @@
 - [x] Añadir gestión de invitaciones al panel del paciente.
 - [x] Crear lista de pacientes y pantalla clínica de la doctora.
 - [ ] Conectar el envío automático cuando exista un dominio de correo verificado. Bloqueado: falta configurar el dominio.
-- [ ] Verificar compilación, seguridad y adaptación móvil.
+- [x] Verificar compilación, seguridad y adaptación móvil.
