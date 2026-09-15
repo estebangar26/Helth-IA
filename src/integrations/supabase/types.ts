@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      accesos_medicos: {
+        Row: {
+          aceptado_en: string | null
+          actualizado_en: string
+          creado_en: string
+          doctor_email: string
+          doctor_id: string | null
+          estado: string
+          id: string
+          paciente_id: string
+          revocado_en: string | null
+        }
+        Insert: {
+          aceptado_en?: string | null
+          actualizado_en?: string
+          creado_en?: string
+          doctor_email: string
+          doctor_id?: string | null
+          estado?: string
+          id?: string
+          paciente_id: string
+          revocado_en?: string | null
+        }
+        Update: {
+          aceptado_en?: string | null
+          actualizado_en?: string
+          creado_en?: string
+          doctor_email?: string
+          doctor_id?: string | null
+          estado?: string
+          id?: string
+          paciente_id?: string
+          revocado_en?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accesos_medicos_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accesos_medicos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       examenes: {
         Row: {
           created_at: string
