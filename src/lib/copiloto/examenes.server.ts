@@ -177,6 +177,7 @@ export async function obtenerPanelReal(
       .select(
         "id, titulo, laboratorio, fecha, glucemia_ayunas, hba1c, presion_sistolica, presion_diastolica, creatinina, notas",
       )
+      .eq("user_id", userId)
       .order("fecha", { ascending: false })
       .order("created_at", { ascending: false }),
   ]);
