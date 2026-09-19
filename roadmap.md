@@ -6,3 +6,6 @@
 - [x] Crear lista de pacientes y pantalla clínica de la doctora.
 - [ ] Conectar el envío automático cuando exista un dominio de correo verificado. Bloqueado: falta configurar el dominio.
 - [x] Verificar compilación, seguridad y adaptación móvil.
+- [x] Crear portada pública con navegación e imagen médica futurista.
+- [x] Crear página de servicios con información sobre interoperabilidad HL7 FHIR.
+- [x] Verificar las nuevas páginas en escritorio y celular.
