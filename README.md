@@ -28,23 +28,8 @@ La aplicación web fue desarrollada inicialmente utilizando **Lovable**, permiti
 ## Demo
 
 **Live app:**
-https://happy-nest-build.lovable.app
+https://helthia.lovable.app/
 
-**Editor del proyecto:**
-https://lovable.dev/projects/7f527f51-8a05-427f-9678-221b66d2197d
-
-## Desarrollo con Lovable
-
-Este proyecto fue construido con [Lovable](https://lovable.dev).
-
-Lovable permite desarrollar la aplicación mediante instrucciones en lenguaje natural y mantener sincronizados los cambios realizados en el editor con el repositorio.
-
-### Principales ventajas
-
-* **Desarrollo rápido:** describe las funcionalidades que necesitas y Lovable genera los cambios correspondientes.
-* **Sincronización:** los cambios realizados en Lovable pueden quedar registrados mediante commits en este repositorio.
-* **Control del código:** el proyecto puede mantenerse y evolucionar directamente desde GitHub.
-* **Desarrollo local:** es posible clonar el repositorio y continuar el desarrollo utilizando Node.js y npm.
 
 ## Instalación
 
