@@ -9,3 +9,6 @@
 - [x] Crear portada pública con navegación e imagen médica futurista.
 - [x] Crear página de servicios con información sobre interoperabilidad HL7 FHIR.
 - [x] Verificar las nuevas páginas en escritorio y celular.
+- [x] Ampliar exámenes a diabetes tipo 1 y 2, insípida, biomarcadores de cáncer y testosterona.
+- [x] Registrar alertas para el médico tratante cuando un valor sale del rango.
+- [ ] Enviar la alerta por correo al médico. Bloqueado: falta configurar y verificar el dominio de correo.
