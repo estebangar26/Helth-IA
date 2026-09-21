@@ -77,48 +77,62 @@ const esquemaArchivo = z.object({
 export const analizarYGuardarExamen = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => esquemaArchivo.parse(entrada))
-  .handler(async ({ data, context }): Promise<{ ok: true; id: string }> => {
-    const { analizarArchivoExamen } = await import("./analisis.server");
-    const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
+  .handler(
+    async ({
+      data,
+      context,
+    }): Promise<{ ok: true; id: string; alertasRegistradas: number }> => {
+      const { analizarArchivoExamen } = await import("./analisis.server");
+      const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
 
-    const sinValores =
-      extraido.glucemiaAyunas == null &&
-      extraido.hba1c == null &&
-      extraido.creatinina == null &&
-      (extraido.presionSistolica == null || extraido.presionDiastolica == null);
+      const conValor = Object.values(extraido.valores).some((v) => v != null);
+      if (!conValor) {
+        throw new Error(
+          "No encontramos resultados de laboratorio legibles en el archivo. Suba el documento completo o una foto más nítida.",
+        );
+      }
 
-    if (sinValores) {
-      throw new Error(
-        "No encontramos resultados de laboratorio legibles en el archivo. Suba el documento completo o una foto más nítida.",
-      );
-    }
+      const { error, data: fila } = await context.supabase
+        .from("examenes")
+        .insert({
+          user_id: context.userId,
+          titulo: extraido.titulo ?? "Examen de laboratorio",
+          laboratorio: extraido.laboratorio,
+          fecha: extraido.fecha ?? new Date().toISOString().slice(0, 10),
+          tipo_examen: extraido.tipoExamen,
+          notas: extraido.notas,
+          ...extraido.valores,
+        })
+        .select("id")
+        .single();
 
-    const { error, data: fila } = await context.supabase
-      .from("examenes")
-      .insert({
-        user_id: context.userId,
-        titulo: extraido.titulo ?? "Examen de laboratorio",
-        laboratorio: extraido.laboratorio,
-        fecha: extraido.fecha ?? new Date().toISOString().slice(0, 10),
-        glucemia_ayunas: extraido.glucemiaAyunas,
-        hba1c: extraido.hba1c,
-        presion_sistolica:
-          extraido.presionSistolica != null && extraido.presionDiastolica != null
-            ? extraido.presionSistolica
-            : null,
-        presion_diastolica:
-          extraido.presionSistolica != null && extraido.presionDiastolica != null
-            ? extraido.presionDiastolica
-            : null,
-        creatinina: extraido.creatinina,
-        notas: extraido.notas,
-      })
-      .select("id")
-      .single();
+      if (error || !fila) throw new Error("No se pudo guardar el examen analizado.");
 
-    if (error || !fila) throw new Error("No se pudo guardar el examen analizado.");
-    return { ok: true, id: fila.id };
-  });
+      // Revisa los valores y avisa a los médicos autorizados si hay alteraciones.
+      const { revisarAlteraciones, notificarMedicos } = await import("./alertas.server");
+      const revision = revisarAlteraciones(extraido.valores);
+      let alertasRegistradas = 0;
+
+      if (revision) {
+        const { data: perfil } = await context.supabase
+          .from("perfiles")
+          .select("nombre")
+          .eq("id", context.userId)
+          .maybeSingle();
+
+        const resultado = await notificarMedicos(
+          context.supabase,
+          context.userId,
+          fila.id,
+          perfil?.nombre ?? "Paciente",
+          revision,
+        );
+        alertasRegistradas = resultado.registradas;
+      }
+
+      return { ok: true, id: fila.id, alertasRegistradas };
+    },
+  );
 
 /** Borra un examen propio (por si se registró con datos equivocados). */
 export const borrarExamen = createServerFn({ method: "POST" })

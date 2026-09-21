@@ -16,21 +16,18 @@ import type {
   PanelPaciente,
   ValorExamen,
 } from "./tipos";
+import { MARCADORES, leerMarcador, textoRango, ETIQUETA_TIPO, type TipoExamen } from "./marcadores";
 import { evaluarRiesgo } from "./triage.server";
 import type { MedicionesActuales } from "./datos.server";
 import { obtenerRecomendaciones } from "./datos.server";
 
 /** Fila tal como está almacenada en la tabla `examenes`. */
-export interface FilaExamen {
+export interface FilaExamen extends Record<string, unknown> {
   id: string;
   titulo: string;
   laboratorio: string | null;
   fecha: string; // AAAA-MM-DD
-  glucemia_ayunas: number | null;
-  hba1c: number | null;
-  presion_sistolica: number | null;
-  presion_diastolica: number | null;
-  creatinina: number | null;
+  tipo_examen: string | null;
   notas: string | null;
 }
 
@@ -51,62 +48,63 @@ function formatearFechaCorta(iso: string): string {
   return `${dia} ${meses[(mes ?? 1) - 1]} ${anio}`;
 }
 
-/** Traduce un valor de HbA1c al semáforo clínico. */
-function nivelHba1c(valor: number): NivelRiesgo {
-  if (valor >= 8.5) return "alert";
-  if (valor > 7.0) return "warn";
-  return "ok";
-}
-
-/** Traduce una glucemia en ayunas al semáforo clínico. */
-function nivelGlucemia(valor: number): NivelRiesgo {
-  if (valor >= 180) return "alert";
-  if (valor > 110) return "warn";
-  return "ok";
-}
-
 /** Traduce la presión arterial al semáforo clínico. */
 function nivelPresion(sistolica: number, diastolica: number): NivelRiesgo {
   if (sistolica >= 160 || diastolica >= 100) return "alert";
-  if (sistolica >= 130 || diastolica >= 80) return "warn";
+  if (sistolica >= 140 || diastolica >= 90) return "warn";
   return "ok";
 }
+
+/** Lee un número guardado en la fila (los numéricos llegan como texto). */
+function numero(fila: FilaExamen, campo: string): number | null {
+  const crudo = fila[campo];
+  if (crudo == null) return null;
+  const n = Number(crudo);
+  return Number.isFinite(n) ? n : null;
+}
+
+const SEVERIDAD: NivelRiesgo[] = ["ok", "warn", "alert"];
 
 /** Convierte una fila de la base de datos en una tarjeta de la línea de tiempo. */
 function filaAExamen(fila: FilaExamen): Examen {
   const valores: ValorExamen[] = [];
   let nivel: NivelRiesgo = "ok";
-  const severidad: NivelRiesgo[] = ["ok", "warn", "alert"];
   const subir = (candidato: NivelRiesgo) => {
-    if (severidad.indexOf(candidato) > severidad.indexOf(nivel)) nivel = candidato;
+    if (SEVERIDAD.indexOf(candidato) > SEVERIDAD.indexOf(nivel)) nivel = candidato;
   };
 
-  if (fila.glucemia_ayunas != null) {
-    const n = nivelGlucemia(Number(fila.glucemia_ayunas));
-    subir(n);
-    valores.push({ etiqueta: "Glucemia", valor: `${fila.glucemia_ayunas} mg/dL`, resaltado: n });
-  }
-  if (fila.hba1c != null) {
-    const n = nivelHba1c(Number(fila.hba1c));
-    subir(n);
-    valores.push({ etiqueta: "HbA1c", valor: `${fila.hba1c} %`, resaltado: n });
-  }
-  if (fila.presion_sistolica != null && fila.presion_diastolica != null) {
-    const n = nivelPresion(fila.presion_sistolica, fila.presion_diastolica);
-    subir(n);
+  for (const def of MARCADORES) {
+    const valor = numero(fila, def.campo);
+    if (valor == null) continue;
+    const lectura = leerMarcador(def, valor);
+    subir(lectura);
     valores.push({
-      etiqueta: "Presión",
-      valor: `${fila.presion_sistolica}/${fila.presion_diastolica}`,
-      resaltado: n,
+      etiqueta: def.etiqueta,
+      valor: `${valor}${def.unidad ? ` ${def.unidad}` : ""}`,
+      ...(lectura === "ok" ? {} : { resaltado: lectura }),
     });
   }
-  if (fila.creatinina != null) {
-    valores.push({ etiqueta: "Creatinina", valor: `${fila.creatinina} mg/dL` });
+
+  const sistolica = numero(fila, "presion_sistolica");
+  const diastolica = numero(fila, "presion_diastolica");
+  if (sistolica != null && diastolica != null) {
+    const lectura = nivelPresion(sistolica, diastolica);
+    subir(lectura);
+    valores.push({
+      etiqueta: "Presión",
+      valor: `${sistolica}/${diastolica}`,
+      ...(lectura === "ok" ? {} : { resaltado: lectura }),
+    });
   }
+
+  const tipo = (fila.tipo_examen ?? "general") as TipoExamen;
+  const etiquetaTipo = ETIQUETA_TIPO[tipo] ?? ETIQUETA_TIPO.general;
 
   return {
     id: fila.id,
-    titulo: fila.laboratorio ? `${fila.titulo} · ${fila.laboratorio}` : fila.titulo,
+    titulo: fila.laboratorio
+      ? `${fila.titulo} · ${fila.laboratorio} · ${etiquetaTipo}`
+      : `${fila.titulo} · ${etiquetaTipo}`,
     fecha: formatearFecha(fila.fecha),
     nivel,
     valores,
@@ -115,46 +113,46 @@ function filaAExamen(fila: FilaExamen): Examen {
 
 /** Arma las tarjetas de biomarcadores comparando el último examen con el anterior. */
 function construirBiomarcadores(filas: FilaExamen[]): Biomarcador[] {
-  const ultimo = filas[0];
-  const previo = filas[1];
-  if (!ultimo) return [];
-
+  if (filas.length === 0) return [];
   const tarjetas: Biomarcador[] = [];
 
-  /** Texto de tendencia frente al examen anterior. */
-  const tendencia = (actual: number, anterior: number | null | undefined, sufijo: string) => {
-    if (anterior == null) return "Primer registro";
-    const delta = Number((actual - Number(anterior)).toFixed(1));
-    if (delta === 0) return "Sin cambio";
-    return `${delta > 0 ? "Sube" : "Baja"} ${Math.abs(delta)}${sufijo}`;
+  /** Texto de tendencia frente al registro anterior del mismo marcador. */
+  const tendencia = (campo: string, actual: number, unidad: string) => {
+    for (const fila of filas.slice(1)) {
+      const anterior = numero(fila, campo);
+      if (anterior == null) continue;
+      const delta = Number((actual - anterior).toFixed(2));
+      if (delta === 0) return "Sin cambio";
+      return `${delta > 0 ? "Sube" : "Baja"} ${Math.abs(delta)}${unidad ? ` ${unidad}` : ""}`;
+    }
+    return "Primer registro";
   };
 
-  if (ultimo.glucemia_ayunas != null) {
-    const valor = Number(ultimo.glucemia_ayunas);
+  for (const def of MARCADORES) {
+    // Se toma el valor más reciente disponible de cada marcador.
+    const indice = filas.findIndex((fila) => numero(fila, def.campo) != null);
+    if (indice === -1) continue;
+    const valor = numero(filas[indice]!, def.campo)!;
     tarjetas.push({
-      nombre: "Glucemia ayunas",
+      nombre: def.etiqueta,
       valor: String(valor),
-      unidad: "mg/dL",
-      nota: `${tendencia(valor, previo?.glucemia_ayunas, " mg/dL")} · objetivo < 110`,
-      nivel: nivelGlucemia(valor),
+      ...(def.unidad ? { unidad: def.unidad } : {}),
+      nota: `${tendencia(def.campo, valor, def.unidad)} · ${textoRango(def)}`,
+      nivel: leerMarcador(def, valor),
     });
   }
-  if (ultimo.hba1c != null) {
-    const valor = Number(ultimo.hba1c);
-    tarjetas.push({
-      nombre: "HbA1c",
-      valor: String(valor),
-      unidad: "%",
-      nota: `${tendencia(valor, previo?.hba1c, "%")} · meta < 7.0%`,
-      nivel: nivelHba1c(valor),
-    });
-  }
-  if (ultimo.presion_sistolica != null && ultimo.presion_diastolica != null) {
+
+  const conPresion = filas.find(
+    (fila) => numero(fila, "presion_sistolica") != null && numero(fila, "presion_diastolica") != null,
+  );
+  if (conPresion) {
+    const sistolica = numero(conPresion, "presion_sistolica")!;
+    const diastolica = numero(conPresion, "presion_diastolica")!;
     tarjetas.push({
       nombre: "Presión arterial",
-      valor: `${ultimo.presion_sistolica}/${ultimo.presion_diastolica}`,
-      nota: "Meta < 130/80",
-      nivel: nivelPresion(ultimo.presion_sistolica, ultimo.presion_diastolica),
+      valor: `${sistolica}/${diastolica}`,
+      nota: "Meta < 130/80 mmHg",
+      nivel: nivelPresion(sistolica, diastolica),
     });
   }
 
@@ -174,9 +172,7 @@ export async function obtenerPanelReal(
     supabase.from("perfiles").select("nombre, edad, documento").eq("id", userId).maybeSingle(),
     supabase
       .from("examenes")
-      .select(
-        "id, titulo, laboratorio, fecha, glucemia_ayunas, hba1c, presion_sistolica, presion_diastolica, creatinina, notas",
-      )
+      .select("*")
       .eq("user_id", userId)
       .order("fecha", { ascending: false })
       .order("created_at", { ascending: false }),
@@ -196,10 +192,10 @@ export async function obtenerPanelReal(
 
   // Mediciones crudas del examen más reciente para el motor de reglas.
   const mediciones: MedicionesActuales = {
-    glucemiaAyunas: Number(ultimo?.glucemia_ayunas ?? 0),
-    hba1c: Number(ultimo?.hba1c ?? 0),
-    presionSistolica: ultimo?.presion_sistolica ?? 0,
-    presionDiastolica: ultimo?.presion_diastolica ?? 0,
+    glucemiaAyunas: ultimo ? (numero(ultimo, "glucemia_ayunas") ?? 0) : 0,
+    hba1c: ultimo ? (numero(ultimo, "hba1c") ?? 0) : 0,
+    presionSistolica: ultimo ? (numero(ultimo, "presion_sistolica") ?? 0) : 0,
+    presionDiastolica: ultimo ? (numero(ultimo, "presion_diastolica") ?? 0) : 0,
   };
 
   const evaluacion = ultimo

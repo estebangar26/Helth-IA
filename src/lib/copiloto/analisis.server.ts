@@ -7,26 +7,50 @@
  * encarga la función de servidor que lo invoca.
  */
 
+import { MARCADORES, type TipoExamen } from "./marcadores";
+
 /** Valores que el modelo debe extraer del documento del laboratorio. */
 export interface ExtraccionExamen {
   titulo: string | null;
   laboratorio: string | null;
   fecha: string | null; // AAAA-MM-DD
-  glucemiaAyunas: number | null;
-  hba1c: number | null;
-  presionSistolica: number | null;
-  presionDiastolica: number | null;
-  creatinina: number | null;
+  tipoExamen: TipoExamen;
   notas: string | null;
+  /** Valores numéricos por nombre de columna (glucemia_ayunas, psa, etc.). */
+  valores: Record<string, number | null>;
 }
+
+/** Tipos de examen válidos para la categoría que devuelve el modelo. */
+const TIPOS: TipoExamen[] = [
+  "diabetes_tipo_1",
+  "diabetes_tipo_2",
+  "diabetes_insipida",
+  "marcadores_cancer",
+  "testosterona",
+  "general",
+];
+
+/** Columnas numéricas que el modelo puede reportar. */
+const CAMPOS_NUMERICOS = [
+  ...MARCADORES.map((m) => m.campo),
+  "presion_sistolica",
+  "presion_diastolica",
+];
+
+/** Lista de marcadores con su unidad, para que el modelo no confunda escalas. */
+const LISTA_UNIDADES = MARCADORES.map((m) => `- ${m.campo} (${m.etiqueta}) en ${m.unidad || "sin unidad"}`).join("\n");
 
 const INSTRUCCION = `Eres un asistente clínico que lee documentos de laboratorio en español.
 Extrae únicamente los datos que aparezcan explícitamente en el documento.
 Responde SOLO con un objeto JSON válido, sin texto adicional ni bloques de código, con estas claves:
-{"titulo":string|null,"laboratorio":string|null,"fecha":"AAAA-MM-DD"|null,"glucemiaAyunas":number|null,"hba1c":number|null,"presionSistolica":number|null,"presionDiastolica":number|null,"creatinina":number|null,"notas":string|null}
+{"titulo":string|null,"laboratorio":string|null,"fecha":"AAAA-MM-DD"|null,"tipoExamen":"diabetes_tipo_1"|"diabetes_tipo_2"|"diabetes_insipida"|"marcadores_cancer"|"testosterona"|"general","notas":string|null,"valores":{}}
+En "valores" incluye solo las claves que encuentres, usando exactamente estos nombres y unidades:
+${LISTA_UNIDADES}
+- presion_sistolica y presion_diastolica en mmHg
 Reglas:
-- glucemiaAyunas en mg/dL, hba1c en %, creatinina en mg/dL, presión en mmHg.
-- Si un dato no aparece, usa null. Nunca inventes valores.
+- Si un dato no aparece, omítelo o usa null. Nunca inventes valores.
+- Convierte al sistema de unidades indicado cuando el informe use otro.
+- "tipoExamen" describe el enfoque principal del informe.
 - "notas" es un resumen muy breve (máx. 200 caracteres) de otros hallazgos relevantes.`;
 
 /** Quita cercos de código y deja solo el objeto JSON. */
@@ -104,19 +128,32 @@ export async function analizarArchivoExamen(
   const contenido = cuerpo.choices?.[0]?.message?.content ?? "";
   const crudo = extraerJson(contenido) as Record<string, unknown>;
 
-  const sistolica = aNumero(crudo["presionSistolica"]);
-  const diastolica = aNumero(crudo["presionDiastolica"]);
   const fecha = aTexto(crudo["fecha"], 10);
+  const tipo = aTexto(crudo["tipoExamen"], 40) as TipoExamen | null;
+  const crudoValores = (crudo["valores"] ?? {}) as Record<string, unknown>;
+
+  const valores: Record<string, number | null> = {};
+  for (const campo of CAMPOS_NUMERICOS) {
+    // El modelo puede devolver el valor dentro de "valores" o en la raíz.
+    const encontrado = crudoValores[campo] ?? crudo[campo];
+    valores[campo] = aNumero(encontrado);
+  }
+
+  // La presión solo tiene sentido como par completo.
+  if (valores["presion_sistolica"] == null || valores["presion_diastolica"] == null) {
+    valores["presion_sistolica"] = null;
+    valores["presion_diastolica"] = null;
+  } else {
+    valores["presion_sistolica"] = Math.round(valores["presion_sistolica"]);
+    valores["presion_diastolica"] = Math.round(valores["presion_diastolica"]);
+  }
 
   return {
     titulo: aTexto(crudo["titulo"], 120) ?? nombreArchivo.replace(/\.[^.]+$/, "").slice(0, 120),
     laboratorio: aTexto(crudo["laboratorio"], 120),
     fecha: fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha) ? fecha : null,
-    glucemiaAyunas: aNumero(crudo["glucemiaAyunas"]),
-    hba1c: aNumero(crudo["hba1c"]),
-    presionSistolica: sistolica == null ? null : Math.round(sistolica),
-    presionDiastolica: diastolica == null ? null : Math.round(diastolica),
-    creatinina: aNumero(crudo["creatinina"]),
+    tipoExamen: tipo && TIPOS.includes(tipo) ? tipo : "general",
     notas: aTexto(crudo["notas"], 400),
+    valores,
   };
 }

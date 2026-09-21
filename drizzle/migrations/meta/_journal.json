@@ -22,6 +22,13 @@
       "when": 1789442866728,
       "tag": "0002_corregir_fecha_accesos_medicos",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789949642229,
+      "tag": "0003_ampliar_examenes_y_alertas_medicas",
+      "breakpoints": true
     }
   ]
 }

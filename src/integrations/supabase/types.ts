@@ -65,48 +65,150 @@ export type Database = {
           },
         ]
       }
+      alertas_medicas: {
+        Row: {
+          creado_en: string
+          detalle: string
+          doctor_email: string
+          estado_envio: string
+          examen_id: string | null
+          id: string
+          motivo_envio: string | null
+          nivel: string
+          paciente_id: string
+          titular: string
+        }
+        Insert: {
+          creado_en?: string
+          detalle: string
+          doctor_email: string
+          estado_envio?: string
+          examen_id?: string | null
+          id?: string
+          motivo_envio?: string | null
+          nivel?: string
+          paciente_id: string
+          titular: string
+        }
+        Update: {
+          creado_en?: string
+          detalle?: string
+          doctor_email?: string
+          estado_envio?: string
+          examen_id?: string | null
+          id?: string
+          motivo_envio?: string | null
+          nivel?: string
+          paciente_id?: string
+          titular?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_medicas_examen_id_fkey"
+            columns: ["examen_id"]
+            isOneToOne: false
+            referencedRelation: "examenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_medicas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       examenes: {
         Row: {
+          afp: number | null
+          anticuerpos_gad: number | null
+          ca125: number | null
+          ca19_9: number | null
+          cea: number | null
           created_at: string
           creatinina: number | null
+          densidad_urinaria: number | null
           fecha: string
           glucemia_ayunas: number | null
+          glucemia_posprandial: number | null
           hba1c: number | null
           id: string
+          insulina: number | null
           laboratorio: string | null
           notas: string | null
+          osmolaridad_plasmatica: number | null
+          osmolaridad_urinaria: number | null
+          peptido_c: number | null
           presion_diastolica: number | null
           presion_sistolica: number | null
+          psa: number | null
+          sodio: number | null
+          testosterona_libre: number | null
+          testosterona_total: number | null
+          tipo_examen: string
           titulo: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          afp?: number | null
+          anticuerpos_gad?: number | null
+          ca125?: number | null
+          ca19_9?: number | null
+          cea?: number | null
           created_at?: string
           creatinina?: number | null
+          densidad_urinaria?: number | null
           fecha: string
           glucemia_ayunas?: number | null
+          glucemia_posprandial?: number | null
           hba1c?: number | null
           id?: string
+          insulina?: number | null
           laboratorio?: string | null
           notas?: string | null
+          osmolaridad_plasmatica?: number | null
+          osmolaridad_urinaria?: number | null
+          peptido_c?: number | null
           presion_diastolica?: number | null
           presion_sistolica?: number | null
+          psa?: number | null
+          sodio?: number | null
+          testosterona_libre?: number | null
+          testosterona_total?: number | null
+          tipo_examen?: string
           titulo: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          afp?: number | null
+          anticuerpos_gad?: number | null
+          ca125?: number | null
+          ca19_9?: number | null
+          cea?: number | null
           created_at?: string
           creatinina?: number | null
+          densidad_urinaria?: number | null
           fecha?: string
           glucemia_ayunas?: number | null
+          glucemia_posprandial?: number | null
           hba1c?: number | null
           id?: string
+          insulina?: number | null
           laboratorio?: string | null
           notas?: string | null
+          osmolaridad_plasmatica?: number | null
+          osmolaridad_urinaria?: number | null
+          peptido_c?: number | null
           presion_diastolica?: number | null
           presion_sistolica?: number | null
+          psa?: number | null
+          sodio?: number | null
+          testosterona_libre?: number | null
+          testosterona_total?: number | null
+          tipo_examen?: string
           titulo?: string
           updated_at?: string
           user_id?: string
