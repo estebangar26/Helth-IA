@@ -91,7 +91,9 @@ export function SubirExamen({
           </h2>
           <p className="mt-1 font-body text-sm text-ink-dim">
             Adjunte el PDF o la foto del resultado. Leemos los valores por usted; no tiene que
-            escribir nada.
+            escribir nada. Reconocemos exámenes de diabetes tipo 1 y tipo 2, diabetes insípida,
+            biomarcadores de cáncer y testosterona. Si un valor sale del rango esperado, avisamos a
+            su médico tratante.
           </p>
         </div>
         <Button type="button" onClick={onCerrar} variant="ghost">
