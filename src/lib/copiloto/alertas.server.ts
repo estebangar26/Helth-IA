@@ -89,39 +89,18 @@ export async function notificarMedicos(
   const correos = [...new Set((accesos ?? []).map((a) => String(a.doctor_email).toLowerCase()))];
   if (correos.length === 0) return { registradas: 0, enviadas: 0 };
 
-  let enviadas = 0;
+  const enviadas = 0;
   const filas: Record<string, unknown>[] = [];
 
   for (const correo of correos) {
-    let estado = "pendiente";
-    let motivo: string | null = "El envío de correos se activa al verificar el dominio del proyecto.";
+    // El envío por correo se conecta aquí en cuanto el proyecto tenga un
+    // dominio de correo verificado. Mientras tanto la alerta queda registrada
+    // y visible para el médico dentro de la aplicación.
+    const estado = "pendiente";
+    const motivo: string | null =
+      "El envío por correo se activa cuando el dominio de correo del proyecto quede verificado.";
 
-    try {
-      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-      const resultado = await sendTemplateEmail("alerta-clinica", correo, {
-        templateData: {
-          paciente: nombrePaciente,
-          nivel: revision.nivel,
-          titular: revision.titular,
-          hallazgos: revision.hallazgos,
-        },
-        idempotencyKey: `alerta-clinica-${examenId}-${correo}`,
-      });
-      if (resultado.sent) {
-        estado = "enviado";
-        motivo = null;
-        enviadas += 1;
-      } else {
-        estado = "no_enviado";
-        motivo = resultado.reason ?? "El destinatario no puede recibir correos.";
-      }
-    } catch (error) {
-      estado = "pendiente";
-      motivo =
-        error instanceof Error && error.message
-          ? error.message.slice(0, 200)
-          : "El envío de correos aún no está disponible.";
-    }
+
 
     filas.push({
       paciente_id: pacienteId,
