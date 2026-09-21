@@ -107,7 +107,7 @@ export async function notificarMedicos(
       examen_id: examenId,
       doctor_email: correo,
       nivel: revision.nivel,
-      titular: revision.titular,
+      titular: `${nombrePaciente} · ${revision.titular}`,
       detalle: revision.detalle,
       estado_envio: estado,
       motivo_envio: motivo,
