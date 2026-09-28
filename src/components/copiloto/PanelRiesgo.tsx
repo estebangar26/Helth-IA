@@ -70,7 +70,9 @@ export function PanelRiesgo({ evaluacion }: { evaluacion: EvaluacionRiesgo }) {
           </div>
         )}
 
-        <AvisoMedico className="mt-5 border-t border-clinical-border pt-4" />
+        <div className="mt-5">
+          <AvisoMedico />
+        </div>
 
       </div>
     </aside>
