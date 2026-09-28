@@ -6,7 +6,7 @@
  */
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
@@ -15,19 +15,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+async function destinoSegunRol(): Promise<"/paciente" | "/medico"> {
+  const { data: usuario } = await supabase.auth.getUser();
+  if (!usuario.user) return "/paciente";
+  const { data } = await supabase.from("user_roles").select("role").eq("user_id", usuario.user.id).maybeSingle();
+  return data?.role === "medico" ? "/medico" : "/paciente";
+}
+
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: search["redirect"] === "/medico" ? "/medico" : undefined,
   }),
   head: () => ({
     meta: [
-      { title: "Ingresar · Copiloto de Salud" },
+      { title: "Ingresar · HelthIA" },
       {
         name: "description",
         content:
-          "Entre a su cuenta del Copiloto de Salud para registrar sus exámenes de laboratorio y seguir su riesgo en el tiempo.",
+          "Entre a su cuenta de HelthIA para registrar sus exámenes de laboratorio y seguir su riesgo en el tiempo.",
       },
-      { property: "og:title", content: "Ingresar al Copiloto de Salud" },
+      { property: "og:title", content: "Ingresar a HelthIA" },
       {
         property: "og:description",
         content: "Acceso seguro al seguimiento de sus exámenes y biomarcadores.",
@@ -49,6 +56,13 @@ function PantallaAcceso() {
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
 
+  useEffect(() => {
+    void supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      navegar({ to: await destinoSegunRol(), replace: true });
+    });
+  }, [navegar]);
+
   /** Envía el formulario de correo y contraseña. */
   async function enviar(evento: React.FormEvent) {
     evento.preventDefault();
@@ -60,7 +74,7 @@ function PantallaAcceso() {
         email: correo,
         password: clave,
         options: {
-          emailRedirectTo: `${window.location.origin}/panel`,
+          emailRedirectTo: `${window.location.origin}/auth`,
           data: { nombre },
         },
       });
@@ -76,7 +90,7 @@ function PantallaAcceso() {
         );
         return;
       }
-      navegar({ to: redirect ?? "/panel" });
+      navegar({ to: await destinoSegunRol() });
       return;
     }
 
@@ -89,7 +103,7 @@ function PantallaAcceso() {
       setMensaje("Correo o contraseña incorrectos.");
       return;
     }
-    navegar({ to: redirect ?? "/panel" });
+    navegar({ to: await destinoSegunRol() });
   }
 
   /** Ingreso con Google gestionado por Lovable Cloud. */
@@ -103,7 +117,7 @@ function PantallaAcceso() {
       return;
     }
     if (resultado.redirected) return;
-    navegar({ to: redirect ?? "/panel" });
+    navegar({ to: await destinoSegunRol() });
   }
 
   return (
@@ -116,9 +130,9 @@ function PantallaAcceso() {
         </Link>
 
         <div className="rounded-lg border border-clinical-border bg-panel p-6 shadow-md">
-          <div className="mb-5 grid size-12 place-items-center rounded-full bg-brand-blue/10 font-body font-bold text-brand-blue">CS</div>
+          <div className="mb-5 grid size-12 place-items-center rounded-full bg-brand-blue/10 font-body font-bold text-brand-blue">HI</div>
           <h1 className="font-display text-2xl font-semibold text-ink">
-            {modo === "entrar" ? "Ingrese a su copiloto" : "Cree su cuenta"}
+            {modo === "entrar" ? "Ingrese a HelthIA" : "Cree su cuenta"}
           </h1>
           <p className="mt-1 font-body text-sm text-ink-dim">
             Sus exámenes son privados y solo los ven usted y los profesionales que autorice.

@@ -1,5 +1,5 @@
 /**
- * FRONTEND · Panel del paciente con sus exámenes reales (ruta "/panel")
+ * FRONTEND · Panel del paciente con sus exámenes reales (ruta "/paciente")
  * ---------------------------------------------------------------------
  * Solo se ve con sesión activa. Pide los datos al backend y permite registrar
  * un examen nuevo; al guardarlo, la línea de tiempo se actualiza sola.
@@ -21,19 +21,22 @@ import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
 import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
 import { SubirExamen } from "@/components/copiloto/SubirExamen";
 import { Button } from "@/components/ui/button";
+import { CarruselMensajes } from "@/components/copiloto/CarruselMensajes";
+import { EnfermedadesCubiertas } from "@/components/copiloto/EnfermedadesCubiertas";
+import { PerfilAtencion } from "@/components/copiloto/PerfilAtencion";
 
 export const Route = createFileRoute("/_authenticated/paciente/")({
   // El loader corre bajo la capa protegida, así que ya hay sesión.
   loader: () => obtenerMiPanel(),
   head: () => ({
     meta: [
-      { title: "Mi panel · Copiloto de Salud" },
+      { title: "Mi espacio · HelthIA" },
       {
         name: "description",
         content:
           "Registre sus exámenes de laboratorio y vea su riesgo, sus biomarcadores y su línea de tiempo clínica.",
       },
-      { property: "og:title", content: "Mi panel del Copiloto de Salud" },
+      { property: "og:title", content: "Mi espacio de paciente · HelthIA" },
       {
         property: "og:description",
         content: "Exámenes propios, biomarcadores y clasificación de riesgo explicable.",
@@ -98,6 +101,8 @@ function MiPanel() {
           }
         />
 
+        <CarruselMensajes />
+
         {formularioAbierto && (
           <SubirExamen
             onGuardado={() => router.invalidate()}
@@ -123,6 +128,7 @@ function MiPanel() {
           </div>
           <div className="space-y-6">
             <PanelRiesgo evaluacion={panel.evaluacion} />
+            <PerfilAtencion paciente={panel.paciente} />
             <CompartirConDoctora />
             {panel.recomendaciones.length > 0 && <Recomendaciones recomendaciones={panel.recomendaciones} />}
             <div className="rounded-lg border border-clinical-border bg-panel p-4">
@@ -131,10 +137,11 @@ function MiPanel() {
               <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Preparado para mapear resultados a recursos HL7 FHIR tras una integración validada.</p>
             </div>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/medico"><Stethoscope aria-hidden="true" /> Vista para doctora</Link>
+              <Link to="/paciente/especialistas"><Stethoscope aria-hidden="true" /> Ver especialistas</Link>
             </Button>
           </div>
         </main>
+        <EnfermedadesCubiertas />
       </div>
     </>
   );
