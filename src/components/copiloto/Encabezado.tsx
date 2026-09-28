@@ -27,7 +27,7 @@ export function Encabezado({
         </div>
         <div>
           <h1 className="font-display text-xl leading-tight font-bold text-balance text-ink sm:text-2xl">
-            Copiloto de Salud
+            HelthIA
           </h1>
           <p className="mt-1 font-body text-sm text-ink-dim">
             {paciente.nombre} <span aria-hidden="true">·</span> {paciente.edad} años <span aria-hidden="true">·</span> ID {paciente.documento}

@@ -17,6 +17,10 @@ export interface Paciente {
   documento: string;
   /** Fecha de la última actualización de datos, ya formateada para mostrar. */
   actualizado: string;
+  tipoAtencion: "eps" | "privado";
+  epsNombre: string | null;
+  medicoFamilia: string | null;
+  medicoTratante: string | null;
 }
 
 /** Un biomarcador con su valor más reciente y su lectura clínica. */
