@@ -22,7 +22,7 @@ import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
 import { SubirExamen } from "@/components/copiloto/SubirExamen";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/_authenticated/panel")({
+export const Route = createFileRoute("/_authenticated/paciente/")({
   // El loader corre bajo la capa protegida, así que ya hay sesión.
   loader: () => obtenerMiPanel(),
   head: () => ({

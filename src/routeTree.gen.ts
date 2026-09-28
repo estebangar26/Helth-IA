@@ -14,8 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiciosRouteImport } from './routes/servicios'
 import { Route as AuthenticatedMedicoRouteImport } from './routes/_authenticated/medico'
-import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as AuthenticatedMedicoPacienteIdRouteImport } from './routes/_authenticated/medico.$pacienteId'
+import { Route as AuthenticatedPacienteIndexRouteImport } from './routes/_authenticated/paciente.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,16 +41,17 @@ const AuthenticatedMedicoRoute = AuthenticatedMedicoRouteImport.update({
   path: '/medico',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
-  id: '/panel',
-  path: '/panel',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedMedicoPacienteIdRoute =
   AuthenticatedMedicoPacienteIdRouteImport.update({
     id: '/$pacienteId',
     path: '/$pacienteId',
     getParentRoute: () => AuthenticatedMedicoRoute,
+  } as any)
+const AuthenticatedPacienteIndexRoute =
+  AuthenticatedPacienteIndexRouteImport.update({
+    id: '/paciente/',
+    path: '/paciente/',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -58,16 +59,16 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/servicios': typeof ServiciosRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
-  '/panel': typeof AuthenticatedPanelRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
+  '/paciente/': typeof AuthenticatedPacienteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/servicios': typeof ServiciosRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
-  '/panel': typeof AuthenticatedPanelRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
+  '/paciente': typeof AuthenticatedPacienteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -76,16 +77,26 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/servicios': typeof ServiciosRoute
   '/_authenticated/medico': typeof AuthenticatedMedicoRouteWithChildren
-  '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
+  '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/servicios' | '/medico' | '/panel' | '/medico/$pacienteId'
+    | '/'
+    | '/auth'
+    | '/servicios'
+    | '/medico'
+    | '/medico/$pacienteId'
+    | '/paciente/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/auth' | '/servicios' | '/medico' | '/panel' | '/medico/$pacienteId'
+    | '/'
+    | '/auth'
+    | '/servicios'
+    | '/medico'
+    | '/medico/$pacienteId'
+    | '/paciente'
   id:
     | '__root__'
     | '/'
@@ -93,8 +104,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/servicios'
     | '/_authenticated/medico'
-    | '/_authenticated/panel'
     | '/_authenticated/medico/$pacienteId'
+    | '/_authenticated/paciente/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,19 +152,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMedicoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/panel': {
-      id: '/_authenticated/panel'
-      path: '/panel'
-      fullPath: '/panel'
-      preLoaderRoute: typeof AuthenticatedPanelRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/medico/$pacienteId': {
       id: '/_authenticated/medico/$pacienteId'
       path: '/$pacienteId'
       fullPath: '/medico/$pacienteId'
       preLoaderRoute: typeof AuthenticatedMedicoPacienteIdRouteImport
       parentRoute: typeof AuthenticatedMedicoRoute
+    }
+    '/_authenticated/paciente/': {
+      id: '/_authenticated/paciente/'
+      path: '/paciente'
+      fullPath: '/paciente/'
+      preLoaderRoute: typeof AuthenticatedPacienteIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
@@ -171,12 +182,12 @@ const AuthenticatedMedicoRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedMedicoRoute: typeof AuthenticatedMedicoRouteWithChildren
-  AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
+  AuthenticatedPacienteIndexRoute: typeof AuthenticatedPacienteIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMedicoRoute: AuthenticatedMedicoRouteWithChildren,
-  AuthenticatedPanelRoute: AuthenticatedPanelRoute,
+  AuthenticatedPacienteIndexRoute: AuthenticatedPacienteIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
