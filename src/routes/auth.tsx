@@ -14,13 +14,7 @@ import { Fondo } from "@/components/copiloto/Fondo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-async function destinoSegunRol(): Promise<"/paciente" | "/medico"> {
-  const { data: usuario } = await supabase.auth.getUser();
-  if (!usuario.user) return "/paciente";
-  const { data } = await supabase.from("user_roles").select("role").eq("user_id", usuario.user.id).maybeSingle();
-  return data?.role === "medico" ? "/medico" : "/paciente";
-}
+import { obtenerMiRol } from "@/lib/copiloto/roles.functions";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -55,6 +49,10 @@ function PantallaAcceso() {
   const [nombre, setNombre] = useState("");
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+
+  async function destinoSegunRol(): Promise<"/paciente" | "/medico"> {
+    return (await obtenerMiRol()) === "medico" ? "/medico" : "/paciente";
+  }
 
   useEffect(() => {
     void supabase.auth.getUser().then(async ({ data }) => {

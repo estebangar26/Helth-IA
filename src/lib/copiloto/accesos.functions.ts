@@ -68,6 +68,8 @@ export const invitarDoctora = createServerFn({ method: "POST" })
 export const listarMisInvitaciones = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<InvitacionMedica[]> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden consultar invitaciones.");
     const { data, error } = await context.supabase
       .from("accesos_medicos")
       .select("id, doctor_email, estado, creado_en")
@@ -89,6 +91,8 @@ export const revocarInvitacion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => z.object({ id: z.string().uuid() }).parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden revocar accesos.");
     const { data: fila, error } = await context.supabase
       .from("accesos_medicos")
       .update({ estado: "revocado", revocado_en: new Date().toISOString() })

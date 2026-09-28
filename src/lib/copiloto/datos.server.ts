@@ -15,6 +15,10 @@ export function obtenerPaciente(): Paciente {
     edad: 64,
     documento: "CO-2024-0847",
     actualizado: "12 mar 2025",
+    tipoAtencion: "privado",
+    epsNombre: null,
+    medicoFamilia: null,
+    medicoTratante: "Dra. Laura Martínez",
   };
 }
 

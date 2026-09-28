@@ -42,6 +42,8 @@ export const crearExamen = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => esquemaExamen.parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true; id: string }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden registrar exámenes.");
     const { error, data: fila } = await context.supabase
       .from("examenes")
       .insert({
@@ -143,6 +145,8 @@ export const borrarExamen = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => z.object({ id: z.string().uuid() }).parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden eliminar exámenes.");
     const { error } = await context.supabase.from("examenes").delete().eq("id", data.id);
     if (error) throw new Error("No se pudo eliminar el examen.");
     return { ok: true };

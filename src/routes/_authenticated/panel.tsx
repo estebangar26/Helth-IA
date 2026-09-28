@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { obtenerMiRol } from "@/lib/copiloto/roles.functions";
 
 export const Route = createFileRoute("/_authenticated/panel")({
   head: () => ({ meta: [
@@ -9,5 +10,8 @@ export const Route = createFileRoute("/_authenticated/panel")({
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
   ] }),
-  beforeLoad: () => { throw redirect({ to: "/paciente", replace: true }); },
+  beforeLoad: async () => {
+    const rol = await obtenerMiRol();
+    throw redirect({ to: rol === "medico" ? "/medico" : "/paciente", replace: true });
+  },
 });
