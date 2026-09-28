@@ -8,6 +8,3 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
-
-- Los roles se almacenan en `public.user_roles` y se validan tanto en rutas como en funciones de servidor para impedir acceso cruzado.
-- Los espacios autenticados principales son `/paciente` y `/medico`; `/panel` se conserva solo como redirección compatible.

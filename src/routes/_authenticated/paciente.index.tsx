@@ -136,9 +136,11 @@ function MiPanel() {
               <p className="mt-1 font-body text-sm font-semibold text-ink">Datos clínicos estructurados</p>
               <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Preparado para mapear resultados a recursos HL7 FHIR tras una integración validada.</p>
             </div>
-            <Button asChild variant="outline" className="w-full">
-              <Link to="/paciente/especialistas"><Stethoscope aria-hidden="true" /> Ver especialistas</Link>
-            </Button>
+            {panel.paciente.tipoAtencion === "privado" && (
+              <Button asChild variant="outline" className="w-full">
+                <Link to="/paciente/especialistas"><Stethoscope aria-hidden="true" /> Ver especialistas</Link>
+              </Button>
+            )}
           </div>
         </main>
         <EnfermedadesCubiertas />

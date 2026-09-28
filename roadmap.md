@@ -12,8 +12,3 @@
 - [x] Ampliar exámenes a diabetes tipo 1 y 2, insípida, biomarcadores de cáncer y testosterona.
 - [x] Registrar alertas para el médico tratante cuando un valor sale del rango.
 - [ ] Enviar la alerta por correo al médico. Bloqueado: falta configurar y verificar el dominio de correo.
-- [x] Separar los espacios de paciente y médico con control por rol.
-- [x] Añadir tipo de atención y datos opcionales al perfil del paciente.
-- [x] Crear el directorio filtrable con ocho especialistas ficticios.
-- [x] Incorporar aviso médico, enfermedades cubiertas y carrusel informativo.
-- [x] Cambiar el nombre visible de la plataforma a HelthIA.
