@@ -29,6 +29,13 @@
       "when": 1789949642229,
       "tag": "0003_ampliar_examenes_y_alertas_medicas",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790599180707,
+      "tag": "0004_crear_roles_atencion_y_especialistas",
+      "breakpoints": true
     }
   ]
 }
