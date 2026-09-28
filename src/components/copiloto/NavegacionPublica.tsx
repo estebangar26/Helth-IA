@@ -11,12 +11,12 @@ export function NavegacionPublica() {
   return (
     <header className="relative z-20 border-b border-clinical-border/80 bg-panel/92 backdrop-blur-md">
       <div className="mx-auto flex min-h-16 max-w-[1200px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-3" aria-label="Copiloto de Salud, inicio">
+        <Link to="/" className="flex items-center gap-3" aria-label="HelthIA, inicio">
           <span className="grid size-9 place-items-center rounded-md bg-primary text-primary-foreground shadow-sm">
             <Activity className="size-5" aria-hidden="true" />
           </span>
           <span>
-            <span className="block font-display text-sm font-bold text-ink">Copiloto de Salud</span>
+            <span className="block font-display text-sm font-bold text-ink">HelthIA</span>
             <span className="block font-body text-[10px] font-semibold uppercase text-ink-dim">Información clínica conectada</span>
           </span>
         </Link>
@@ -40,7 +40,7 @@ export function NavegacionPublica() {
         </nav>
 
         <Button asChild size="sm">
-          <Link to="/panel">Mi panel <ArrowRight aria-hidden="true" /></Link>
+          <Link to="/paciente">Mi panel <ArrowRight aria-hidden="true" /></Link>
         </Button>
       </div>
     </header>

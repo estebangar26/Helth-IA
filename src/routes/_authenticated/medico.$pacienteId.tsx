@@ -8,15 +8,16 @@ import { Encabezado } from "@/components/copiloto/Encabezado";
 import { Fondo } from "@/components/copiloto/Fondo";
 import { LineaExamenes } from "@/components/copiloto/LineaExamenes";
 import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
+import { AvisoMedico } from "@/components/copiloto/AvisoMedico";
 import { obtenerPanelCompartido } from "@/lib/copiloto/accesos.functions";
 
 export const Route = createFileRoute("/_authenticated/medico/$pacienteId")({
   loader: ({ params }) => obtenerPanelCompartido({ data: { pacienteId: params.pacienteId } }),
   head: () => ({
     meta: [
-      { title: "Vista clínica · Copiloto de Salud" },
+      { title: "Vista clínica · HelthIA" },
       { name: "description", content: "Exámenes y riesgo compartidos con acceso médico de solo lectura." },
-      { property: "og:title", content: "Vista clínica · Copiloto de Salud" },
+      { property: "og:title", content: "Vista clínica · HelthIA" },
       { property: "og:description", content: "Consulta privada de resultados clínicos compartidos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -47,6 +48,7 @@ function PanelMedico() {
           </div>
           <div className="space-y-6">
             <PanelRiesgo evaluacion={panel.evaluacion} />
+            <div className="rounded-lg border border-clinical-border bg-panel p-4"><AvisoMedico /></div>
             <div className="rounded-lg border border-clinical-border bg-panel p-4">
               <p className="font-body text-xs font-semibold text-brand-blue">Acceso autorizado por el paciente</p>
               <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Esta vista no permite cambiar ni borrar información clínica.</p>

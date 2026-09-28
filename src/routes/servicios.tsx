@@ -1,4 +1,4 @@
-/** FRONTEND · Página pública de servicios del Copiloto de Salud. */
+/** FRONTEND · Página pública de servicios de HelthIA. */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -17,12 +17,12 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/servicios")({
   head: () => ({
     meta: [
-      { title: "Servicios · Copiloto de Salud" },
+      { title: "Servicios · HelthIA" },
       {
         name: "description",
         content: "Conozca la lectura asistida de exámenes, el seguimiento clínico, el riesgo explicable y el acceso médico controlado.",
       },
-      { property: "og:title", content: "Servicios de Copiloto de Salud" },
+      { property: "og:title", content: "Servicios de HelthIA" },
       {
         property: "og:description",
         content: "Exámenes organizados, seguimiento longitudinal y colaboración segura con profesionales de salud.",
@@ -52,7 +52,7 @@ function Servicios() {
               <p className="font-body text-xs font-bold uppercase text-primary">Servicios</p>
               <h1 className="mt-4 font-display text-4xl font-bold leading-tight text-ink sm:text-5xl">Tecnología que convierte resultados en seguimiento.</h1>
               <p className="mt-6 max-w-xl font-body text-base leading-7 text-ink-dim">Desde la lectura del documento hasta la conversación con su doctora, cada servicio está diseñado para ofrecer claridad, continuidad y control.</p>
-              <div className="mt-8"><Button asChild size="lg"><Link to="/panel">Abrir mi panel <ArrowRight aria-hidden="true" /></Link></Button></div>
+              <div className="mt-8"><Button asChild size="lg"><Link to="/paciente">Abrir mi panel <ArrowRight aria-hidden="true" /></Link></Button></div>
             </div>
             <div className="relative min-h-[340px] overflow-hidden lg:min-h-[520px]">
               <img src={laboratorioFuturista} alt="Laboratorio futurista con visualizaciones clínicas digitales" width={1600} height={1000} className="absolute inset-0 h-full w-full object-cover" />
@@ -102,7 +102,7 @@ function Servicios() {
               <div className="flex items-center gap-3"><LockKeyhole className="text-brand-lime" aria-hidden="true" /><span className="font-body text-xs font-bold uppercase">Su información, bajo su control</span></div>
               <h2 className="mt-3 font-display text-3xl font-bold">Empiece con su próximo resultado.</h2>
             </div>
-            <Button asChild size="lg" className="bg-brand-lime text-accent-foreground hover:bg-brand-lime/90"><Link to="/panel">Ingresar de forma segura <ArrowRight aria-hidden="true" /></Link></Button>
+            <Button asChild size="lg" className="bg-brand-lime text-accent-foreground hover:bg-brand-lime/90"><Link to="/paciente">Ingresar de forma segura <ArrowRight aria-hidden="true" /></Link></Button>
           </div>
         </section>
       </main>

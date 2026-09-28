@@ -31,6 +31,8 @@ export type EntradaExamen = z.infer<typeof esquemaExamen>;
 export const obtenerMiPanel = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<PanelPaciente> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Este espacio está disponible para pacientes.");
     const { obtenerPanelReal } = await import("./examenes.server");
     return obtenerPanelReal(context.supabase, context.userId);
   });
@@ -40,6 +42,8 @@ export const crearExamen = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => esquemaExamen.parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true; id: string }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden registrar exámenes.");
     const { error, data: fila } = await context.supabase
       .from("examenes")
       .insert({
@@ -82,6 +86,8 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
       data,
       context,
     }): Promise<{ ok: true; id: string; alertasRegistradas: number }> => {
+      const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+      if (!rol) throw new Error("Solo los pacientes pueden subir exámenes.");
       const { analizarArchivoExamen } = await import("./analisis.server");
       const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
 
@@ -139,6 +145,8 @@ export const borrarExamen = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => z.object({ id: z.string().uuid() }).parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden eliminar exámenes.");
     const { error } = await context.supabase.from("examenes").delete().eq("id", data.id);
     if (error) throw new Error("No se pudo eliminar el examen.");
     return { ok: true };
@@ -153,15 +161,25 @@ export const guardarPerfil = createServerFn({ method: "POST" })
         nombre: z.string().trim().min(2).max(120),
         edad: z.number().int().min(0).max(120).nullable(),
         documento: z.string().trim().max(60).optional().or(z.literal("")),
+        tipoAtencion: z.enum(["eps", "privado"]),
+        epsNombre: z.string().trim().max(120).optional().or(z.literal("")),
+        medicoFamilia: z.string().trim().max(120).optional().or(z.literal("")),
+        medicoTratante: z.string().trim().max(120).optional().or(z.literal("")),
       })
       .parse(entrada),
   )
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Este perfil está disponible para pacientes.");
     const { error } = await context.supabase.from("perfiles").upsert({
       id: context.userId,
       nombre: data.nombre,
       edad: data.edad,
       documento: data.documento ? data.documento : null,
+      tipo_atencion: data.tipoAtencion,
+      eps_nombre: data.tipoAtencion === "eps" && data.epsNombre ? data.epsNombre : null,
+      medico_familia: data.tipoAtencion === "eps" && data.medicoFamilia ? data.medicoFamilia : null,
+      medico_tratante: data.tipoAtencion === "privado" && data.medicoTratante ? data.medicoTratante : null,
     });
     if (error) throw new Error("No se pudo guardar el perfil.");
     return { ok: true };

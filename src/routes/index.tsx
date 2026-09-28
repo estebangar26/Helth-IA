@@ -1,6 +1,6 @@
 /**
  * FRONTEND · Portada pública.
- * Los datos reales del paciente permanecen en la ruta protegida "/panel".
+ * Los datos reales del paciente permanecen en la ruta protegida "/paciente".
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
@@ -20,13 +20,13 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Copiloto de Salud · Exámenes y riesgo en un solo lugar" },
+      { title: "HelthIA · Exámenes y riesgo en un solo lugar" },
       {
         name: "description",
         content:
           "Organice sus exámenes, comprenda sus indicadores de riesgo y comparta una vista clínica de solo lectura con su profesional de salud.",
       },
-      { property: "og:title", content: "Copiloto de Salud · Información clínica conectada" },
+      { property: "og:title", content: "HelthIA · Información clínica conectada" },
       {
         property: "og:description",
         content: "Una experiencia clara para reunir exámenes, seguir cambios y compartir información clínica.",
@@ -86,7 +86,7 @@ function Inicio() {
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="lg" className="bg-brand-lime text-accent-foreground hover:bg-brand-lime/90">
-                  <Link to="/panel">Ir a mi panel <ArrowRight aria-hidden="true" /></Link>
+                  <Link to="/paciente">Ir a mi panel <ArrowRight aria-hidden="true" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-primary-foreground/40 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground">
                   <Link to="/servicios">Conocer los servicios</Link>
@@ -109,7 +109,7 @@ function Inicio() {
                 <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-ink sm:text-4xl">Información útil para conversar mejor sobre su salud</h2>
               </div>
               <p className="max-w-2xl font-body text-base leading-7 text-ink-dim lg:justify-self-end">
-                El Copiloto transforma documentos dispersos en una vista ordenada. Cada resultado conserva su fecha y contexto para facilitar el seguimiento.
+                HelthIA transforma documentos dispersos en una vista ordenada. Cada resultado conserva su fecha y contexto para facilitar el seguimiento.
               </p>
             </div>
 
@@ -137,7 +137,7 @@ function Inicio() {
             </div>
             <div className="flex flex-col gap-3 lg:items-end">
               <Button asChild size="lg" className="bg-brand-lime text-accent-foreground hover:bg-brand-lime/90">
-                <Link to="/panel"><Stethoscope aria-hidden="true" /> Comenzar ahora</Link>
+                <Link to="/paciente"><Stethoscope aria-hidden="true" /> Comenzar ahora</Link>
               </Button>
               <p className="font-body text-xs text-primary-foreground/65">No sustituye el diagnóstico ni la atención profesional.</p>
             </div>
@@ -147,7 +147,7 @@ function Inicio() {
 
       <footer className="border-t border-clinical-border bg-panel py-6">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-2 px-4 font-body text-xs text-ink-dim sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <span>Copiloto de Salud · Apoyo para el seguimiento clínico</span>
+          <span>HelthIA · Apoyo para el seguimiento clínico</span>
           <span>Privacidad · Datos estructurados · Acceso controlado</span>
         </div>
       </footer>

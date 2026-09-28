@@ -35,6 +35,8 @@ export const invitarDoctora = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => esquemaCorreo.parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true; invitacion: InvitacionMedica }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden invitar profesionales.");
     const correoPropio = String(context.claims.email ?? "").toLowerCase();
     if (correoPropio === data.correo) {
       throw new Error("Use el correo de la doctora, no el de su cuenta.");
@@ -66,6 +68,8 @@ export const invitarDoctora = createServerFn({ method: "POST" })
 export const listarMisInvitaciones = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<InvitacionMedica[]> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden consultar invitaciones.");
     const { data, error } = await context.supabase
       .from("accesos_medicos")
       .select("id, doctor_email, estado, creado_en")
@@ -87,6 +91,8 @@ export const revocarInvitacion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => z.object({ id: z.string().uuid() }).parse(entrada))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
+    if (!rol) throw new Error("Solo los pacientes pueden revocar accesos.");
     const { data: fila, error } = await context.supabase
       .from("accesos_medicos")
       .update({ estado: "revocado", revocado_en: new Date().toISOString() })
@@ -121,6 +127,9 @@ export const obtenerPacientesCompartidos = createServerFn({ method: "GET" })
       if (errorActivacion) throw new Error("No se pudo aceptar la invitación médica.");
     }
 
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "medico").maybeSingle();
+    if (!rol) throw new Error("Este espacio está disponible para profesionales médicos.");
+
     const { data: accesos, error } = await context.supabase
       .from("accesos_medicos")
       .select("paciente_id")
@@ -146,6 +155,8 @@ export const obtenerPanelCompartido = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((entrada: unknown) => z.object({ pacienteId: z.string().uuid() }).parse(entrada))
   .handler(async ({ data, context }): Promise<PanelPaciente> => {
+    const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "medico").maybeSingle();
+    if (!rol) throw new Error("Este espacio está disponible para profesionales médicos.");
     const { data: acceso, error } = await context.supabase
       .from("accesos_medicos")
       .select("id")

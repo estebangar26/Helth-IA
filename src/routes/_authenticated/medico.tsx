@@ -10,9 +10,9 @@ export const Route = createFileRoute("/_authenticated/medico")({
   loader: () => obtenerPacientesCompartidos(),
   head: () => ({
     meta: [
-      { title: "Pacientes compartidos · Copiloto de Salud" },
+      { title: "Pacientes compartidos · HelthIA" },
       { name: "description", content: "Vista médica de pacientes que compartieron sus exámenes y clasificación de riesgo." },
-      { property: "og:title", content: "Pacientes compartidos · Copiloto de Salud" },
+      { property: "og:title", content: "Pacientes compartidos · HelthIA" },
       { property: "og:description", content: "Consulta clínica privada de exámenes compartidos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -36,7 +36,7 @@ function PantallaMedica() {
               <h1 className="mt-1 font-display text-2xl font-bold text-ink">Pacientes compartidos</h1>
             </div>
           </div>
-          <Link to="/panel" className="font-body text-sm font-semibold text-brand-blue hover:underline">Ir a mi panel</Link>
+          <span className="font-body text-sm font-semibold text-brand-blue">HelthIA</span>
         </header>
         <main>
           {pacientes.length === 0 ? (

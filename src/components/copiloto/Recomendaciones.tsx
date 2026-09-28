@@ -3,6 +3,7 @@
  * El texto lo produce el backend (a futuro, el componente de IA acotado a
  * nutrición); este componente solo lo presenta como lista legible.
  */
+import { AvisoMedico } from "./AvisoMedico";
 
 export function Recomendaciones({ recomendaciones }: { recomendaciones: string[] }) {
   return (
@@ -17,7 +18,7 @@ export function Recomendaciones({ recomendaciones }: { recomendaciones: string[]
           </li>
         ))}
       </ul>
-      <p className="mt-5 border-t border-primary-foreground/20 pt-4 text-xs leading-relaxed text-primary-foreground/70">Orientación informativa. Confirme cambios de tratamiento con su profesional de salud.</p>
+      <div className="mt-5"><AvisoMedico inverso /></div>
     </section>
   );
 }

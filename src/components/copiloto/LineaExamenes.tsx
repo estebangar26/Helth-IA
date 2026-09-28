@@ -5,6 +5,7 @@
  */
 
 import type { Examen } from "@/lib/copiloto/tipos";
+import { AvisoMedico } from "./AvisoMedico";
 import {
   chipNivel,
   intensidadPorPosicion,
@@ -79,6 +80,7 @@ export function LineaExamenes({ examenes }: { examenes: Examen[] }) {
           );
         })}
       </div>
+      <div className="mt-5"><AvisoMedico /></div>
     </section>
   );
 }

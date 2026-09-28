@@ -5,6 +5,7 @@
  */
 
 import type { EvaluacionRiesgo, NivelRiesgo } from "@/lib/copiloto/tipos";
+import { AvisoMedico } from "./AvisoMedico";
 import { puntoNivel, textoNivel, textoNivelColor } from "./estilos";
 
 const niveles: NivelRiesgo[] = ["ok", "warn", "alert"];
@@ -68,6 +69,10 @@ export function PanelRiesgo({ evaluacion }: { evaluacion: EvaluacionRiesgo }) {
             </ul>
           </div>
         )}
+
+        <div className="mt-5">
+          <AvisoMedico />
+        </div>
 
       </div>
     </aside>

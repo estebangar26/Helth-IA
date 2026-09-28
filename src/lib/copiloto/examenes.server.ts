@@ -169,7 +169,7 @@ export async function obtenerPanelReal(
   userId: string,
 ): Promise<PanelPaciente> {
   const [{ data: perfil }, { data: filas, error }] = await Promise.all([
-    supabase.from("perfiles").select("nombre, edad, documento").eq("id", userId).maybeSingle(),
+    supabase.from("perfiles").select("nombre, edad, documento, tipo_atencion, eps_nombre, medico_familia, medico_tratante").eq("id", userId).maybeSingle(),
     supabase
       .from("examenes")
       .select("*")
@@ -188,6 +188,10 @@ export async function obtenerPanelReal(
     edad: perfil?.edad ?? 0,
     documento: perfil?.documento ?? "Sin documento registrado",
     actualizado: ultimo ? formatearFechaCorta(ultimo.fecha) : "sin exámenes",
+    tipoAtencion: perfil?.tipo_atencion === "eps" ? "eps" : "privado",
+    epsNombre: perfil?.eps_nombre ?? null,
+    medicoFamilia: perfil?.medico_familia ?? null,
+    medicoTratante: perfil?.medico_tratante ?? null,
   };
 
   // Mediciones crudas del examen más reciente para el motor de reglas.
@@ -204,7 +208,7 @@ export async function obtenerPanelReal(
         nivel: "ok" as NivelRiesgo,
         titular: "Aún no hay exámenes",
         explicacion:
-          "Registre su primer examen de laboratorio para que el copiloto pueda clasificar su riesgo y explicarle el resultado.",
+          "Registre su primer examen de laboratorio para que HelthIA pueda clasificar su riesgo y explicarle el resultado.",
         reglasAplicadas: [],
       };
 
