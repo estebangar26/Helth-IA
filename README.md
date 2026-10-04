@@ -28,7 +28,7 @@ La aplicación web fue desarrollada inicialmente utilizando **Lovable**, permiti
 ## Demo
 
 **Live app:**
-https://helthia.lovable.app/
+helthicorp.tech
 
 
 ## Instalación
