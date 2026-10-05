@@ -43,7 +43,13 @@ function Restablecer() {
     if (!listo) return setMsg("Abriendo el enlace… espere un momento e intente de nuevo.");
     if (clave.length < 8) return setMsg("Use al menos 8 caracteres.");
     const { error } = await supabase.auth.updateUser({ password: clave });
-    if (error) return setMsg("El enlace venció o no es válido. Solicite uno nuevo.");
+    if (error) {
+      const t = `${error.code ?? ""} ${error.message}`.toLowerCase();
+      if (t.includes("same_password") || t.includes("different from the old")) return setMsg("La nueva contraseña debe ser distinta a la anterior.");
+      if (t.includes("weak") || t.includes("pwned") || t.includes("leaked")) return setMsg("Esa contraseña es muy común o apareció en filtraciones. Elija otra más segura.");
+      if (t.includes("session") || t.includes("jwt") || t.includes("expired")) return setMsg("El enlace venció o ya se usó. Solicite uno nuevo.");
+      return setMsg(`No se pudo guardar: ${error.message}`);
+    }
     await supabase.auth.signOut();
     navegar({ to: "/auth", search: { redirect: undefined } });
   }
