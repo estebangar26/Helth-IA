@@ -36,6 +36,13 @@
       "when": 1790599180707,
       "tag": "0004_crear_roles_atencion_y_especialistas",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791172605917,
+      "tag": "0005_admin_y_recomendaciones_ia",
+      "breakpoints": true
     }
   ]
 }
