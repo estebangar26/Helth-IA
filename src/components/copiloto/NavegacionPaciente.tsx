@@ -14,9 +14,9 @@ import type { Paciente } from "@/lib/copiloto/tipos";
 
 const enlaces = [
   { to: "/paciente", etiqueta: "Inicio", icono: House, exacto: true },
-  { to: "/paciente/examenes", etiqueta: "Exámenes", icono: FileUp },
-  { to: "/paciente/resultados", etiqueta: "Resultados", icono: HeartPulse },
-  { to: "/paciente/recomendaciones", etiqueta: "Recomendaciones", icono: Lightbulb },
+  { to: "/paciente/examenes", etiqueta: "Exámenes", icono: FileUp, exacto: false },
+  { to: "/paciente/resultados", etiqueta: "Resultados", icono: HeartPulse, exacto: false },
+  { to: "/paciente/recomendaciones", etiqueta: "Recomendaciones", icono: Lightbulb, exacto: false },
 ] as const;
 
 export function NavegacionPaciente({ paciente }: { paciente: Paciente }) {
