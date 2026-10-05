@@ -23,7 +23,7 @@ function Examenes() {
 
   return (
     <main>
-      <SubirExamen onGuardado={() => router.invalidate()} onCerrar={() => undefined} />
+      <SubirExamen onGuardado={() => router.invalidate()} />
       {panel.examenes.length > 0 ? (
         <LineaExamenes examenes={panel.examenes} />
       ) : (
