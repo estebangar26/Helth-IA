@@ -224,7 +224,8 @@ export async function obtenerPanelReal(
     paciente,
     evaluacion,
     biomarcadores: construirBiomarcadores(examenes),
-    examenes: examenes.map(filaAExamen),
+    // La línea muestra primero lo último que se cargó a la plataforma.
+    examenes: [...examenes].sort((a, b) => String(b["created_at"]).localeCompare(String(a["created_at"]))).map(filaAExamen),
     recomendaciones: ultimo ? (Array.isArray(ultimo["recomendaciones"]) && (ultimo["recomendaciones"] as string[]).length ? (ultimo["recomendaciones"] as string[]) : obtenerRecomendaciones()) : [],
   };
 }
