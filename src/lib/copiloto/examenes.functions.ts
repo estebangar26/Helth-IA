@@ -90,7 +90,7 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
       if (!rol) throw new Error("Solo los pacientes pueden subir exámenes.");
       // Validación de identidad: sin documento validado no se cargan exámenes.
       const { data: perfilDoc } = await context.supabase.from("perfiles").select("documento_validado_en").eq("id", context.userId).maybeSingle();
-      if (!perfilDoc?.documento_validado_en) throw new Error("Registre y valide su documento de identidad en Mi perfil antes de subir exámenes.");
+      if (!perfilDoc?.documento_validado_en) throw new Error("Registre su documento de identidad en la pestaña Mi perfil antes de subir exámenes.");
       const { analizarArchivoExamen } = await import("./analisis.server");
       const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
 

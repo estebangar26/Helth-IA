@@ -22,6 +22,8 @@ import { Route as AuthenticatedMedicoPacienteIdRouteImport } from './routes/_aut
 import { Route as AuthenticatedPacienteIndexRouteImport } from './routes/_authenticated/paciente.index'
 import { Route as AuthenticatedPacienteEspecialistasRouteImport } from './routes/_authenticated/paciente.especialistas'
 import { Route as AuthenticatedPacienteExamenesRouteImport } from './routes/_authenticated/paciente.examenes'
+import { Route as AuthenticatedPacienteMedicacionesRouteImport } from './routes/_authenticated/paciente.medicaciones'
+import { Route as AuthenticatedPacientePerfilRouteImport } from './routes/_authenticated/paciente.perfil'
 import { Route as AuthenticatedPacienteRecomendacionesRouteImport } from './routes/_authenticated/paciente.recomendaciones'
 import { Route as AuthenticatedPacienteResultadosRouteImport } from './routes/_authenticated/paciente.resultados'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -94,6 +96,18 @@ const AuthenticatedPacienteExamenesRoute =
     path: '/examenes',
     getParentRoute: () => AuthenticatedPacienteRoute,
   } as any)
+const AuthenticatedPacienteMedicacionesRoute =
+  AuthenticatedPacienteMedicacionesRouteImport.update({
+    id: '/medicaciones',
+    path: '/medicaciones',
+    getParentRoute: () => AuthenticatedPacienteRoute,
+  } as any)
+const AuthenticatedPacientePerfilRoute =
+  AuthenticatedPacientePerfilRouteImport.update({
+    id: '/perfil',
+    path: '/perfil',
+    getParentRoute: () => AuthenticatedPacienteRoute,
+  } as any)
 const AuthenticatedPacienteRecomendacionesRoute =
   AuthenticatedPacienteRecomendacionesRouteImport.update({
     id: '/recomendaciones',
@@ -125,6 +139,8 @@ export interface FileRoutesByFullPath {
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
   '/paciente/examenes': typeof AuthenticatedPacienteExamenesRoute
+  '/paciente/medicaciones': typeof AuthenticatedPacienteMedicacionesRoute
+  '/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/paciente/': typeof AuthenticatedPacienteIndexRoute
@@ -141,6 +157,8 @@ export interface FileRoutesByTo {
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
   '/paciente/examenes': typeof AuthenticatedPacienteExamenesRoute
+  '/paciente/medicaciones': typeof AuthenticatedPacienteMedicacionesRoute
+  '/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/paciente': typeof AuthenticatedPacienteIndexRoute
@@ -160,6 +178,8 @@ export interface FileRoutesById {
   '/_authenticated/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/_authenticated/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
   '/_authenticated/paciente/examenes': typeof AuthenticatedPacienteExamenesRoute
+  '/_authenticated/paciente/medicaciones': typeof AuthenticatedPacienteMedicacionesRoute
+  '/_authenticated/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/_authenticated/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/_authenticated/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
@@ -179,6 +199,8 @@ export interface FileRouteTypes {
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
     | '/paciente/examenes'
+    | '/paciente/medicaciones'
+    | '/paciente/perfil'
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
     | '/paciente/'
@@ -195,6 +217,8 @@ export interface FileRouteTypes {
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
     | '/paciente/examenes'
+    | '/paciente/medicaciones'
+    | '/paciente/perfil'
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
     | '/paciente'
@@ -213,6 +237,8 @@ export interface FileRouteTypes {
     | '/_authenticated/medico/$pacienteId'
     | '/_authenticated/paciente/especialistas'
     | '/_authenticated/paciente/examenes'
+    | '/_authenticated/paciente/medicaciones'
+    | '/_authenticated/paciente/perfil'
     | '/_authenticated/paciente/recomendaciones'
     | '/_authenticated/paciente/resultados'
     | '/_authenticated/paciente/'
@@ -321,6 +347,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPacienteExamenesRouteImport
       parentRoute: typeof AuthenticatedPacienteRoute
     }
+    '/_authenticated/paciente/medicaciones': {
+      id: '/_authenticated/paciente/medicaciones'
+      path: '/medicaciones'
+      fullPath: '/paciente/medicaciones'
+      preLoaderRoute: typeof AuthenticatedPacienteMedicacionesRouteImport
+      parentRoute: typeof AuthenticatedPacienteRoute
+    }
+    '/_authenticated/paciente/perfil': {
+      id: '/_authenticated/paciente/perfil'
+      path: '/perfil'
+      fullPath: '/paciente/perfil'
+      preLoaderRoute: typeof AuthenticatedPacientePerfilRouteImport
+      parentRoute: typeof AuthenticatedPacienteRoute
+    }
     '/_authenticated/paciente/recomendaciones': {
       id: '/_authenticated/paciente/recomendaciones'
       path: '/recomendaciones'
@@ -359,6 +399,8 @@ const AuthenticatedMedicoRouteWithChildren =
 interface AuthenticatedPacienteRouteChildren {
   AuthenticatedPacienteEspecialistasRoute: typeof AuthenticatedPacienteEspecialistasRoute
   AuthenticatedPacienteExamenesRoute: typeof AuthenticatedPacienteExamenesRoute
+  AuthenticatedPacienteMedicacionesRoute: typeof AuthenticatedPacienteMedicacionesRoute
+  AuthenticatedPacientePerfilRoute: typeof AuthenticatedPacientePerfilRoute
   AuthenticatedPacienteRecomendacionesRoute: typeof AuthenticatedPacienteRecomendacionesRoute
   AuthenticatedPacienteResultadosRoute: typeof AuthenticatedPacienteResultadosRoute
   AuthenticatedPacienteIndexRoute: typeof AuthenticatedPacienteIndexRoute
@@ -368,6 +410,9 @@ const AuthenticatedPacienteRouteChildren: AuthenticatedPacienteRouteChildren = {
   AuthenticatedPacienteEspecialistasRoute:
     AuthenticatedPacienteEspecialistasRoute,
   AuthenticatedPacienteExamenesRoute: AuthenticatedPacienteExamenesRoute,
+  AuthenticatedPacienteMedicacionesRoute:
+    AuthenticatedPacienteMedicacionesRoute,
+  AuthenticatedPacientePerfilRoute: AuthenticatedPacientePerfilRoute,
   AuthenticatedPacienteRecomendacionesRoute:
     AuthenticatedPacienteRecomendacionesRoute,
   AuthenticatedPacienteResultadosRoute: AuthenticatedPacienteResultadosRoute,

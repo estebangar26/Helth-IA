@@ -50,6 +50,13 @@
       "when": 1791204772765,
       "tag": "0006_documento_y_horas_examen",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791215914635,
+      "tag": "0007_medicaciones",
+      "breakpoints": true
     }
   ]
 }
