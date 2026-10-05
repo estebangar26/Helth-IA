@@ -251,6 +251,36 @@ export type Database = {
         }
         Relationships: []
       }
+      medicaciones: {
+        Row: {
+          creado_en: string
+          dosis: string | null
+          frecuencia: string | null
+          id: string
+          nombre: string
+          notas: string | null
+          user_id: string
+        }
+        Insert: {
+          creado_en?: string
+          dosis?: string | null
+          frecuencia?: string | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          user_id: string
+        }
+        Update: {
+          creado_en?: string
+          dosis?: string | null
+          frecuencia?: string | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       perfiles: {
         Row: {
           created_at: string
