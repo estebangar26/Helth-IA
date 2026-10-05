@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/medico")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  errorComponent: ({ error }) => <div role="alert" className="mx-auto max-w-md px-4 py-16 text-center font-body text-ink">{error.message}</div>,
+  errorComponent: ({ error }) => <div role="alert" className="mx-auto max-w-md px-4 py-16 text-center font-body text-ink">{(error as Error).message}</div>,
   component: PantallaMedica,
 });
 

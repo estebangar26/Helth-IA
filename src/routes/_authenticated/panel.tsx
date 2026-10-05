@@ -12,6 +12,6 @@ export const Route = createFileRoute("/_authenticated/panel")({
   ] }),
   beforeLoad: async () => {
     const rol = await obtenerMiRol();
-    throw redirect({ to: rol === "medico" ? "/medico" : "/paciente", replace: true });
+    throw redirect({ to: rol === "admin" ? "/admin" : rol === "medico" ? "/medico" : "/paciente", replace: true });
   },
 });

@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/medico/$pacienteId")({
   errorComponent: ({ error }) => (
     <div role="alert" className="mx-auto max-w-md px-4 py-16 text-center">
       <p className="font-display text-lg font-bold text-ink">Acceso no disponible</p>
-      <p className="mt-2 font-body text-sm text-ink-dim">{error.message}</p>
+      <p className="mt-2 font-body text-sm text-ink-dim">{(error as Error).message}</p>
       <Link to="/medico" className="mt-4 inline-block font-body text-sm font-semibold text-brand-blue hover:underline">Volver a pacientes</Link>
     </div>
   ),

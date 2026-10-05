@@ -98,10 +98,19 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
         );
       }
 
+      // Riesgo por reglas fijas; la IA solo redacta orientación nutricional (una vez por examen).
+      const { evaluarRiesgo } = await import("./triage.server");
+      const { generarRecomendaciones } = await import("./recomendaciones.server");
+      const v = extraido.valores;
+      const riesgo = evaluarRiesgo({ glucemiaAyunas: v["glucemia_ayunas"] ?? 0, hba1c: v["hba1c"] ?? 0, presionSistolica: v["presion_sistolica"] ?? 0, presionDiastolica: v["presion_diastolica"] ?? 0 });
+      const { data: perfilEdad } = await context.supabase.from("perfiles").select("edad").eq("id", context.userId).maybeSingle();
+      const recomendaciones = await generarRecomendaciones(v, `${riesgo.nivel}: ${riesgo.titular}`, perfilEdad?.edad ?? null);
+
       const { error, data: fila } = await context.supabase
         .from("examenes")
         .insert({
           user_id: context.userId,
+          recomendaciones,
           titulo: extraido.titulo ?? "Examen de laboratorio",
           laboratorio: extraido.laboratorio,
           fecha: extraido.fecha ?? new Date().toISOString().slice(0, 10),

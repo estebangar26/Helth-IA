@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as RestablecerRouteImport } from './routes/restablecer'
 import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMedicoRouteImport } from './routes/_authenticated/medico'
 import { Route as AuthenticatedPacienteRouteImport } from './routes/_authenticated/paciente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
@@ -34,10 +36,20 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RestablecerRoute = RestablecerRouteImport.update({
+  id: '/restablecer',
+  path: '/restablecer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServiciosRoute = ServiciosRouteImport.update({
   id: '/servicios',
   path: '/servicios',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMedicoRoute = AuthenticatedMedicoRouteImport.update({
   id: '/medico',
@@ -76,7 +88,9 @@ const AuthenticatedPacienteEspecialistasRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
@@ -87,7 +101,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
@@ -99,7 +115,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/_authenticated/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
@@ -112,7 +130,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/restablecer'
     | '/servicios'
+    | '/admin'
     | '/medico'
     | '/paciente'
     | '/panel'
@@ -123,7 +143,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/restablecer'
     | '/servicios'
+    | '/admin'
     | '/medico'
     | '/panel'
     | '/medico/$pacienteId'
@@ -134,7 +156,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/restablecer'
     | '/servicios'
+    | '/_authenticated/admin'
     | '/_authenticated/medico'
     | '/_authenticated/paciente'
     | '/_authenticated/panel'
@@ -147,6 +171,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  RestablecerRoute: typeof RestablecerRoute
   ServiciosRoute: typeof ServiciosRoute
 }
 
@@ -173,12 +198,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/restablecer': {
+      id: '/restablecer'
+      path: '/restablecer'
+      fullPath: '/restablecer'
+      preLoaderRoute: typeof RestablecerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicios': {
       id: '/servicios'
       path: '/servicios'
       fullPath: '/servicios'
       preLoaderRoute: typeof ServiciosRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/medico': {
       id: '/_authenticated/medico'
@@ -253,12 +292,14 @@ const AuthenticatedPacienteRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedMedicoRoute: typeof AuthenticatedMedicoRouteWithChildren
   AuthenticatedPacienteRoute: typeof AuthenticatedPacienteRouteWithChildren
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedMedicoRoute: AuthenticatedMedicoRouteWithChildren,
   AuthenticatedPacienteRoute: AuthenticatedPacienteRouteWithChildren,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
@@ -271,6 +312,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  RestablecerRoute: RestablecerRoute,
   ServiciosRoute: ServiciosRoute,
 }
 export const routeTree = rootRouteImport

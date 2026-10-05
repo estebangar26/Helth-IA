@@ -48,7 +48,7 @@ export const Route = createFileRoute("/_authenticated/paciente/")({
   errorComponent: ({ error }) => (
     <div role="alert" className="mx-auto max-w-md px-4 py-16 text-center">
       <p className="font-display text-lg font-semibold text-ink">No pudimos cargar sus datos</p>
-      <p className="mt-2 font-body text-sm text-ink-dim">{error.message}</p>
+      <p className="mt-2 font-body text-sm text-ink-dim">{(error as Error).message}</p>
     </div>
   ),
   notFoundComponent: () => (

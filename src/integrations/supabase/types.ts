@@ -173,6 +173,7 @@ export type Database = {
           presion_diastolica: number | null
           presion_sistolica: number | null
           psa: number | null
+          recomendaciones: string[] | null
           sodio: number | null
           testosterona_libre: number | null
           testosterona_total: number | null
@@ -204,6 +205,7 @@ export type Database = {
           presion_diastolica?: number | null
           presion_sistolica?: number | null
           psa?: number | null
+          recomendaciones?: string[] | null
           sodio?: number | null
           testosterona_libre?: number | null
           testosterona_total?: number | null
@@ -235,6 +237,7 @@ export type Database = {
           presion_diastolica?: number | null
           presion_sistolica?: number | null
           psa?: number | null
+          recomendaciones?: string[] | null
           sodio?: number | null
           testosterona_libre?: number | null
           testosterona_total?: number | null
@@ -315,6 +318,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      es_admin: { Args: never; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -324,7 +328,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "paciente" | "medico"
+      app_role: "paciente" | "medico" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -452,7 +456,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["paciente", "medico"],
+      app_role: ["paciente", "medico", "admin"],
     },
   },
 } as const
