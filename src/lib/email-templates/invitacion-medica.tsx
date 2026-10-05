@@ -28,7 +28,7 @@ const InvitacionMedica = ({ paciente, enlace }: Props) => (
 
 export const template = {
   component: InvitacionMedica,
-  subject: (d: Record<string, any>) => `${d.paciente ?? 'Un paciente'} le compartió sus exámenes en HelthIA`,
+  subject: (d: Record<string, any>) => `${d['paciente'] ?? 'Un paciente'} le compartió sus exámenes en HelthIA`,
   displayName: 'Invitación médica',
   previewData: { paciente: 'Ana Pérez', enlace: 'https://helthicorp.tech/auth' },
 } satisfies TemplateEntry
