@@ -43,6 +43,13 @@
       "when": 1791172605917,
       "tag": "0005_admin_y_recomendaciones_ia",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791204772765,
+      "tag": "0006_documento_y_horas_examen",
+      "breakpoints": true
     }
   ]
 }
