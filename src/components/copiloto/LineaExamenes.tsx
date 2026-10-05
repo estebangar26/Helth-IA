@@ -49,6 +49,8 @@ export function LineaExamenes({ examenes }: { examenes: Examen[] }) {
                     {examen.titulo}
                   </p>
                   <p className="mt-0.5 font-body text-sm text-ink-dim">{examen.fecha}</p>
+                  <p className="font-body text-xs text-ink-dim">Validado por el laboratorio: {examen.validado ?? "no indicado"}</p>
+                  {examen.cargado && <p className="font-body text-xs text-ink-dim">Cargado a HelthIA: {examen.cargado}</p>}
                 </div>
                 <span
                     className={`shrink-0 rounded px-2 py-1 font-body text-[10px] font-semibold uppercase ring-1 ${chipNivel[examen.nivel]}`}

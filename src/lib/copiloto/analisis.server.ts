@@ -14,6 +14,7 @@ export interface ExtraccionExamen {
   titulo: string | null;
   laboratorio: string | null;
   fecha: string | null; // AAAA-MM-DD
+  validadoEn: string | null; // fecha y hora ISO de validación del laboratorio
   tipoExamen: TipoExamen;
   notas: string | null;
   /** Valores numéricos por nombre de columna (glucemia_ayunas, psa, etc.). */
@@ -43,7 +44,8 @@ const LISTA_UNIDADES = MARCADORES.map((m) => `- ${m.campo} (${m.etiqueta}) en ${
 const INSTRUCCION = `Eres un asistente clínico que lee documentos de laboratorio en español.
 Extrae únicamente los datos que aparezcan explícitamente en el documento.
 Responde SOLO con un objeto JSON válido, sin texto adicional ni bloques de código, con estas claves:
-{"titulo":string|null,"laboratorio":string|null,"fecha":"AAAA-MM-DD"|null,"tipoExamen":"diabetes_tipo_1"|"diabetes_tipo_2"|"diabetes_insipida"|"marcadores_cancer"|"testosterona"|"general","notas":string|null,"valores":{}}
+{"titulo":string|null,"laboratorio":string|null,"fecha":"AAAA-MM-DD"|null,"validadoEn":"AAAA-MM-DDTHH:MM:00-05:00"|null,"tipoExamen":"diabetes_tipo_1"|"diabetes_tipo_2"|"diabetes_insipida"|"marcadores_cancer"|"testosterona"|"general","notas":string|null,"valores":{}}
+"validadoEn" es la fecha y hora en que el laboratorio validó o firmó los resultados (hora de Colombia), solo si aparece escrita.
 En "valores" incluye solo las claves que encuentres, usando exactamente estos nombres y unidades:
 ${LISTA_UNIDADES}
 - presion_sistolica y presion_diastolica en mmHg
@@ -152,6 +154,10 @@ export async function analizarArchivoExamen(
     titulo: aTexto(crudo["titulo"], 120) ?? nombreArchivo.replace(/\.[^.]+$/, "").slice(0, 120),
     laboratorio: aTexto(crudo["laboratorio"], 120),
     fecha: fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha) ? fecha : null,
+    validadoEn: (() => {
+      const v = aTexto(crudo["validadoEn"], 25);
+      return v && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v) && !isNaN(Date.parse(v)) ? v : null;
+    })(),
     tipoExamen: tipo && TIPOS.includes(tipo) ? tipo : "general",
     notas: aTexto(crudo["notas"], 400),
     valores,

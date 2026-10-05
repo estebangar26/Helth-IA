@@ -88,6 +88,9 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
     }): Promise<{ ok: true; id: string; alertasRegistradas: number }> => {
       const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
       if (!rol) throw new Error("Solo los pacientes pueden subir exámenes.");
+      // Validación de identidad: sin documento validado no se cargan exámenes.
+      const { data: perfilDoc } = await context.supabase.from("perfiles").select("documento_validado_en").eq("id", context.userId).maybeSingle();
+      if (!perfilDoc?.documento_validado_en) throw new Error("Registre y valide su documento de identidad en Mi perfil antes de subir exámenes.");
       const { analizarArchivoExamen } = await import("./analisis.server");
       const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
 
@@ -114,6 +117,7 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
           titulo: extraido.titulo ?? "Examen de laboratorio",
           laboratorio: extraido.laboratorio,
           fecha: extraido.fecha ?? new Date().toISOString().slice(0, 10),
+          validado_en: extraido.validadoEn,
           tipo_examen: extraido.tipoExamen,
           notas: extraido.notas,
           ...extraido.valores,
@@ -169,7 +173,8 @@ export const guardarPerfil = createServerFn({ method: "POST" })
       .object({
         nombre: z.string().trim().min(2).max(120),
         edad: z.number().int().min(0).max(120).nullable(),
-        documento: z.string().trim().max(60).optional().or(z.literal("")),
+        // CC/TI/CE: 5-12 dígitos; pasaporte: 5-12 letras o números.
+        documento: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{5,12}$/, "Documento inválido: use solo números o letras (5 a 12 caracteres)."),
         tipoAtencion: z.enum(["eps", "privado"]),
         epsNombre: z.string().trim().max(120).optional().or(z.literal("")),
         medicoFamilia: z.string().trim().max(120).optional().or(z.literal("")),
@@ -180,16 +185,20 @@ export const guardarPerfil = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     const { data: rol } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "paciente").maybeSingle();
     if (!rol) throw new Error("Este perfil está disponible para pacientes.");
+    const { data: actual } = await context.supabase.from("perfiles").select("documento, documento_validado_en").eq("id", context.userId).maybeSingle();
+    const mismoDoc = actual?.documento?.toUpperCase() === data.documento && actual?.documento_validado_en;
     const { error } = await context.supabase.from("perfiles").upsert({
       id: context.userId,
       nombre: data.nombre,
       edad: data.edad,
-      documento: data.documento ? data.documento : null,
+      documento: data.documento,
+      documento_validado_en: mismoDoc ? actual!.documento_validado_en : new Date().toISOString(),
       tipo_atencion: data.tipoAtencion,
       eps_nombre: data.tipoAtencion === "eps" && data.epsNombre ? data.epsNombre : null,
       medico_familia: data.tipoAtencion === "eps" && data.medicoFamilia ? data.medicoFamilia : null,
       medico_tratante: data.tipoAtencion === "privado" && data.medicoTratante ? data.medicoTratante : null,
     });
+    if (error?.code === "23505") throw new Error("Este documento ya está registrado en otra cuenta.");
     if (error) throw new Error("No se pudo guardar el perfil.");
     return { ok: true };
   });

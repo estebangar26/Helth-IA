@@ -48,6 +48,10 @@ export interface Examen {
   titulo: string;
   /** Fecha ya formateada en español. */
   fecha: string;
+  /** Hora exacta de validación del laboratorio (si aparece en el documento). */
+  validado?: string | null;
+  /** Hora exacta de carga a la plataforma. */
+  cargado?: string | null;
   nivel: NivelRiesgo;
   valores: ValorExamen[];
 }

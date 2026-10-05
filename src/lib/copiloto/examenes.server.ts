@@ -31,6 +31,12 @@ export interface FilaExamen extends Record<string, unknown> {
   notas: string | null;
 }
 
+/** Fecha y hora exacta en hora de Colombia, o null si no existe. */
+function formatearHora(valor: unknown): string | null {
+  if (typeof valor !== "string" || isNaN(Date.parse(valor))) return null;
+  return new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeStyle: "medium", timeZone: "America/Bogota" }).format(new Date(valor));
+}
+
 /** Fecha legible en español a partir de una fecha ISO (sin zonas horarias). */
 function formatearFecha(iso: string): string {
   const [anio, mes, dia] = iso.split("-").map(Number);
@@ -106,6 +112,8 @@ function filaAExamen(fila: FilaExamen): Examen {
       ? `${fila.titulo} · ${fila.laboratorio} · ${etiquetaTipo}`
       : `${fila.titulo} · ${etiquetaTipo}`,
     fecha: formatearFecha(fila.fecha),
+    validado: formatearHora(fila["validado_en"]),
+    cargado: formatearHora(fila["created_at"]),
     nivel,
     valores,
   };
