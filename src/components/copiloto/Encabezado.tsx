@@ -30,7 +30,7 @@ export function Encabezado({
             HelthIA
           </h1>
           <p className="mt-1 font-body text-sm text-ink-dim">
-            {paciente.nombre} <span aria-hidden="true">·</span> {paciente.edad} años <span aria-hidden="true">·</span> ID {paciente.documento}
+            {paciente.nombre} <span aria-hidden="true">·</span> {paciente.edad} años <span aria-hidden="true">·</span> ID {/\d{5,}/.test(paciente.documento) ? `•••${paciente.documento.slice(-4)}` : paciente.documento}
           </p>
         </div>
       </div>

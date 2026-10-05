@@ -50,8 +50,10 @@ function PantallaAcceso() {
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
 
-  async function destinoSegunRol(): Promise<"/paciente" | "/medico"> {
-    return (await obtenerMiRol()) === "medico" ? "/medico" : "/paciente";
+  async function destinoSegunRol(): Promise<"/paciente" | "/medico" | "/admin"> {
+    const r = await obtenerMiRol();
+    if (r === "admin") return "/admin";
+    return r === "medico" ? "/medico" : "/paciente";
   }
 
   useEffect(() => {
@@ -174,6 +176,14 @@ function PantallaAcceso() {
           >
             Continuar con Google
           </Button>
+
+          {modo === "entrar" && (
+            <Button type="button" variant="link" className="mt-2 w-full" onClick={async () => {
+              if (!correo) return setMensaje("Escriba su correo para enviarle el enlace de recuperación.");
+              const { error } = await supabase.auth.resetPasswordForEmail(correo, { redirectTo: `${window.location.origin}/restablecer` });
+              setMensaje(error ? "No se pudo enviar el enlace." : "Si el correo está registrado, recibirá un enlace para crear una nueva contraseña.");
+            }}>Olvidé mi contraseña</Button>
+          )}
 
           <Button
             type="button"

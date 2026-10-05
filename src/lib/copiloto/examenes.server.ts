@@ -217,6 +217,6 @@ export async function obtenerPanelReal(
     evaluacion,
     biomarcadores: construirBiomarcadores(examenes),
     examenes: examenes.map(filaAExamen),
-    recomendaciones: ultimo ? obtenerRecomendaciones() : [],
+    recomendaciones: ultimo ? (Array.isArray(ultimo["recomendaciones"]) && (ultimo["recomendaciones"] as string[]).length ? (ultimo["recomendaciones"] as string[]) : obtenerRecomendaciones()) : [],
   };
 }

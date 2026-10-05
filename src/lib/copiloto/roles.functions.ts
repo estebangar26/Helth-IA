@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-export type RolAplicacion = "paciente" | "medico";
+export type RolAplicacion = "paciente" | "medico" | "admin";
 
 /**
  * Activa una invitación médica pendiente antes de resolver el rol. Esto permite
@@ -34,5 +34,5 @@ export const obtenerMiRol = createServerFn({ method: "GET" })
       .eq("user_id", context.userId)
       .maybeSingle();
     if (error) throw new Error("No se pudo identificar el espacio de la cuenta.");
-    return data?.role === "medico" ? "medico" : "paciente";
+    return data?.role === "medico" || data?.role === "admin" ? data.role : "paciente";
   });

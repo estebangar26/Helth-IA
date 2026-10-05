@@ -13,8 +13,9 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
     const rol = await obtenerMiRol();
-    if (location.pathname.startsWith("/medico") && rol !== "medico") throw redirect({ to: "/paciente" });
-    if (location.pathname.startsWith("/paciente") && rol !== "paciente") throw redirect({ to: "/medico" });
+    const casa = rol === "admin" ? "/admin" : rol === "medico" ? "/medico" : "/paciente";
+    for (const p of ["/paciente", "/medico", "/admin"] as const)
+      if (location.pathname.startsWith(p) && casa !== p) throw redirect({ to: casa });
     return { user: data.user, rol };
   },
   component: () => <Outlet />,
