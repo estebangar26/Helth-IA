@@ -38,7 +38,7 @@ function EspacioPaciente() {
             </Button>
           }
         />
-        <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
           <NavegacionPaciente paciente={panel.paciente} />
           <div className="min-w-0"><Outlet /></div>
         </div>
