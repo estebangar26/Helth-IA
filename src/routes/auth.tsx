@@ -178,10 +178,13 @@ function PantallaAcceso() {
           </Button>
 
           {modo === "entrar" && (
-            <Button type="button" variant="link" className="mt-2 w-full" onClick={async () => {
+            <Button type="button" variant="link" className="mt-2 w-full" disabled={cargando} onClick={async () => {
               if (!correo) return setMensaje("Escriba su correo para enviarle el enlace de recuperación.");
+              setCargando(true);
               const { error } = await supabase.auth.resetPasswordForEmail(correo, { redirectTo: `${window.location.origin}/restablecer` });
-              setMensaje(error ? "No se pudo enviar el enlace." : "Si el correo está registrado, recibirá un enlace para crear una nueva contraseña.");
+              setCargando(false);
+              if (error?.status === 429) return setMensaje("Ya le enviamos un enlace. Espere un minuto antes de pedir otro y use solo el correo más reciente.");
+              setMensaje(error ? "No se pudo enviar el enlace." : "Le enviamos un enlace. Use solo el correo más reciente; los anteriores dejan de funcionar.");
             }}>Olvidé mi contraseña</Button>
           )}
 
