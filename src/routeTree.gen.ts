@@ -24,6 +24,7 @@ import { Route as AuthenticatedPacienteEspecialistasRouteImport } from './routes
 import { Route as AuthenticatedPacienteExamenesRouteImport } from './routes/_authenticated/paciente.examenes'
 import { Route as AuthenticatedPacienteRecomendacionesRouteImport } from './routes/_authenticated/paciente.recomendaciones'
 import { Route as AuthenticatedPacienteResultadosRouteImport } from './routes/_authenticated/paciente.resultados'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -105,6 +106,12 @@ const AuthenticatedPacienteResultadosRoute =
     path: '/resultados',
     getParentRoute: () => AuthenticatedPacienteRoute,
   } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/paciente/': typeof AuthenticatedPacienteIndexRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -136,6 +144,7 @@ export interface FileRoutesByTo {
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/paciente': typeof AuthenticatedPacienteIndexRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -154,6 +163,7 @@ export interface FileRoutesById {
   '/_authenticated/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/_authenticated/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
     | '/paciente/'
+    | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
     | '/paciente'
+    | '/lovable/email/transactional/preview'
   id:
     | '__root__'
     | '/'
@@ -204,6 +216,7 @@ export interface FileRouteTypes {
     | '/_authenticated/paciente/recomendaciones'
     | '/_authenticated/paciente/resultados'
     | '/_authenticated/paciente/'
+    | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -212,6 +225,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   RestablecerRoute: typeof RestablecerRoute
   ServiciosRoute: typeof ServiciosRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -321,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPacienteResultadosRouteImport
       parentRoute: typeof AuthenticatedPacienteRoute
     }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -381,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   RestablecerRoute: RestablecerRoute,
   ServiciosRoute: ServiciosRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

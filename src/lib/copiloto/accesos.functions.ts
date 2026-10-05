@@ -53,6 +53,19 @@ export const invitarDoctora = createServerFn({ method: "POST" })
     }
     if (error || !fila) throw new Error("No se pudo crear la invitación.");
 
+    // Notifica al médico por correo; si falla, la invitación sigue válida.
+    try {
+      const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+      const { data: perfil } = await context.supabase.from("perfiles").select("nombre").eq("id", context.userId).maybeSingle();
+      const origen = new URL((await import("@tanstack/react-start/server")).getRequest().url).origin;
+      await sendTemplateEmail("invitacion-medica", fila.doctor_email, {
+        templateData: { paciente: perfil?.nombre ?? "Un paciente", enlace: `${origen}/auth` },
+        idempotencyKey: `invitacion-medica-${fila.id}`,
+      });
+    } catch (e) {
+      console.error("No se pudo enviar el correo de invitación", e);
+    }
+
     return {
       ok: true,
       invitacion: {
