@@ -1,6 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { Save, UserRound } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,9 @@ import type { Paciente } from "@/lib/copiloto/tipos";
 
 export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
   const guardar = useServerFn(guardarPerfil);
+  const router = useRouter();
+  const [nombre, setNombre] = useState(paciente.nombre);
+  const [edad, setEdad] = useState(paciente.edad ? String(paciente.edad) : "");
   const [tipo, setTipo] = useState<"eps" | "privado">(paciente.tipoAtencion);
   const [documento, setDocumento] = useState(paciente.documento === "Sin documento registrado" ? "" : paciente.documento);
   const [eps, setEps] = useState(paciente.epsNombre ?? "");
@@ -24,8 +28,9 @@ export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
     setCargando(true);
     setMensaje(null);
     try {
-      await guardar({ data: { nombre: paciente.nombre, edad: paciente.edad, documento, tipoAtencion: tipo, epsNombre: eps, medicoFamilia: familia, medicoTratante: tratante } });
-      setMensaje("Información de atención guardada.");
+      await guardar({ data: { nombre, edad: edad ? Number(edad) : null, documento, tipoAtencion: tipo, epsNombre: eps, medicoFamilia: familia, medicoTratante: tratante } });
+      setMensaje("Perfil guardado y documento validado. Ya puede subir exámenes.");
+      await router.invalidate();
     } catch (error) {
       setMensaje(error instanceof Error ? error.message : "No se pudo guardar la información.");
     } finally {
@@ -37,6 +42,7 @@ export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
     <section className="rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-3"><UserRound className="text-brand-blue" aria-hidden="true" /><div><p className="font-body text-xs font-semibold uppercase text-brand-blue">Mi perfil</p><h2 className="font-display text-lg font-bold text-ink">Tipo de atención</h2></div></div>
       <form onSubmit={enviar} className="mt-5 space-y-4">
+        <div className="grid gap-3 sm:grid-cols-[1fr_120px]"><Campo etiqueta="Nombre completo" valor={nombre} onChange={setNombre} /><Campo etiqueta="Edad" valor={edad} onChange={(v) => setEdad(v.replace(/\D/g, "").slice(0, 3))} /></div>
         <Campo etiqueta="Documento de identidad (obligatorio)" valor={documento} onChange={setDocumento} />
         <RadioGroup value={tipo} onValueChange={(valor) => setTipo(valor as "eps" | "privado")}>
           <Label className="flex items-center gap-2 font-body text-sm text-ink"><RadioGroupItem value="eps" /> EPS (médico de familia)</Label>
