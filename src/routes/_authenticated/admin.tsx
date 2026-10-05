@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },
   ] }),
-  errorComponent: ({ error }) => <p role="alert" className="p-10 text-center font-body text-ink-dim">{error.message}</p>,
+  errorComponent: ({ error }) => <p role="alert" className="p-10 text-center font-body text-ink-dim">{(error as Error).message}</p>,
   component: Admin,
 });
 
