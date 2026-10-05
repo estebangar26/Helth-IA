@@ -34,7 +34,7 @@ export function SubirExamen({
   onCerrar,
 }: {
   onGuardado: () => void | Promise<void>;
-  onCerrar: () => void;
+  onCerrar?: () => void;
 }) {
   const analizar = useServerFn(analizarYGuardarExamen);
   const entradaArchivo = useRef<HTMLInputElement>(null);
@@ -69,7 +69,7 @@ export function SubirExamen({
         },
       });
       await onGuardado();
-      onCerrar();
+      onCerrar?.();
     } catch (fallo) {
       setError(
         fallo instanceof Error && fallo.message
@@ -96,9 +96,11 @@ export function SubirExamen({
             su médico tratante.
           </p>
         </div>
-        <Button type="button" onClick={onCerrar} variant="ghost">
-          Cancelar
-        </Button>
+        {onCerrar && (
+          <Button type="button" onClick={onCerrar} variant="ghost">
+            Cancelar
+          </Button>
+        )}
       </div>
 
       <div

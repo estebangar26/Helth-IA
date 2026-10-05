@@ -5,29 +5,16 @@
  * un examen nuevo; al guardarlo, la línea de tiempo se actualiza sola.
  */
 
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Stethoscope, Upload } from "lucide-react";
-import { useState } from "react";
+import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
+import { ArrowRight, FileUp, HeartPulse, Lightbulb } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
-import { obtenerMiPanel } from "@/lib/copiloto/examenes.functions";
-import { Biomarcadores } from "@/components/copiloto/Biomarcadores";
 import { CompartirConDoctora } from "@/components/copiloto/CompartirConDoctora";
-import { Encabezado } from "@/components/copiloto/Encabezado";
-import { Fondo } from "@/components/copiloto/Fondo";
-import { LineaExamenes } from "@/components/copiloto/LineaExamenes";
 import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
-import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
-import { SubirExamen } from "@/components/copiloto/SubirExamen";
-import { Button } from "@/components/ui/button";
 import { CarruselMensajes } from "@/components/copiloto/CarruselMensajes";
 import { EnfermedadesCubiertas } from "@/components/copiloto/EnfermedadesCubiertas";
 import { PerfilAtencion } from "@/components/copiloto/PerfilAtencion";
 
 export const Route = createFileRoute("/_authenticated/paciente/")({
-  // El loader corre bajo la capa protegida, así que ya hay sesión.
-  loader: () => obtenerMiPanel(),
   head: () => ({
     meta: [
       { title: "Mi espacio · HelthIA" },
@@ -60,91 +47,32 @@ export const Route = createFileRoute("/_authenticated/paciente/")({
 });
 
 function MiPanel() {
-  const panel = Route.useLoaderData();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const [formularioAbierto, setFormularioAbierto] = useState(panel.examenes.length === 0);
+  const panel = getRouteApi("/_authenticated/paciente").useLoaderData();
 
-  /** Cierra la sesión y vuelve a la pantalla de acceso. */
-  async function salir() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    router.navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
-  }
+  const accesos = [
+    { to: "/paciente/examenes", titulo: "Registrar exámenes", texto: "Suba un PDF o una foto y consulte su historial.", icono: FileUp },
+    { to: "/paciente/resultados", titulo: "Ver resultados", texto: "Revise biomarcadores y reglas de riesgo aplicadas.", icono: HeartPulse },
+    { to: "/paciente/recomendaciones", titulo: "Mis recomendaciones", texto: "Consulte la orientación generada para su último examen.", icono: Lightbulb },
+  ] as const;
 
   return (
-    <>
-      <Fondo />
-
-      <div className="mx-auto min-h-screen max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <Encabezado
-          paciente={panel.paciente}
-          accion={
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setFormularioAbierto((abierto) => !abierto)}
-              >
-                <Upload aria-hidden="true" />
-                {formularioAbierto ? "Ocultar formulario" : "Subir examen"}
-              </Button>
-              <Button
-                onClick={salir}
-                variant="outline"
-                size="icon"
-                title="Cerrar sesión"
-                aria-label="Cerrar sesión"
-              >
-                <LogOut aria-hidden="true" />
-              </Button>
-            </div>
-          }
-        />
-
-        <CarruselMensajes />
-
-        {formularioAbierto && (
-          <SubirExamen
-            onGuardado={() => router.invalidate()}
-            onCerrar={() => setFormularioAbierto(false)}
-          />
-        )}
-
-        <main className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
-            {panel.biomarcadores.length > 0 && (
-              <Biomarcadores biomarcadores={panel.biomarcadores} />
-            )}
-
-            {panel.examenes.length > 0 ? (
-              <LineaExamenes examenes={panel.examenes} />
-            ) : (
-              <p className="rounded-lg border border-dashed border-clinical-border bg-panel p-6 font-body text-sm text-ink-dim">
-                Todavía no hay exámenes registrados. Use “Subir examen” para agregar los
-                resultados de su laboratorio y verlos aquí en orden cronológico.
-              </p>
-            )}
-
-          </div>
-          <div className="space-y-6">
-            <PanelRiesgo evaluacion={panel.evaluacion} />
-            <PerfilAtencion paciente={panel.paciente} />
-            <CompartirConDoctora />
-            {panel.recomendaciones.length > 0 && <Recomendaciones recomendaciones={panel.recomendaciones} />}
-            <div className="rounded-lg border border-clinical-border bg-panel p-4">
-              <p className="font-body text-[10px] font-semibold uppercase text-ink-dim">Interoperabilidad</p>
-              <p className="mt-1 font-body text-sm font-semibold text-ink">Datos clínicos estructurados</p>
-              <p className="mt-1 font-body text-xs leading-relaxed text-ink-dim">Preparado para mapear resultados a recursos HL7 FHIR tras una integración validada.</p>
-            </div>
-            {panel.paciente.tipoAtencion === "privado" && (
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/paciente/especialistas"><Stethoscope aria-hidden="true" /> Ver especialistas</Link>
-              </Button>
-            )}
-          </div>
-        </main>
-        <EnfermedadesCubiertas />
+    <main className="space-y-6">
+      <CarruselMensajes />
+      <section className="grid gap-4 sm:grid-cols-3" aria-label="Accesos principales">
+        {accesos.map(({ to, titulo, texto, icono: Icono }) => (
+          <Link key={to} to={to} className="group rounded-lg border border-clinical-border bg-panel p-5 shadow-sm transition-colors hover:border-brand-blue">
+            <Icono className="size-6 text-brand-blue" aria-hidden="true" />
+            <h2 className="mt-4 font-display text-base font-bold text-ink">{titulo}</h2>
+            <p className="mt-2 font-body text-sm leading-relaxed text-ink-dim">{texto}</p>
+            <span className="mt-4 inline-flex items-center gap-2 font-body text-xs font-semibold text-brand-blue">Abrir <ArrowRight className="size-4" aria-hidden="true" /></span>
+          </Link>
+        ))}
+      </section>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <PanelRiesgo evaluacion={panel.evaluacion} />
+        <div className="space-y-6"><PerfilAtencion paciente={panel.paciente} /><CompartirConDoctora /></div>
       </div>
-    </>
+      <EnfermedadesCubiertas />
+    </main>
   );
 }
