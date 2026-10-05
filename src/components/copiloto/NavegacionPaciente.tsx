@@ -21,7 +21,7 @@ const enlaces = [
 
 export function NavegacionPaciente({ paciente }: { paciente: Paciente }) {
   return (
-    <nav aria-label="Secciones del paciente" className="rounded-lg border border-clinical-border bg-panel p-2 shadow-sm lg:sticky lg:top-6 lg:self-start">
+    <nav aria-label="Secciones del paciente" className="min-w-0 max-w-full overflow-hidden rounded-lg border border-clinical-border bg-panel p-2 shadow-sm lg:sticky lg:top-6 lg:self-start">
       <p className="hidden px-3 pb-2 pt-1 font-body text-[10px] font-semibold uppercase text-ink-dim lg:block">
         Mi espacio
       </p>
