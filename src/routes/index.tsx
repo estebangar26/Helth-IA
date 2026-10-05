@@ -15,6 +15,7 @@ import {
 
 import fondoSaludFuturista from "@/assets/fondo-salud-futurista.jpg";
 import { NavegacionPublica } from "@/components/copiloto/NavegacionPublica";
+import { TiendaIoT } from "@/components/copiloto/TiendaIoT";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -127,6 +128,8 @@ function Inicio() {
             </div>
           </div>
         </section>
+
+        <TiendaIoT />
 
         <section className="bg-trust-surface py-14 text-primary-foreground">
           <div className="mx-auto grid max-w-[1200px] gap-8 px-4 sm:px-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:px-8">
