@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Fondo } from "@/components/copiloto/Fondo";
@@ -22,12 +22,29 @@ function Restablecer() {
   const navegar = useNavigate();
   const [clave, setClave] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const [listo, setListo] = useState(false);
+
+  // Espera a que el enlace del correo abra la sesión de recuperación.
+  useEffect(() => {
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    if (hash.get("error")) {
+      setMsg("El enlace venció o ya se usó. Solicite uno nuevo y abra solo el más reciente.");
+      return;
+    }
+    const { data } = supabase.auth.onAuthStateChange((evento, sesion) => {
+      if (sesion && (evento === "PASSWORD_RECOVERY" || evento === "SIGNED_IN" || evento === "INITIAL_SESSION")) setListo(true);
+    });
+    void supabase.auth.getSession().then(({ data: d }) => { if (d.session) setListo(true); });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   async function guardar(e: React.FormEvent) {
     e.preventDefault();
+    if (!listo) return setMsg("Abriendo el enlace… espere un momento e intente de nuevo.");
     if (clave.length < 8) return setMsg("Use al menos 8 caracteres.");
     const { error } = await supabase.auth.updateUser({ password: clave });
     if (error) return setMsg("El enlace venció o no es válido. Solicite uno nuevo.");
+    await supabase.auth.signOut();
     navegar({ to: "/auth", search: { redirect: undefined } });
   }
 
