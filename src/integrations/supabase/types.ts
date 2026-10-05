@@ -181,6 +181,7 @@ export type Database = {
           titulo: string
           updated_at: string
           user_id: string
+          validado_en: string | null
         }
         Insert: {
           afp?: number | null
@@ -213,6 +214,7 @@ export type Database = {
           titulo: string
           updated_at?: string
           user_id: string
+          validado_en?: string | null
         }
         Update: {
           afp?: number | null
@@ -245,6 +247,7 @@ export type Database = {
           titulo?: string
           updated_at?: string
           user_id?: string
+          validado_en?: string | null
         }
         Relationships: []
       }
@@ -252,6 +255,7 @@ export type Database = {
         Row: {
           created_at: string
           documento: string | null
+          documento_validado_en: string | null
           edad: number | null
           eps_nombre: string | null
           id: string
@@ -264,6 +268,7 @@ export type Database = {
         Insert: {
           created_at?: string
           documento?: string | null
+          documento_validado_en?: string | null
           edad?: number | null
           eps_nombre?: string | null
           id: string
@@ -276,6 +281,7 @@ export type Database = {
         Update: {
           created_at?: string
           documento?: string | null
+          documento_validado_en?: string | null
           edad?: number | null
           eps_nombre?: string | null
           id?: string

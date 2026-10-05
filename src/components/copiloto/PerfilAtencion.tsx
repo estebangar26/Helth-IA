@@ -12,6 +12,7 @@ import type { Paciente } from "@/lib/copiloto/tipos";
 export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
   const guardar = useServerFn(guardarPerfil);
   const [tipo, setTipo] = useState<"eps" | "privado">(paciente.tipoAtencion);
+  const [documento, setDocumento] = useState(paciente.documento === "Sin documento registrado" ? "" : paciente.documento);
   const [eps, setEps] = useState(paciente.epsNombre ?? "");
   const [familia, setFamilia] = useState(paciente.medicoFamilia ?? "");
   const [tratante, setTratante] = useState(paciente.medicoTratante ?? "");
@@ -23,7 +24,7 @@ export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
     setCargando(true);
     setMensaje(null);
     try {
-      await guardar({ data: { nombre: paciente.nombre, edad: paciente.edad, documento: paciente.documento === "Sin documento registrado" ? "" : paciente.documento, tipoAtencion: tipo, epsNombre: eps, medicoFamilia: familia, medicoTratante: tratante } });
+      await guardar({ data: { nombre: paciente.nombre, edad: paciente.edad, documento, tipoAtencion: tipo, epsNombre: eps, medicoFamilia: familia, medicoTratante: tratante } });
       setMensaje("Información de atención guardada.");
     } catch (error) {
       setMensaje(error instanceof Error ? error.message : "No se pudo guardar la información.");
@@ -36,6 +37,7 @@ export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
     <section className="rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-3"><UserRound className="text-brand-blue" aria-hidden="true" /><div><p className="font-body text-xs font-semibold uppercase text-brand-blue">Mi perfil</p><h2 className="font-display text-lg font-bold text-ink">Tipo de atención</h2></div></div>
       <form onSubmit={enviar} className="mt-5 space-y-4">
+        <Campo etiqueta="Documento de identidad (obligatorio)" valor={documento} onChange={setDocumento} />
         <RadioGroup value={tipo} onValueChange={(valor) => setTipo(valor as "eps" | "privado")}>
           <Label className="flex items-center gap-2 font-body text-sm text-ink"><RadioGroupItem value="eps" /> EPS (médico de familia)</Label>
           <Label className="flex items-center gap-2 font-body text-sm text-ink"><RadioGroupItem value="privado" /> Privado</Label>
