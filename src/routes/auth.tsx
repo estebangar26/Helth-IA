@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { obtenerMiRol } from "@/lib/copiloto/roles.functions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { redirect?: "/medico"; next?: string } => ({
+  validateSearch: (search: Record<string, unknown>): { redirect?: "/medico" | undefined; next?: string | undefined } => ({
     redirect: search["redirect"] === "/medico" ? "/medico" : undefined,
     // Solo rutas internas (p. ej. la autorización de asistentes de IA).
     next: typeof search["next"] === "string" && search["next"].startsWith("/") && !search["next"].startsWith("//") ? search["next"] : undefined,
