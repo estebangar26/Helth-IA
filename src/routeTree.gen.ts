@@ -12,12 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as RestablecerRouteImport } from './routes/restablecer'
 import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMedicoRouteImport } from './routes/_authenticated/medico'
 import { Route as AuthenticatedPacienteRouteImport } from './routes/_authenticated/paciente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedMedicoPacienteIdRouteImport } from './routes/_authenticated/medico.$pacienteId'
 import { Route as AuthenticatedPacienteIndexRouteImport } from './routes/_authenticated/paciente.index'
 import { Route as AuthenticatedPacienteEspecialistasRouteImport } from './routes/_authenticated/paciente.especialistas'
@@ -42,6 +45,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RestablecerRoute = RestablecerRouteImport.update({
   id: '/restablecer',
   path: '/restablecer',
@@ -52,6 +60,12 @@ const ServiciosRoute = ServiciosRouteImport.update({
   path: '/servicios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -71,6 +85,11 @@ const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
   id: '/panel',
   path: '/panel',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedMedicoPacienteIdRoute =
   AuthenticatedMedicoPacienteIdRouteImport.update({
@@ -130,12 +149,15 @@ const LovableEmailTransactionalPreviewRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
   '/paciente/examenes': typeof AuthenticatedPacienteExamenesRoute
@@ -149,11 +171,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
   '/paciente/examenes': typeof AuthenticatedPacienteExamenesRoute
@@ -169,12 +194,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/_authenticated/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/_authenticated/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
   '/_authenticated/paciente/examenes': typeof AuthenticatedPacienteExamenesRoute
@@ -190,12 +218,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/mcp'
     | '/restablecer'
     | '/servicios'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/medico'
     | '/paciente'
     | '/panel'
+    | '/.lovable/oauth/consent'
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
     | '/paciente/examenes'
@@ -209,11 +240,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/mcp'
     | '/restablecer'
     | '/servicios'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/medico'
     | '/panel'
+    | '/.lovable/oauth/consent'
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
     | '/paciente/examenes'
@@ -228,12 +262,15 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/mcp'
     | '/restablecer'
     | '/servicios'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/medico'
     | '/_authenticated/paciente'
     | '/_authenticated/panel'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/medico/$pacienteId'
     | '/_authenticated/paciente/especialistas'
     | '/_authenticated/paciente/examenes'
@@ -249,8 +286,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  McpRoute: typeof McpRoute
   RestablecerRoute: typeof RestablecerRoute
   ServiciosRoute: typeof ServiciosRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -277,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/restablecer': {
       id: '/restablecer'
       path: '/restablecer'
@@ -289,6 +336,13 @@ declare module '@tanstack/react-router' {
       path: '/servicios'
       fullPath: '/servicios'
       preLoaderRoute: typeof ServiciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -318,6 +372,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/panel'
       preLoaderRoute: typeof AuthenticatedPanelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/medico/$pacienteId': {
       id: '/_authenticated/medico/$pacienteId'
@@ -445,8 +506,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  McpRoute: McpRoute,
   RestablecerRoute: RestablecerRoute,
   ServiciosRoute: ServiciosRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport

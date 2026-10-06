@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.5",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://gufnfoovbeqxtnvzgqdf.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "helthia",
+      "version": "0.1.0",
+      "title": "HelthIA"
+    },
+    "tools": [
+      {
+        "name": "listar_examenes",
+        "title": "Listar mis exámenes",
+        "description": "Lista los exámenes de laboratorio del usuario con sus valores principales, del más reciente al más antiguo.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limite": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Máximo de exámenes (por defecto 10)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "listar_medicaciones",
+        "title": "Listar mis medicaciones",
+        "description": "Lista los medicamentos registrados por el usuario con dosis y frecuencia.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "agregar_medicacion",
+        "title": "Agregar medicación",
+        "description": "Registra un medicamento en la lista del usuario.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "nombre": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 120
+            },
+            "dosis": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "frecuencia": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "notas": {
+              "type": "string",
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "nombre"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

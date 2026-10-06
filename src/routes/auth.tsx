@@ -17,8 +17,10 @@ import { Label } from "@/components/ui/label";
 import { obtenerMiRol } from "@/lib/copiloto/roles.functions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { redirect?: "/medico" | undefined; next?: string | undefined } => ({
     redirect: search["redirect"] === "/medico" ? "/medico" : undefined,
+    // Solo rutas internas (p. ej. la autorización de asistentes de IA).
+    next: typeof search["next"] === "string" && search["next"].startsWith("/") && !search["next"].startsWith("//") ? search["next"] : undefined,
   }),
   head: () => ({
     meta: [
@@ -42,7 +44,7 @@ export const Route = createFileRoute("/auth")({
 
 function PantallaAcceso() {
   const navegar = useNavigate();
-  const { redirect } = Route.useSearch();
+  const { redirect, next } = Route.useSearch();
   const [modo, setModo] = useState<"entrar" | "registrar">("entrar");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
@@ -51,6 +53,7 @@ function PantallaAcceso() {
   const [cargando, setCargando] = useState(false);
 
   async function destinoSegunRol(): Promise<"/paciente" | "/medico" | "/admin"> {
+    if (next) { window.location.href = next; return new Promise(() => {}); }
     const r = await obtenerMiRol();
     if (r === "admin") return "/admin";
     return r === "medico" ? "/medico" : "/paciente";
@@ -74,7 +77,7 @@ function PantallaAcceso() {
         email: correo,
         password: clave,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth`,
+          emailRedirectTo: `${window.location.origin}${next ?? "/auth"}`,
           data: { nombre },
         },
       });
@@ -110,7 +113,7 @@ function PantallaAcceso() {
   async function entrarConGoogle() {
     setMensaje(null);
     const resultado = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: next ? `${window.location.origin}${next}` : window.location.origin,
     });
     if (resultado.error) {
       setMensaje("No se pudo ingresar con Google.");
