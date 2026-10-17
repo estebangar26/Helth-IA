@@ -14,7 +14,7 @@ export function CarruselMensajes() {
   const [indice, setIndice] = useState(0);
 
   useEffect(() => {
-    const intervalo = window.setInterval(() => setIndice((actual) => (actual + 1) % mensajes.length), 7000);
+    const intervalo = window.setInterval(() => setIndice((actual) => (actual + 1) % mensajes.length), 15000);
     return () => window.clearInterval(intervalo);
   }, []);
 
