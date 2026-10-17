@@ -20,6 +20,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedMedicoRouteImport } from './routes/_authenticated/medico'
 import { Route as AuthenticatedPacienteRouteImport } from './routes/_authenticated/paciente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as ApiAsistenteRouteImport } from './routes/api/asistente'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedMedicoPacienteIdRouteImport } from './routes/_authenticated/medico.$pacienteId'
 import { Route as AuthenticatedPacienteIndexRouteImport } from './routes/_authenticated/paciente.index'
@@ -87,6 +88,11 @@ const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
   id: '/panel',
   path: '/panel',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiAsistenteRoute = ApiAsistenteRouteImport.update({
+  id: '/api/asistente',
+  path: '/api/asistente',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
+  '/api/asistente': typeof ApiAsistenteRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
+  '/api/asistente': typeof ApiAsistenteRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/_authenticated/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/_authenticated/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
+  '/api/asistente': typeof ApiAsistenteRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/_authenticated/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
@@ -244,6 +253,7 @@ export interface FileRouteTypes {
     | '/medico'
     | '/paciente'
     | '/panel'
+    | '/api/asistente'
     | '/.lovable/oauth/consent'
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/medico'
     | '/panel'
+    | '/api/asistente'
     | '/.lovable/oauth/consent'
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/_authenticated/medico'
     | '/_authenticated/paciente'
     | '/_authenticated/panel'
+    | '/api/asistente'
     | '/.lovable/oauth/consent'
     | '/_authenticated/medico/$pacienteId'
     | '/_authenticated/paciente/especialistas'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   RestablecerRoute: typeof RestablecerRoute
   ServiciosRoute: typeof ServiciosRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  ApiAsistenteRoute: typeof ApiAsistenteRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -398,6 +411,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/panel'
       preLoaderRoute: typeof AuthenticatedPanelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/asistente': {
+      id: '/api/asistente'
+      path: '/api/asistente'
+      fullPath: '/api/asistente'
+      preLoaderRoute: typeof ApiAsistenteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
@@ -551,6 +571,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServiciosRoute: ServiciosRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  ApiAsistenteRoute: ApiAsistenteRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
