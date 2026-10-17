@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import { Encabezado } from "@/components/copiloto/Encabezado";
 import { Fondo } from "@/components/copiloto/Fondo";
@@ -40,7 +41,14 @@ function EspacioPaciente() {
         />
         <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
           <NavegacionPaciente paciente={panel.paciente} />
-          <div className="min-w-0"><Outlet /></div>
+          <div className="min-w-0">
+            {panel.paciente.documento === "Sin documento registrado" && (
+              <p role="status" className="mb-4 rounded-lg border border-brand-blue/30 bg-brand-blue/5 p-4 font-body text-sm text-ink">
+                Antes de usar las funciones de HelthIA, recuerde <Link to="/paciente/perfil" className="font-semibold text-brand-blue underline">completar su perfil</Link>.
+              </p>
+            )}
+            <Outlet />
+          </div>
         </div>
       </div>
     </>

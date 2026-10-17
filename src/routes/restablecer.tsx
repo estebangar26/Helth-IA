@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Fondo } from "@/components/copiloto/Fondo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { CampoClave, ReglasClave, claveCumple } from "@/components/copiloto/ClaveSegura";
 
 export const Route = createFileRoute("/restablecer")({
   head: () => ({ meta: [
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/restablecer")({
 function Restablecer() {
   const navegar = useNavigate();
   const [clave, setClave] = useState("");
+  const [clave2, setClave2] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [listo, setListo] = useState(false);
 
@@ -41,7 +42,8 @@ function Restablecer() {
   async function guardar(e: React.FormEvent) {
     e.preventDefault();
     if (!listo) return setMsg("Abriendo el enlace… espere un momento e intente de nuevo.");
-    if (clave.length < 8) return setMsg("Use al menos 8 caracteres.");
+    if (!claveCumple(clave)) return setMsg("La contraseña no cumple los requisitos de seguridad.");
+    if (clave !== clave2) return setMsg("Las contraseñas no coinciden.");
     const { error } = await supabase.auth.updateUser({ password: clave });
     if (error) {
       const t = `${error.code ?? ""} ${error.message}`.toLowerCase();
@@ -59,7 +61,9 @@ function Restablecer() {
       <Fondo />
       <form onSubmit={guardar} className="mx-auto mt-24 max-w-md space-y-4 rounded-lg border border-clinical-border bg-panel p-6 shadow-md">
         <h1 className="font-display text-2xl font-semibold text-ink">Nueva contraseña</h1>
-        <Input type="password" required value={clave} onChange={(e) => setClave(e.target.value)} placeholder="Nueva contraseña" />
+        <CampoClave etiqueta="Nueva contraseña" valor={clave} onChange={setClave} />
+        <ReglasClave clave={clave} />
+        <CampoClave etiqueta="Confirmar contraseña" valor={clave2} onChange={setClave2} />
         {msg && <p className="font-body text-sm text-alert">{msg}</p>}
         <Button type="submit" className="w-full">Guardar</Button>
         <Link to="/auth" search={{ redirect: undefined }} className="block text-center font-body text-sm text-ink-dim">Volver</Link>

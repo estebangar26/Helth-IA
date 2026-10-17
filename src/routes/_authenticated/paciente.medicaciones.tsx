@@ -1,6 +1,7 @@
 /** FRONTEND · Registro de medicaciones del paciente (protegido por RLS: solo las propias). */
 import { createFileRoute } from "@tanstack/react-router";
-import { Pill, Plus, Trash2 } from "lucide-react";
+import { Pencil, Pill, Plus, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,7 @@ function Medicaciones() {
   const [lista, setLista] = useState<Med[]>([]);
   const [f, setF] = useState({ nombre: "", dosis: "", frecuencia: "", notas: "" });
   const [msg, setMsg] = useState<string | null>(null);
+  const [editando, setEditando] = useState<string | null>(null);
 
   async function cargar() {
     const { data } = await supabase.from("medicaciones").select("id,nombre,dosis,frecuencia,notas").order("creado_en", { ascending: false });
@@ -37,10 +39,14 @@ function Medicaciones() {
     e.preventDefault();
     const { data: u } = await supabase.auth.getUser();
     if (!u.user || f.nombre.trim().length < 2) return setMsg("Escriba el nombre del medicamento.");
-    const { error } = await supabase.from("medicaciones").insert({ user_id: u.user.id, nombre: f.nombre.trim().slice(0, 120), dosis: f.dosis.trim().slice(0, 80) || null, frecuencia: f.frecuencia.trim().slice(0, 80) || null, notas: f.notas.trim().slice(0, 300) || null });
+    const fila = { nombre: f.nombre.trim().slice(0, 120), dosis: f.dosis.trim().slice(0, 80) || null, frecuencia: f.frecuencia.trim().slice(0, 80) || null, notas: f.notas.trim().slice(0, 300) || null };
+    const { error } = editando
+      ? await supabase.from("medicaciones").update(fila).eq("id", editando)
+      : await supabase.from("medicaciones").insert({ user_id: u.user.id, ...fila });
     if (error) return setMsg("No se pudo guardar.");
     setF({ nombre: "", dosis: "", frecuencia: "", notas: "" });
-    setMsg("Medicamento guardado.");
+    setMsg(editando ? "Cambios guardados." : "Medicamento guardado.");
+    setEditando(null);
     void cargar();
   }
 
@@ -62,14 +68,32 @@ function Medicaciones() {
           <div className="grid gap-3 sm:grid-cols-2">{campo("dosis", "Dosis (ej. 850 mg)")}{campo("frecuencia", "Frecuencia (ej. cada 12 horas)")}</div>
           {campo("notas", "Notas (opcional)")}
           {msg && <p role="status" className="font-body text-xs text-ink-dim">{msg}</p>}
-          <Button type="submit"><Plus aria-hidden="true" /> Agregar</Button>
+          <div className="flex gap-2">
+            <Button type="submit">{editando ? <><Pencil aria-hidden="true" /> Guardar cambios</> : <><Plus aria-hidden="true" /> Agregar</>}</Button>
+            {editando && <Button type="button" variant="outline" onClick={() => { setEditando(null); setF({ nombre: "", dosis: "", frecuencia: "", notas: "" }); }}>Cancelar</Button>}
+          </div>
         </form>
       </section>
       <section className="space-y-2">
         {lista.length === 0 ? <p className="font-body text-sm text-ink-dim">Aún no ha registrado medicamentos.</p> : lista.map((m) => (
           <div key={m.id} className="flex items-start justify-between gap-3 rounded-lg border border-clinical-border bg-panel p-4">
             <div><p className="font-body font-semibold text-ink">{m.nombre}</p><p className="font-body text-sm text-ink-dim">{[m.dosis, m.frecuencia].filter(Boolean).join(" · ")}</p>{m.notas && <p className="font-body text-xs text-ink-dim">{m.notas}</p>}</div>
-            <Button variant="ghost" size="icon" aria-label={`Borrar ${m.nombre}`} onClick={() => borrar(m.id)}><Trash2 /></Button>
+            <div className="flex shrink-0">
+              <Button variant="ghost" size="icon" aria-label={`Editar ${m.nombre}`} onClick={() => { setEditando(m.id); setF({ nombre: m.nombre, dosis: m.dosis ?? "", frecuencia: m.frecuencia ?? "", notas: m.notas ?? "" }); window.scrollTo({ top: 0, behavior: "smooth" }); }}><Pencil /></Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild><Button variant="ghost" size="icon" aria-label={`Borrar ${m.nombre}`}><Trash2 /></Button></AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Eliminar {m.nombre}?</AlertDialogTitle>
+                    <AlertDialogDescription>Este medicamento se borrará de su lista. Esta acción no se puede deshacer.</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => borrar(m.id)}>Eliminar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
         ))}
       </section>

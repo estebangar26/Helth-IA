@@ -42,8 +42,9 @@ export function PerfilAtencion({ paciente }: { paciente: Paciente }) {
     <section className="rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-3"><UserRound className="text-brand-blue" aria-hidden="true" /><div><p className="font-body text-xs font-semibold uppercase text-brand-blue">Mi perfil</p><h2 className="font-display text-lg font-bold text-ink">Tipo de atención</h2></div></div>
       <form onSubmit={enviar} className="mt-5 space-y-4">
-        <div className="grid gap-3 sm:grid-cols-[1fr_120px]"><Campo etiqueta="Nombre completo" valor={nombre} onChange={setNombre} /><Campo etiqueta="Edad" valor={edad} onChange={(v) => setEdad(v.replace(/\D/g, "").slice(0, 3))} /></div>
+        <div className="grid gap-3 sm:grid-cols-[1fr_120px]"><Campo etiqueta="Nombre completo (obligatorio)" valor={nombre} onChange={setNombre} /><Campo etiqueta="Edad (opcional)" valor={edad} onChange={(v) => setEdad(v.replace(/\D/g, "").slice(0, 3))} /></div>
         <Campo etiqueta="Documento de identidad (obligatorio)" valor={documento} onChange={setDocumento} />
+        <div><p className="font-body text-xs font-semibold text-ink-dim">¿Cómo recibe su atención médica? (obligatorio)</p><p className="mt-1 font-body text-xs text-ink-dim">Elija EPS si lo atiende su entidad de salud con un médico de familia, o Privado si consulta por su cuenta con un médico particular. Con Privado podrá ver el directorio de especialistas.</p></div>
         <RadioGroup value={tipo} onValueChange={(valor) => setTipo(valor as "eps" | "privado")}>
           <Label className="flex items-center gap-2 font-body text-sm text-ink"><RadioGroupItem value="eps" /> EPS (médico de familia)</Label>
           <Label className="flex items-center gap-2 font-body text-sm text-ink"><RadioGroupItem value="privado" /> Privado</Label>

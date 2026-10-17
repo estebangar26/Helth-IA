@@ -14,6 +14,7 @@ import { Fondo } from "@/components/copiloto/Fondo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CampoClave, ReglasClave, claveCumple } from "@/components/copiloto/ClaveSegura";
 import { obtenerMiRol } from "@/lib/copiloto/roles.functions";
 
 export const Route = createFileRoute("/auth")({
@@ -49,6 +50,7 @@ function PantallaAcceso() {
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
   const [nombre, setNombre] = useState("");
+  const [clave2, setClave2] = useState("");
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
 
@@ -73,6 +75,8 @@ function PantallaAcceso() {
     setMensaje(null);
 
     if (modo === "registrar") {
+      if (!claveCumple(clave)) { setCargando(false); return setMensaje("La contraseña no cumple los requisitos de seguridad."); }
+      if (clave !== clave2) { setCargando(false); return setMensaje("Las contraseñas no coinciden."); }
       const { data, error } = await supabase.auth.signUp({
         email: correo,
         password: clave,
@@ -152,13 +156,12 @@ function PantallaAcceso() {
               />
             )}
             <Campo etiqueta="Correo" valor={correo} onChange={setCorreo} tipo="email" requerido />
-            <Campo
-              etiqueta="Contraseña"
-              valor={clave}
-              onChange={setClave}
-              tipo="password"
-              requerido
-            />
+            <CampoClave etiqueta="Contraseña" valor={clave} onChange={setClave} />
+            {modo === "registrar" && (<>
+              <ReglasClave clave={clave} />
+              <CampoClave etiqueta="Confirmar contraseña" valor={clave2} onChange={setClave2} />
+              <p className="font-body text-xs text-ink-dim">Después de crear la cuenta, complete su perfil (documento de identidad y tipo de atención) para poder subir exámenes.</p>
+            </>)}
 
             {mensaje && <p className="font-body text-sm text-alert">{mensaje}</p>}
 
