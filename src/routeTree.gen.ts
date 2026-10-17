@@ -29,6 +29,8 @@ import { Route as AuthenticatedPacienteMedicacionesRouteImport } from './routes/
 import { Route as AuthenticatedPacientePerfilRouteImport } from './routes/_authenticated/paciente.perfil'
 import { Route as AuthenticatedPacienteRecomendacionesRouteImport } from './routes/_authenticated/paciente.recomendaciones'
 import { Route as AuthenticatedPacienteResultadosRouteImport } from './routes/_authenticated/paciente.resultados'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
@@ -139,6 +141,16 @@ const AuthenticatedPacienteResultadosRoute =
     path: '/resultados',
     getParentRoute: () => AuthenticatedPacienteRoute,
   } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -166,6 +178,8 @@ export interface FileRoutesByFullPath {
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/paciente/': typeof AuthenticatedPacienteIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
@@ -187,6 +201,8 @@ export interface FileRoutesByTo {
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/paciente': typeof AuthenticatedPacienteIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
@@ -211,6 +227,8 @@ export interface FileRoutesById {
   '/_authenticated/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/_authenticated/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
@@ -235,6 +253,8 @@ export interface FileRouteTypes {
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
     | '/paciente/'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -256,6 +276,8 @@ export interface FileRouteTypes {
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
     | '/paciente'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
   id:
     | '__root__'
@@ -279,6 +301,8 @@ export interface FileRouteTypes {
     | '/_authenticated/paciente/recomendaciones'
     | '/_authenticated/paciente/resultados'
     | '/_authenticated/paciente/'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
@@ -291,6 +315,8 @@ export interface RootRouteChildren {
   ServiciosRoute: typeof ServiciosRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -436,6 +462,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPacienteResultadosRouteImport
       parentRoute: typeof AuthenticatedPacienteRoute
     }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -512,6 +552,8 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
