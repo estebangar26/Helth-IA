@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const mensajes = [
-  { titulo: "Avances en monitoreo", texto: "La investigación continúa mejorando el seguimiento temprano de biomarcadores.", icono: FlaskConical },
+  { titulo: "Avances en monitoreo", texto: "Medir sus valores con regularidad ayuda a detectar a tiempo cambios en su salud.", icono: FlaskConical },
   { titulo: "Medicamentos a tiempo", texto: "Mantenga los horarios indicados por su profesional para favorecer la continuidad del tratamiento.", icono: Pill },
   { titulo: "Adherencia al tratamiento", texto: "Seguir el plan acordado ayuda a obtener resultados comparables y tomar mejores decisiones.", icono: Pill },
   { titulo: "Ciencia y prevención", texto: "Los controles periódicos permiten conversar con su equipo de salud sobre cambios relevantes.", icono: FlaskConical },
@@ -14,7 +14,7 @@ export function CarruselMensajes() {
   const [indice, setIndice] = useState(0);
 
   useEffect(() => {
-    const intervalo = window.setInterval(() => setIndice((actual) => (actual + 1) % mensajes.length), 7000);
+    const intervalo = window.setInterval(() => setIndice((actual) => (actual + 1) % mensajes.length), 15000);
     return () => window.clearInterval(intervalo);
   }, []);
 
