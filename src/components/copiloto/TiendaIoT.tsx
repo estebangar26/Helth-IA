@@ -6,7 +6,7 @@ import { productosIoT } from "@/lib/copiloto/productos-iot";
 
 export function TiendaIoT() {
   const [proveedor, setProveedor] = useState("Todos");
-  const proveedores = ["Todos", "Amazon", "Alibaba", "Medtronic", "Siemens", "Dräger"];
+  const proveedores = ["Todos", ...new Set(productosIoT.map((producto) => producto.proveedor))];
   const productos = productosIoT.filter((producto) => proveedor === "Todos" || producto.proveedor === proveedor);
 
   return (
