@@ -1,5 +1,6 @@
 # Hoja de ruta
 
+- [x] Añadir «Conecta tus dispositivos de IoTM» y acceso local al monitor ESP32-S3, aclarando que el código actual no sincroniza con HelthIA.
 - [x] Añadir pestañas Paciente y Médico a la barra principal conservando los permisos.
 - [x] Ampliar la tienda con fotografías reales de Siemens Healthineers, Abbott, Boston Scientific y Johnson & Johnson.
 

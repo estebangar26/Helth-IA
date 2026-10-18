@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DispositivosRouteImport } from './routes/dispositivos'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as RestablecerRouteImport } from './routes/restablecer'
 import { Route as ServiciosRouteImport } from './routes/servicios'
@@ -47,6 +48,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DispositivosRoute = DispositivosRouteImport.update({
+  id: '/dispositivos',
+  path: '/dispositivos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -173,6 +179,7 @@ const LovableEmailTransactionalPreviewRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/dispositivos': typeof DispositivosRoute
   '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/dispositivos': typeof DispositivosRoute
   '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/dispositivos': typeof DispositivosRoute
   '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
@@ -254,6 +263,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/dispositivos'
     | '/mcp'
     | '/restablecer'
     | '/servicios'
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/dispositivos'
     | '/mcp'
     | '/restablecer'
     | '/servicios'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/dispositivos'
     | '/mcp'
     | '/restablecer'
     | '/servicios'
@@ -334,6 +346,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DispositivosRoute: typeof DispositivosRoute
   McpRoute: typeof McpRoute
   RestablecerRoute: typeof RestablecerRoute
   ServiciosRoute: typeof ServiciosRoute
@@ -367,6 +380,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dispositivos': {
+      id: '/dispositivos'
+      path: '/dispositivos'
+      fullPath: '/dispositivos'
+      preLoaderRoute: typeof DispositivosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -586,6 +606,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DispositivosRoute: DispositivosRoute,
   McpRoute: McpRoute,
   RestablecerRoute: RestablecerRoute,
   ServiciosRoute: ServiciosRoute,
