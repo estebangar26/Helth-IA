@@ -21,7 +21,7 @@ export function NavegacionPublica() {
           </span>
         </Link>
 
-        <nav className="order-3 flex w-full items-center gap-1 border-t border-clinical-border pt-2 sm:order-none sm:w-auto sm:border-0 sm:pt-0" aria-label="Navegación principal">
+        <nav className="order-3 flex w-full flex-wrap items-center gap-1 border-t border-clinical-border pt-2 lg:order-none lg:w-auto lg:border-0 lg:pt-0" aria-label="Navegación principal">
           <Link
             to="/"
             activeOptions={{ exact: true }}
@@ -43,6 +43,20 @@ export function NavegacionPublica() {
             activeProps={{ className: "bg-secondary text-primary" }}
           >
             Tienda
+          </Link>
+          <Link
+            to="/paciente"
+            className="rounded-md px-3 py-2 font-body text-sm font-medium text-ink-dim transition-colors hover:bg-secondary hover:text-ink"
+            activeProps={{ className: "bg-secondary text-primary" }}
+          >
+            Paciente
+          </Link>
+          <Link
+            to="/medico"
+            className="rounded-md px-3 py-2 font-body text-sm font-medium text-ink-dim transition-colors hover:bg-secondary hover:text-ink"
+            activeProps={{ className: "bg-secondary text-primary" }}
+          >
+            Médico
           </Link>
         </nav>
 
