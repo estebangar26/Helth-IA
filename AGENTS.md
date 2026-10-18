@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep the public device catalog on `/tienda`, separate from the homepage, with provider links and CDN asset pointers; this isolates shopping from clinical workflows without implying a live commerce integration.
+- Derive store provider filters from the product catalog so new manufacturers remain discoverable without maintaining a second list.
