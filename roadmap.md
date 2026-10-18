@@ -1,7 +1,7 @@
 # Hoja de ruta
 
-- [ ] Añadir pestañas Paciente y Médico a la barra principal conservando los permisos.
-- [ ] Ampliar la tienda con fotografías reales de Siemens Healthineers, Abbott, Boston Scientific y Johnson & Johnson.
+- [x] Añadir pestañas Paciente y Médico a la barra principal conservando los permisos.
+- [x] Ampliar la tienda con fotografías reales de Siemens Healthineers, Abbott, Boston Scientific y Johnson & Johnson.
 
 - [x] Separar la tienda en su pestaña y añadir productos, fotografías reales y enlaces a proveedores.
 
