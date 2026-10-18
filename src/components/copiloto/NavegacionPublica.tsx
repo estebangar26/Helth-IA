@@ -37,6 +37,13 @@ export function NavegacionPublica() {
           >
             Servicios
           </Link>
+          <Link
+            to="/tienda"
+            className="rounded-md px-3 py-2 font-body text-sm font-medium text-ink-dim transition-colors hover:bg-secondary hover:text-ink"
+            activeProps={{ className: "bg-secondary text-primary" }}
+          >
+            Tienda
+          </Link>
         </nav>
 
         <Button asChild size="sm">
