@@ -1,6 +1,6 @@
 # Hoja de ruta
 
-- [ ] Separar la tienda en su pestaña y añadir productos, fotografías reales y enlaces a proveedores.
+- [x] Separar la tienda en su pestaña y añadir productos, fotografías reales y enlaces a proveedores.
 
 - [x] Crear permisos médicos revocables y de solo lectura.
 - [x] Crear funciones seguras de invitación, aceptación y consulta compartida.
