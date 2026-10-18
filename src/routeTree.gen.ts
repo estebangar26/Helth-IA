@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as RestablecerRouteImport } from './routes/restablecer'
 import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as TiendaRouteImport } from './routes/tienda'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedMedicoRouteImport } from './routes/_authenticated/medico'
@@ -61,6 +62,11 @@ const RestablecerRoute = RestablecerRouteImport.update({
 const ServiciosRoute = ServiciosRouteImport.update({
   id: '/servicios',
   path: '/servicios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TiendaRoute = TiendaRouteImport.update({
+  id: '/tienda',
+  path: '/tienda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/medico': typeof AuthenticatedMedicoRouteWithChildren
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/restablecer': typeof RestablecerRoute
   '/servicios': typeof ServiciosRoute
+  '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/medico': typeof AuthenticatedMedicoRouteWithChildren
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/restablecer'
     | '/servicios'
+    | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/medico'
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/restablecer'
     | '/servicios'
+    | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/medico'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/restablecer'
     | '/servicios'
+    | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/medico'
@@ -325,6 +337,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   RestablecerRoute: typeof RestablecerRoute
   ServiciosRoute: typeof ServiciosRoute
+  TiendaRoute: typeof TiendaRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiAsistenteRoute: typeof ApiAsistenteRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -375,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/servicios'
       fullPath: '/servicios'
       preLoaderRoute: typeof ServiciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tienda': {
+      id: '/tienda'
+      path: '/tienda'
+      fullPath: '/tienda'
+      preLoaderRoute: typeof TiendaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/oauth-protected-resource': {
@@ -569,6 +589,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   RestablecerRoute: RestablecerRoute,
   ServiciosRoute: ServiciosRoute,
+  TiendaRoute: TiendaRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiAsistenteRoute: ApiAsistenteRoute,
