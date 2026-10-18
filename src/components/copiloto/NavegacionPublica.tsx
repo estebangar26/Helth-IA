@@ -58,6 +58,13 @@ export function NavegacionPublica() {
           >
             Médico
           </Link>
+          <Link
+            to="/dispositivos"
+            className="rounded-md px-3 py-2 font-body text-sm font-medium text-ink-dim transition-colors hover:bg-secondary hover:text-ink"
+            activeProps={{ className: "bg-secondary text-primary" }}
+          >
+            Conecta tus dispositivos de IoTM
+          </Link>
         </nav>
 
         <Button asChild size="sm">
