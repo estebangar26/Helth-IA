@@ -195,7 +195,10 @@ export async function obtenerPanelReal(
     nombre: perfil?.nombre ?? "Paciente",
     edad: perfil?.edad ?? 0,
     documento: perfil?.documento ?? "Sin documento registrado",
-    actualizado: ultimo ? formatearFechaCorta(ultimo.fecha) : "sin exámenes",
+    // Última carga real a la plataforma (día y hora de Colombia).
+    actualizado: examenes.length
+      ? new Date(examenes.reduce((m, e) => (String(e["created_at"]) > m ? String(e["created_at"]) : m), "")).toLocaleString("es-CO", { timeZone: "America/Bogota", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" })
+      : "sin exámenes",
     tipoAtencion: perfil?.tipo_atencion === "eps" ? "eps" : "privado",
     epsNombre: perfil?.eps_nombre ?? null,
     medicoFamilia: perfil?.medico_familia ?? null,
