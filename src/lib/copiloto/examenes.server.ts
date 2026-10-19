@@ -254,6 +254,12 @@ export async function obtenerPanelReal(
   const examenes = (filas ?? []) as FilaExamen[];
   const ultimo = examenes[0];
 
+  // Resultados del catálogo ampliado (tabla hija); vacío si aún no hay.
+  const ids = examenes.map((e) => e.id);
+  const { data: filasResultados } = ids.length
+    ? await supabase.from("resultados_biomarcador").select("examen_id,codigo,nombre,categoria,valor,unidad,referencia_texto").in("examen_id", ids)
+    : { data: [] as FilaResultado[] };
+
   const paciente: Paciente = {
     nombre: perfil?.nombre ?? "Paciente",
     edad: perfil?.edad ?? 0,
@@ -293,5 +299,6 @@ export async function obtenerPanelReal(
     // La línea muestra primero lo último que se cargó a la plataforma.
     examenes: [...examenes].sort((a, b) => String(b["created_at"]).localeCompare(String(a["created_at"]))).map(filaAExamen),
     recomendaciones: ultimo ? (Array.isArray(ultimo["recomendaciones"]) && (ultimo["recomendaciones"] as string[]).length ? (ultimo["recomendaciones"] as string[]) : obtenerRecomendaciones()) : [],
+    resultados: construirResultadosCatalogo(examenes, (filasResultados ?? []) as FilaResultado[]),
   };
 }
