@@ -128,6 +128,24 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
 
       if (error || !fila) throw new Error("No se pudo guardar el examen analizado.");
 
+      // Guarda los analitos del catálogo ampliado en la tabla hija.
+      if (extraido.resultados.length > 0) {
+        const { ANALITO_POR_CODIGO } = await import("./catalogo-resultados");
+        const filasResultados = extraido.resultados.map((r) => ({
+          examen_id: fila.id,
+          codigo: r.codigo,
+          nombre: ANALITO_POR_CODIGO[r.codigo]?.nombre ?? r.codigo,
+          categoria: ANALITO_POR_CODIGO[r.codigo]?.categoria ?? "glucosa",
+          valor: r.valor,
+          unidad: r.unidad,
+          referencia_texto: r.referencia,
+        }));
+        const { error: errorResultados } = await context.supabase
+          .from("resultados_biomarcador")
+          .insert(filasResultados);
+        if (errorResultados) console.error("No se guardaron los resultados del catálogo:", errorResultados.message);
+      }
+
       // Revisa los valores y avisa a los médicos autorizados si hay alteraciones.
       const { revisarAlteraciones, notificarMedicos } = await import("./alertas.server");
       const revision = revisarAlteraciones(extraido.valores);
