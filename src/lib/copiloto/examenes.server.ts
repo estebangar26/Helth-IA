@@ -141,12 +141,15 @@ function construirBiomarcadores(filas: FilaExamen[]): Biomarcador[] {
     const indice = filas.findIndex((fila) => numero(fila, def.campo) != null);
     if (indice === -1) continue;
     const valor = numero(filas[indice]!, def.campo)!;
+    // El grupo (tipo de examen) sale de la fila que aportó el valor.
+    const tipoFila = (filas[indice]!.tipo_examen ?? "general") as TipoExamen;
     tarjetas.push({
       nombre: def.etiqueta,
       valor: String(valor),
       ...(def.unidad ? { unidad: def.unidad } : {}),
       nota: `${tendencia(def.campo, valor, def.unidad)} · ${textoRango(def)}`,
       nivel: leerMarcador(def, valor),
+      grupo: ETIQUETA_TIPO[tipoFila] ?? ETIQUETA_TIPO.general,
     });
   }
 
@@ -156,11 +159,13 @@ function construirBiomarcadores(filas: FilaExamen[]): Biomarcador[] {
   if (conPresion) {
     const sistolica = numero(conPresion, "presion_sistolica")!;
     const diastolica = numero(conPresion, "presion_diastolica")!;
+    const tipoPresion = (conPresion.tipo_examen ?? "general") as TipoExamen;
     tarjetas.push({
       nombre: "Presión arterial",
       valor: `${sistolica}/${diastolica}`,
       nota: "Meta < 130/80 mmHg",
       nivel: nivelPresion(sistolica, diastolica),
+      grupo: ETIQUETA_TIPO[tipoPresion] ?? ETIQUETA_TIPO.general,
     });
   }
 

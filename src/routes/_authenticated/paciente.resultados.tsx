@@ -26,7 +26,7 @@ function Resultados() {
         <Biomarcadores biomarcadores={panel.biomarcadores} />
       ) : (
         <p className="rounded-lg border border-dashed border-clinical-border bg-panel p-6 font-body text-sm text-ink-dim">
-          Los biomarcadores aparecerán cuando registre su primer examen.
+          Las variables fisiológicas aparecerán cuando registre su primer examen.
         </p>
       )}
       <PanelRiesgo evaluacion={panel.evaluacion} />
