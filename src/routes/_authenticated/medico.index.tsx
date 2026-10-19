@@ -6,7 +6,7 @@ import { ArrowRight, ClipboardList, Stethoscope } from "lucide-react";
 import { Fondo } from "@/components/copiloto/Fondo";
 import { obtenerPacientesCompartidos } from "@/lib/copiloto/accesos.functions";
 
-export const Route = createFileRoute("/_authenticated/medico")({
+export const Route = createFileRoute("/_authenticated/medico/")({
   loader: () => obtenerPacientesCompartidos(),
   head: () => ({
     meta: [
