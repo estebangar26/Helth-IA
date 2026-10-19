@@ -32,6 +32,8 @@ export interface Biomarcador {
   /** Texto corto que explica la tendencia y la meta clínica. */
   nota: string;
   nivel: NivelRiesgo;
+  /** Etiqueta del tipo de examen del que proviene la variable (p. ej. "Testosterona"). */
+  grupo?: string;
 }
 
 /** Un valor individual dentro de un examen de laboratorio. */
