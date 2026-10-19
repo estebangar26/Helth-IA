@@ -69,6 +69,29 @@ export interface EvaluacionRiesgo {
   reglasAplicadas: string[];
 }
 
+/** Un punto del historial de una variable de laboratorio. */
+export interface PuntoHistorial {
+  /** Fecha del examen ya formateada en español. */
+  fecha: string;
+  valor: number;
+}
+
+/** Un resultado individual del catálogo, con su historial real. */
+export interface ResultadoCatalogo {
+  codigo: string;
+  nombre: string;
+  categoria: string;
+  valor: number;
+  unidad: string | null;
+  /** Rango de referencia tal como lo reportó el laboratorio (texto), o null. */
+  referencia: string | null;
+  /** Fecha del examen más reciente que aportó el valor. */
+  fecha: string;
+  examenId: string;
+  /** Historial real ordenado de más antiguo a más reciente. */
+  historial: PuntoHistorial[];
+}
+
 /** Todo lo que la pantalla principal necesita en una sola respuesta. */
 export interface PanelPaciente {
   paciente: Paciente;
@@ -76,4 +99,6 @@ export interface PanelPaciente {
   biomarcadores: Biomarcador[];
   examenes: Examen[];
   recomendaciones: string[];
+  /** Resultados del catálogo ampliado (pestaña Resultados); vacío si no hay. */
+  resultados: ResultadoCatalogo[];
 }
