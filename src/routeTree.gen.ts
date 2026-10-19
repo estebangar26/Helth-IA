@@ -20,11 +20,11 @@ import { Route as SobreNosotrosRouteImport } from './routes/sobre-nosotros'
 import { Route as TiendaRouteImport } from './routes/tienda'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedMedicoRouteImport } from './routes/_authenticated/medico'
 import { Route as AuthenticatedPacienteRouteImport } from './routes/_authenticated/paciente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as ApiAsistenteRouteImport } from './routes/api/asistente'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as AuthenticatedMedicoIndexRouteImport } from './routes/_authenticated/medico.index'
 import { Route as AuthenticatedMedicoPacienteIdRouteImport } from './routes/_authenticated/medico.$pacienteId'
 import { Route as AuthenticatedPacienteIndexRouteImport } from './routes/_authenticated/paciente.index'
 import { Route as AuthenticatedPacienteEspecialistasRouteImport } from './routes/_authenticated/paciente.especialistas'
@@ -92,11 +92,6 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedMedicoRoute = AuthenticatedMedicoRouteImport.update({
-  id: '/medico',
-  path: '/medico',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedPacienteRoute = AuthenticatedPacienteRouteImport.update({
   id: '/paciente',
   path: '/paciente',
@@ -117,11 +112,17 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMedicoIndexRoute =
+  AuthenticatedMedicoIndexRouteImport.update({
+    id: '/medico/',
+    path: '/medico/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMedicoPacienteIdRoute =
   AuthenticatedMedicoPacienteIdRouteImport.update({
-    id: '/$pacienteId',
-    path: '/$pacienteId',
-    getParentRoute: () => AuthenticatedMedicoRoute,
+    id: '/medico/$pacienteId',
+    path: '/medico/$pacienteId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedPacienteIndexRoute =
   AuthenticatedPacienteIndexRouteImport.update({
@@ -193,7 +194,6 @@ export interface FileRoutesByFullPath {
   '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
@@ -205,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
+  '/medico/': typeof AuthenticatedMedicoIndexRoute
   '/paciente/': typeof AuthenticatedPacienteIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -221,7 +222,6 @@ export interface FileRoutesByTo {
   '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -232,6 +232,7 @@ export interface FileRoutesByTo {
   '/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
+  '/medico': typeof AuthenticatedMedicoIndexRoute
   '/paciente': typeof AuthenticatedPacienteIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -250,7 +251,6 @@ export interface FileRoutesById {
   '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/medico': typeof AuthenticatedMedicoRouteWithChildren
   '/_authenticated/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
@@ -262,6 +262,7 @@ export interface FileRoutesById {
   '/_authenticated/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/_authenticated/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/_authenticated/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
+  '/_authenticated/medico/': typeof AuthenticatedMedicoIndexRoute
   '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -280,7 +281,6 @@ export interface FileRouteTypes {
     | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
-    | '/medico'
     | '/paciente'
     | '/panel'
     | '/api/asistente'
@@ -292,6 +292,7 @@ export interface FileRouteTypes {
     | '/paciente/perfil'
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
+    | '/medico/'
     | '/paciente/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -308,7 +309,6 @@ export interface FileRouteTypes {
     | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
-    | '/medico'
     | '/panel'
     | '/api/asistente'
     | '/.lovable/oauth/consent'
@@ -319,6 +319,7 @@ export interface FileRouteTypes {
     | '/paciente/perfil'
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
+    | '/medico'
     | '/paciente'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -336,7 +337,6 @@ export interface FileRouteTypes {
     | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
-    | '/_authenticated/medico'
     | '/_authenticated/paciente'
     | '/_authenticated/panel'
     | '/api/asistente'
@@ -348,6 +348,7 @@ export interface FileRouteTypes {
     | '/_authenticated/paciente/perfil'
     | '/_authenticated/paciente/recomendaciones'
     | '/_authenticated/paciente/resultados'
+    | '/_authenticated/medico/'
     | '/_authenticated/paciente/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -451,13 +452,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/medico': {
-      id: '/_authenticated/medico'
-      path: '/medico'
-      fullPath: '/medico'
-      preLoaderRoute: typeof AuthenticatedMedicoRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/paciente': {
       id: '/_authenticated/paciente'
       path: '/paciente'
@@ -486,12 +480,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/medico/': {
+      id: '/_authenticated/medico/'
+      path: '/medico'
+      fullPath: '/medico/'
+      preLoaderRoute: typeof AuthenticatedMedicoIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/medico/$pacienteId': {
       id: '/_authenticated/medico/$pacienteId'
-      path: '/$pacienteId'
+      path: '/medico/$pacienteId'
       fullPath: '/medico/$pacienteId'
       preLoaderRoute: typeof AuthenticatedMedicoPacienteIdRouteImport
-      parentRoute: typeof AuthenticatedMedicoRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/paciente/': {
       id: '/_authenticated/paciente/'
@@ -566,17 +567,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedMedicoRouteChildren {
-  AuthenticatedMedicoPacienteIdRoute: typeof AuthenticatedMedicoPacienteIdRoute
-}
-
-const AuthenticatedMedicoRouteChildren: AuthenticatedMedicoRouteChildren = {
-  AuthenticatedMedicoPacienteIdRoute: AuthenticatedMedicoPacienteIdRoute,
-}
-
-const AuthenticatedMedicoRouteWithChildren =
-  AuthenticatedMedicoRoute._addFileChildren(AuthenticatedMedicoRouteChildren)
-
 interface AuthenticatedPacienteRouteChildren {
   AuthenticatedPacienteEspecialistasRoute: typeof AuthenticatedPacienteEspecialistasRoute
   AuthenticatedPacienteExamenesRoute: typeof AuthenticatedPacienteExamenesRoute
@@ -607,16 +597,18 @@ const AuthenticatedPacienteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedMedicoRoute: typeof AuthenticatedMedicoRouteWithChildren
   AuthenticatedPacienteRoute: typeof AuthenticatedPacienteRouteWithChildren
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
+  AuthenticatedMedicoPacienteIdRoute: typeof AuthenticatedMedicoPacienteIdRoute
+  AuthenticatedMedicoIndexRoute: typeof AuthenticatedMedicoIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedMedicoRoute: AuthenticatedMedicoRouteWithChildren,
   AuthenticatedPacienteRoute: AuthenticatedPacienteRouteWithChildren,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
+  AuthenticatedMedicoPacienteIdRoute: AuthenticatedMedicoPacienteIdRoute,
+  AuthenticatedMedicoIndexRoute: AuthenticatedMedicoIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

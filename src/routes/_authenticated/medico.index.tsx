@@ -5,8 +5,9 @@ import { ArrowRight, ClipboardList, Stethoscope } from "lucide-react";
 
 import { Fondo } from "@/components/copiloto/Fondo";
 import { obtenerPacientesCompartidos } from "@/lib/copiloto/accesos.functions";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/medico")({
+export const Route = createFileRoute("/_authenticated/medico/")({
   loader: () => obtenerPacientesCompartidos(),
   head: () => ({
     meta: [
@@ -36,7 +37,10 @@ function PantallaMedica() {
               <h1 className="mt-1 font-display text-2xl font-bold text-ink">Pacientes compartidos</h1>
             </div>
           </div>
-          <span className="font-body text-sm font-semibold text-brand-blue">HelthIA</span>
+          <div className="flex items-center gap-2">
+            <Link to="/" className="rounded-md border border-clinical-border px-3 py-2 font-body text-sm font-semibold text-brand-blue hover:bg-brand-blue/10">Inicio</Link>
+            <button type="button" onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} className="rounded-md border border-clinical-border px-3 py-2 font-body text-sm font-semibold text-ink hover:bg-brand-blue/10">Salir</button>
+          </div>
         </header>
         <main>
           {pacientes.length === 0 ? (
