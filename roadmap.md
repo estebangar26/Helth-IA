@@ -23,3 +23,4 @@
 - [x] Ampliar exámenes a diabetes tipo 1 y 2, insípida, biomarcadores de cáncer y testosterona.
 - [x] Registrar alertas para el médico tratante cuando un valor sale del rango.
 - [ ] Enviar la alerta por correo al médico. Bloqueado: falta configurar y verificar el dominio de correo.
+- [x] Ampliar exclusivamente la pestaña Resultados: catálogo de 9 categorías, tabla hija de resultados, buscador, filtros, detalle e historial real.

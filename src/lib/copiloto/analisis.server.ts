@@ -8,6 +8,16 @@
  */
 
 import { MARCADORES, type TipoExamen } from "./marcadores";
+import { ANALITO_POR_CODIGO, LISTA_CATALOGO_PROMPT } from "./catalogo-resultados";
+
+/** Un analito del catálogo ampliado encontrado en el documento. */
+export interface ResultadoExtraido {
+  codigo: string;
+  valor: number;
+  unidad: string | null;
+  /** Rango de referencia tal como lo reporta el laboratorio (texto). */
+  referencia: string | null;
+}
 
 /** Valores que el modelo debe extraer del documento del laboratorio. */
 export interface ExtraccionExamen {
@@ -19,6 +29,8 @@ export interface ExtraccionExamen {
   notas: string | null;
   /** Valores numéricos por nombre de columna (glucemia_ayunas, psa, etc.). */
   valores: Record<string, number | null>;
+  /** Analitos del catálogo ampliado (hemograma, lípidos, tiroides, etc.). */
+  resultados: ResultadoExtraido[];
 }
 
 /** Tipos de examen válidos para la categoría que devuelve el modelo. */
@@ -44,13 +56,16 @@ const LISTA_UNIDADES = MARCADORES.map((m) => `- ${m.campo} (${m.etiqueta}) en ${
 const INSTRUCCION = `Eres un asistente clínico que lee documentos de laboratorio en español.
 Extrae únicamente los datos que aparezcan explícitamente en el documento.
 Responde SOLO con un objeto JSON válido, sin texto adicional ni bloques de código, con estas claves:
-{"titulo":string|null,"laboratorio":string|null,"fecha":"AAAA-MM-DD"|null,"validadoEn":"AAAA-MM-DDTHH:MM:00-05:00"|null,"tipoExamen":"diabetes_tipo_1"|"diabetes_tipo_2"|"diabetes_insipida"|"marcadores_cancer"|"testosterona"|"general","notas":string|null,"valores":{}}
+{"titulo":string|null,"laboratorio":string|null,"fecha":"AAAA-MM-DD"|null,"validadoEn":"AAAA-MM-DDTHH:MM:00-05:00"|null,"tipoExamen":"diabetes_tipo_1"|"diabetes_tipo_2"|"diabetes_insipida"|"marcadores_cancer"|"testosterona"|"general","notas":string|null,"valores":{},"resultados":[]}
 "validadoEn" es la fecha y hora en que el laboratorio validó o firmó los resultados (hora de Colombia), solo si aparece escrita.
 En "valores" incluye solo las claves que encuentres, usando exactamente estos nombres y unidades:
 ${LISTA_UNIDADES}
 - presion_sistolica y presion_diastolica en mmHg
+En "resultados" incluye TODOS los analitos del documento como objetos {"codigo":string,"valor":number,"unidad":string|null,"referencia":string|null}, usando estos códigos del catálogo:
+${LISTA_CATALOGO_PROMPT}
+"referencia" es el rango de referencia tal como lo imprime el laboratorio (texto, p. ej. "70-100 mg/dL"), solo si aparece en el documento.
 Reglas:
-- Si un dato no aparece, omítelo o usa null. Nunca inventes valores.
+- Si un dato no aparece, omítelo o usa null. Nunca inventes valores ni rangos.
 - Convierte al sistema de unidades indicado cuando el informe use otro.
 - "tipoExamen" describe el enfoque principal del informe.
 - "notas" es un resumen muy breve (máx. 200 caracteres) de otros hallazgos relevantes.`;
@@ -150,6 +165,21 @@ export async function analizarArchivoExamen(
     valores["presion_diastolica"] = Math.round(valores["presion_diastolica"]);
   }
 
+  // Analitos del catálogo ampliado: solo códigos conocidos y valores finitos.
+  const resultados: ResultadoExtraido[] = [];
+  const crudoResultados = Array.isArray(crudo["resultados"]) ? (crudo["resultados"] as Record<string, unknown>[]) : [];
+  for (const r of crudoResultados) {
+    const codigo = aTexto(r["codigo"], 60);
+    const valor = aNumero(r["valor"]);
+    if (!codigo || valor == null || !ANALITO_POR_CODIGO[codigo]) continue;
+    resultados.push({
+      codigo,
+      valor,
+      unidad: aTexto(r["unidad"], 30) ?? ANALITO_POR_CODIGO[codigo].unidad,
+      referencia: aTexto(r["referencia"], 120),
+    });
+  }
+
   return {
     titulo: aTexto(crudo["titulo"], 120) ?? nombreArchivo.replace(/\.[^.]+$/, "").slice(0, 120),
     laboratorio: aTexto(crudo["laboratorio"], 120),
@@ -161,5 +191,6 @@ export async function analizarArchivoExamen(
     tipoExamen: tipo && TIPOS.includes(tipo) ? tipo : "general",
     notas: aTexto(crudo["notas"], 400),
     valores,
+    resultados,
   };
 }

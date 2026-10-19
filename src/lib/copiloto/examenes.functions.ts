@@ -94,7 +94,8 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
       const { analizarArchivoExamen } = await import("./analisis.server");
       const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
 
-      const conValor = Object.values(extraido.valores).some((v) => v != null);
+      const conValor =
+        Object.values(extraido.valores).some((v) => v != null) || extraido.resultados.length > 0;
       if (!conValor) {
         throw new Error(
           "No encontramos resultados de laboratorio legibles en el archivo. Suba el documento completo o una foto más nítida.",
@@ -126,6 +127,24 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
         .single();
 
       if (error || !fila) throw new Error("No se pudo guardar el examen analizado.");
+
+      // Guarda los analitos del catálogo ampliado en la tabla hija.
+      if (extraido.resultados.length > 0) {
+        const { ANALITO_POR_CODIGO } = await import("./catalogo-resultados");
+        const filasResultados = extraido.resultados.map((r) => ({
+          examen_id: fila.id,
+          codigo: r.codigo,
+          nombre: ANALITO_POR_CODIGO[r.codigo]?.nombre ?? r.codigo,
+          categoria: ANALITO_POR_CODIGO[r.codigo]?.categoria ?? "glucosa",
+          valor: r.valor,
+          unidad: r.unidad,
+          referencia_texto: r.referencia,
+        }));
+        const { error: errorResultados } = await context.supabase
+          .from("resultados_biomarcador")
+          .insert(filasResultados);
+        if (errorResultados) console.error("No se guardaron los resultados del catálogo:", errorResultados.message);
+      }
 
       // Revisa los valores y avisa a los médicos autorizados si hay alteraciones.
       const { revisarAlteraciones, notificarMedicos } = await import("./alertas.server");
