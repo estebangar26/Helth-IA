@@ -1,5 +1,9 @@
 # Hoja de ruta
 
+- [ ] Explicar costos de Lovable Cloud y consideraciones para escalar HelthIA con cifras verificadas.
+- [ ] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
+- [ ] Configurar horarios y recordatorios por correo y WhatsApp. Pendiente: definir margen de envío y conectar WhatsApp Business.
+
 - [x] Añadir la pestaña «Sobre nosotros» con la biografía de Esteban García Otálvaro y su fotografía, verificando la página en escritorio y celular.
 - [x] Añadir «Conecta tus dispositivos de IoTM» y acceso local al monitor ESP32-S3, aclarando que el código actual no sincroniza con HelthIA.
 - [x] Añadir pestañas Paciente y Médico a la barra principal conservando los permisos.
