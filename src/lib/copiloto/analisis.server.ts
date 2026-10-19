@@ -165,6 +165,21 @@ export async function analizarArchivoExamen(
     valores["presion_diastolica"] = Math.round(valores["presion_diastolica"]);
   }
 
+  // Analitos del catálogo ampliado: solo códigos conocidos y valores finitos.
+  const resultados: ResultadoExtraido[] = [];
+  const crudoResultados = Array.isArray(crudo["resultados"]) ? (crudo["resultados"] as Record<string, unknown>[]) : [];
+  for (const r of crudoResultados) {
+    const codigo = aTexto(r["codigo"], 60);
+    const valor = aNumero(r["valor"]);
+    if (!codigo || valor == null || !ANALITO_POR_CODIGO[codigo]) continue;
+    resultados.push({
+      codigo,
+      valor,
+      unidad: aTexto(r["unidad"], 30) ?? ANALITO_POR_CODIGO[codigo].unidad,
+      referencia: aTexto(r["referencia"], 120),
+    });
+  }
+
   return {
     titulo: aTexto(crudo["titulo"], 120) ?? nombreArchivo.replace(/\.[^.]+$/, "").slice(0, 120),
     laboratorio: aTexto(crudo["laboratorio"], 120),
