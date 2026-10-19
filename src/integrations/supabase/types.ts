@@ -323,6 +323,50 @@ export type Database = {
         }
         Relationships: []
       }
+      resultados_biomarcador: {
+        Row: {
+          categoria: string
+          codigo: string
+          created_at: string
+          examen_id: string
+          id: string
+          nombre: string
+          referencia_texto: string | null
+          unidad: string | null
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          codigo: string
+          created_at?: string
+          examen_id: string
+          id?: string
+          nombre: string
+          referencia_texto?: string | null
+          unidad?: string | null
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          codigo?: string
+          created_at?: string
+          examen_id?: string
+          id?: string
+          nombre?: string
+          referencia_texto?: string | null
+          unidad?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resultados_biomarcador_examen_id_fkey"
+            columns: ["examen_id"]
+            isOneToOne: false
+            referencedRelation: "examenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
