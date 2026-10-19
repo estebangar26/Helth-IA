@@ -8,6 +8,7 @@ import { Encabezado } from "@/components/copiloto/Encabezado";
 import { Fondo } from "@/components/copiloto/Fondo";
 import { LineaExamenes } from "@/components/copiloto/LineaExamenes";
 import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
+import { ResultadosCatalogo } from "@/components/copiloto/ResultadosCatalogo";
 import { AvisoMedico } from "@/components/copiloto/AvisoMedico";
 import { obtenerPanelCompartido } from "@/lib/copiloto/accesos.functions";
 
@@ -44,6 +45,7 @@ function PanelMedico() {
         <main className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
             {panel.biomarcadores.length > 0 && <Biomarcadores biomarcadores={panel.biomarcadores} />}
+            <ResultadosCatalogo resultados={panel.resultados} />
             {panel.examenes.length > 0 ? <LineaExamenes examenes={panel.examenes} /> : <p className="rounded-lg border border-dashed border-clinical-border bg-panel p-6 font-body text-sm text-ink-dim">Este paciente todavía no tiene exámenes registrados.</p>}
           </div>
           <div className="space-y-6">
