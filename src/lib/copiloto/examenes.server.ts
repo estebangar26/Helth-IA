@@ -14,6 +14,7 @@ import type {
   NivelRiesgo,
   Paciente,
   PanelPaciente,
+  ResultadoCatalogo,
   ValorExamen,
 } from "./tipos";
 import { MARCADORES, leerMarcador, textoRango, ETIQUETA_TIPO, type TipoExamen } from "./marcadores";
@@ -170,6 +171,63 @@ function construirBiomarcadores(filas: FilaExamen[]): Biomarcador[] {
   }
 
   return tarjetas;
+}
+
+/** Fila de la tabla hija `resultados_biomarcador` (catálogo ampliado). */
+interface FilaResultado {
+  examen_id: string;
+  codigo: string;
+  nombre: string;
+  categoria: string;
+  valor: number | string;
+  unidad: string | null;
+  referencia_texto: string | null;
+}
+
+/**
+ * Arma la vista del catálogo ampliado: un resultado por variable con su
+ * historial real (ordenado de más antiguo a más reciente). No inventa datos:
+ * solo aparecen las variables que tienen valores guardados.
+ */
+function construirResultadosCatalogo(
+  filas: FilaExamen[],
+  resultados: FilaResultado[],
+): ResultadoCatalogo[] {
+  const fechaPorExamen = new Map(filas.map((f) => [f.id, f.fecha]));
+  const porCodigo = new Map<string, ResultadoCatalogo>();
+
+  // Se ordena por fecha del examen (ascendente) para construir el historial.
+  const ordenados = [...resultados].sort((a, b) =>
+    (fechaPorExamen.get(a.examen_id) ?? "").localeCompare(fechaPorExamen.get(b.examen_id) ?? ""),
+  );
+
+  for (const r of ordenados) {
+    const valor = Number(r.valor);
+    if (!Number.isFinite(valor)) continue;
+    const fecha = formatearFecha(fechaPorExamen.get(r.examen_id) ?? "");
+    const actual = porCodigo.get(r.codigo);
+    if (actual) {
+      actual.valor = valor;
+      actual.fecha = fecha;
+      actual.examenId = r.examen_id;
+      if (r.referencia_texto) actual.referencia = r.referencia_texto;
+      actual.historial.push({ fecha, valor });
+    } else {
+      porCodigo.set(r.codigo, {
+        codigo: r.codigo,
+        nombre: r.nombre,
+        categoria: r.categoria,
+        valor,
+        unidad: r.unidad,
+        referencia: r.referencia_texto,
+        fecha,
+        examenId: r.examen_id,
+        historial: [{ fecha, valor }],
+      });
+    }
+  }
+
+  return [...porCodigo.values()];
 }
 
 /**
