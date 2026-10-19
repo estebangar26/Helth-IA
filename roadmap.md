@@ -1,6 +1,6 @@
 # Hoja de ruta
 
-- [ ] Explicar costos de Lovable Cloud y consideraciones para escalar HelthIA con cifras verificadas.
+- [x] Consultar plan y costos registrados de Lovable Cloud para explicar el escalamiento de HelthIA.
 - [ ] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
 - [ ] Configurar horarios y recordatorios por correo y WhatsApp. Pendiente: definir margen de envío y conectar WhatsApp Business.
 
