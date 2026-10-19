@@ -65,6 +65,13 @@ export function NavegacionPublica() {
           >
             Conecta tus dispositivos de IoTM
           </Link>
+          <Link
+            to="/sobre-nosotros"
+            className="rounded-md px-3 py-2 font-body text-sm font-medium text-ink-dim transition-colors hover:bg-secondary hover:text-ink"
+            activeProps={{ className: "bg-secondary text-primary" }}
+          >
+            Sobre nosotros
+          </Link>
         </nav>
 
         <Button asChild size="sm">
