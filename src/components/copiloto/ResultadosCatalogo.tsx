@@ -38,20 +38,21 @@ function estadoDesdeReferencia(valor: number, referencia: string | null): Estado
   const numeros = referencia.match(/-?\d+(?:[.,]\d+)?/g)?.map((n) => Number(n.replace(",", ".")));
   if (!numeros || numeros.length === 0) return "sin_rango";
   if (numeros.length >= 2) {
-    const [min, max] = numeros;
+    const min = numeros[0]!;
+    const max = numeros[1]!;
     if (valor < min) return "debajo";
     if (valor > max) return "encima";
     return "dentro";
   }
   // Un solo número: se interpreta como límite superior solo si el texto lo sugiere.
-  if (/[<≤]|hasta|máx/i.test(referencia)) return valor > numeros[0] ? "encima" : "dentro";
+  if (/[<≤]|hasta|máx/i.test(referencia)) return valor > numeros[0]! ? "encima" : "dentro";
   return "sin_rango";
 }
 
 /** Variación porcentual frente al resultado anterior, si existe. */
 function variacion(r: ResultadoCatalogo): string | null {
   if (r.historial.length < 2) return null;
-  const anterior = r.historial[r.historial.length - 2].valor;
+  const anterior = r.historial[r.historial.length - 2]!.valor;
   if (anterior === 0) return null;
   const delta = r.valor - anterior;
   const pct = Math.abs((delta / anterior) * 100).toFixed(1);
