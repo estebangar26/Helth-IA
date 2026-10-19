@@ -94,7 +94,8 @@ export const analizarYGuardarExamen = createServerFn({ method: "POST" })
       const { analizarArchivoExamen } = await import("./analisis.server");
       const extraido = await analizarArchivoExamen(data.contenido, data.mime, data.nombre);
 
-      const conValor = Object.values(extraido.valores).some((v) => v != null);
+      const conValor =
+        Object.values(extraido.valores).some((v) => v != null) || extraido.resultados.length > 0;
       if (!conValor) {
         throw new Error(
           "No encontramos resultados de laboratorio legibles en el archivo. Suba el documento completo o una foto más nítida.",

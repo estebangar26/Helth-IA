@@ -191,5 +191,6 @@ export async function analizarArchivoExamen(
     tipoExamen: tipo && TIPOS.includes(tipo) ? tipo : "general",
     notas: aTexto(crudo["notas"], 400),
     valores,
+    resultados,
   };
 }
