@@ -1,6 +1,6 @@
 # Hoja de ruta
 
-- [ ] Añadir la pestaña «Sobre nosotros» con la biografía de Esteban García Otálvaro y su fotografía, verificando la página en escritorio y celular.
+- [x] Añadir la pestaña «Sobre nosotros» con la biografía de Esteban García Otálvaro y su fotografía, verificando la página en escritorio y celular.
 - [x] Añadir «Conecta tus dispositivos de IoTM» y acceso local al monitor ESP32-S3, aclarando que el código actual no sincroniza con HelthIA.
 - [x] Añadir pestañas Paciente y Médico a la barra principal conservando los permisos.
 - [x] Ampliar la tienda con fotografías reales de Siemens Healthineers, Abbott, Boston Scientific y Johnson & Johnson.
