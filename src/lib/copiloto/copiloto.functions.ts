@@ -26,6 +26,7 @@ export const obtenerPanelPaciente = createServerFn({ method: "GET" }).handler(
       // El nivel de riesgo se calcula en el servidor con el motor de reglas.
       evaluacion: evaluarRiesgo(mediciones),
       biomarcadores: datos.obtenerBiomarcadores(),
+      resultados: [],
       examenes: datos.obtenerExamenes(),
       recomendaciones: datos.obtenerRecomendaciones(),
     };
