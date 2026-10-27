@@ -4,7 +4,6 @@ import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
 import { FileUp } from "lucide-react";
 
 import { AvisoMedico } from "@/components/copiloto/AvisoMedico";
-import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
 import { AlimentacionResultados } from "@/components/copiloto/AlimentacionResultados";
 import { Button } from "@/components/ui/button";
 
