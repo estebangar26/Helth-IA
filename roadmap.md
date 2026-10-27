@@ -1,7 +1,7 @@
 # Hoja de ruta
 
-- [ ] Permitir observaciones médicas sobre exámenes y avisos dentro de Resultados del paciente, sin editar datos clínicos.
-- [ ] Añadir orientación alimentaria colombiana ligada a resultados reales e imágenes de alimentación y vida saludable.
+- [x] Permitir observaciones médicas sobre exámenes y avisos dentro de Resultados del paciente, sin editar datos clínicos; envío y lectura verificados con ambas cuentas.
+- [x] Añadir orientación alimentaria colombiana ligada a resultados reales e imágenes de alimentación y vida saludable; nueve pruebas y comprobación en celular.
 
 - [x] Consultar plan y costos registrados de Lovable Cloud para explicar el escalamiento de HelthIA.
 - [ ] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
