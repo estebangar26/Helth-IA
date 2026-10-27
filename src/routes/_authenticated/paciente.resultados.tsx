@@ -5,8 +5,11 @@ import { createFileRoute, getRouteApi } from "@tanstack/react-router";
 import { Biomarcadores } from "@/components/copiloto/Biomarcadores";
 import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
 import { ResultadosCatalogo } from "@/components/copiloto/ResultadosCatalogo";
+import { ObservacionesMedicas } from "@/components/copiloto/ObservacionesMedicas";
+import { listarObservaciones } from "@/lib/copiloto/observaciones.functions";
 
 export const Route = createFileRoute("/_authenticated/paciente/resultados")({
+  loader: () => listarObservaciones({ data: {} }),
   head: () => ({ meta: [
     { title: "Mis resultados · HelthIA" },
     { name: "description", content: "Biomarcadores recientes y clasificación de riesgo explicable." },
@@ -20,10 +23,12 @@ export const Route = createFileRoute("/_authenticated/paciente/resultados")({
 
 function Resultados() {
   const panel = getRouteApi("/_authenticated/paciente").useLoaderData();
+  const observaciones = Route.useLoaderData();
 
   return (
     <main className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
       <div className="space-y-6">
+        <ObservacionesMedicas observaciones={observaciones} examenes={panel.examenes} />
         {panel.biomarcadores.length > 0 ? (
           <Biomarcadores biomarcadores={panel.biomarcadores} />
         ) : (

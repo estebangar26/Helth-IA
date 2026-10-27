@@ -210,7 +210,9 @@ function construirResultadosCatalogo(
       actual.valor = valor;
       actual.fecha = fecha;
       actual.examenId = r.examen_id;
-      if (r.referencia_texto) actual.referencia = r.referencia_texto;
+      // Nunca aplicar el rango o la unidad de un examen anterior al valor actual.
+      actual.referencia = r.referencia_texto;
+      actual.unidad = r.unidad;
       actual.historial.push({ fecha, valor });
     } else {
       porCodigo.set(r.codigo, {
