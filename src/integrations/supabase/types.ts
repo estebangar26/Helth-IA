@@ -281,6 +281,58 @@ export type Database = {
         }
         Relationships: []
       }
+      observaciones_medicas: {
+        Row: {
+          creado_en: string
+          examen_id: string
+          id: string
+          medico_id: string
+          medico_nombre: string
+          mensaje: string
+          paciente_id: string
+        }
+        Insert: {
+          creado_en?: string
+          examen_id: string
+          id?: string
+          medico_id: string
+          medico_nombre?: string
+          mensaje: string
+          paciente_id: string
+        }
+        Update: {
+          creado_en?: string
+          examen_id?: string
+          id?: string
+          medico_id?: string
+          medico_nombre?: string
+          mensaje?: string
+          paciente_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observaciones_medicas_examen_id_fkey"
+            columns: ["examen_id"]
+            isOneToOne: false
+            referencedRelation: "examenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "observaciones_medicas_medico_id_fkey"
+            columns: ["medico_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "observaciones_medicas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       perfiles: {
         Row: {
           created_at: string
