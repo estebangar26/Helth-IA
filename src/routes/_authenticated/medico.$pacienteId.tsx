@@ -11,9 +11,15 @@ import { PanelRiesgo } from "@/components/copiloto/PanelRiesgo";
 import { ResultadosCatalogo } from "@/components/copiloto/ResultadosCatalogo";
 import { AvisoMedico } from "@/components/copiloto/AvisoMedico";
 import { obtenerPanelCompartido } from "@/lib/copiloto/accesos.functions";
+import { listarObservaciones } from "@/lib/copiloto/observaciones.functions";
+import { ObservacionesMedicas } from "@/components/copiloto/ObservacionesMedicas";
 
 export const Route = createFileRoute("/_authenticated/medico/$pacienteId")({
-  loader: ({ params }) => obtenerPanelCompartido({ data: { pacienteId: params.pacienteId } }),
+  loader: async ({ params }) => {
+    const panel = await obtenerPanelCompartido({ data: { pacienteId: params.pacienteId } });
+    const observaciones = await listarObservaciones({ data: { pacienteId: params.pacienteId } });
+    return { panel, observaciones };
+  },
   head: () => ({
     meta: [
       { title: "Vista clínica · HelthIA" },
@@ -35,7 +41,8 @@ export const Route = createFileRoute("/_authenticated/medico/$pacienteId")({
 });
 
 function PanelMedico() {
-  const panel = Route.useLoaderData();
+  const { panel, observaciones } = Route.useLoaderData();
+  const { pacienteId } = Route.useParams();
   return (
     <>
       <Fondo />
@@ -46,6 +53,7 @@ function PanelMedico() {
           <div className="space-y-6 lg:col-span-2">
             {panel.biomarcadores.length > 0 && <Biomarcadores biomarcadores={panel.biomarcadores} />}
             <ResultadosCatalogo resultados={panel.resultados} />
+            <ObservacionesMedicas observaciones={observaciones} examenes={panel.examenes} pacienteId={pacienteId} />
             {panel.examenes.length > 0 ? <LineaExamenes examenes={panel.examenes} /> : <p className="rounded-lg border border-dashed border-clinical-border bg-panel p-6 font-body text-sm text-ink-dim">Este paciente todavía no tiene exámenes registrados.</p>}
           </div>
           <div className="space-y-6">

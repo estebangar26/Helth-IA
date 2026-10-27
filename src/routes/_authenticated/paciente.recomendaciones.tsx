@@ -5,6 +5,7 @@ import { FileUp } from "lucide-react";
 
 import { AvisoMedico } from "@/components/copiloto/AvisoMedico";
 import { Recomendaciones } from "@/components/copiloto/Recomendaciones";
+import { AlimentacionResultados } from "@/components/copiloto/AlimentacionResultados";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/paciente/recomendaciones")({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/paciente/recomendaciones")
 function PantallaRecomendaciones() {
   const panel = getRouteApi("/_authenticated/paciente").useLoaderData();
 
-  if (panel.recomendaciones.length === 0) {
+  if (panel.examenes.length === 0) {
     return (
       <main className="rounded-lg border border-dashed border-clinical-border bg-panel p-8 text-center">
         <h1 className="font-display text-xl font-bold text-ink">Aún no hay recomendaciones</h1>
@@ -33,5 +34,5 @@ function PantallaRecomendaciones() {
     );
   }
 
-  return <main className="mx-auto max-w-2xl"><Recomendaciones recomendaciones={panel.recomendaciones} /></main>;
+  return <main className="space-y-6"><AlimentacionResultados resultados={panel.resultados} /></main>;
 }
