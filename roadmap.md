@@ -1,5 +1,7 @@
 # Hoja de ruta
 
+- [ ] Ampliar exclusivamente Mis medicaciones conforme al documento adjunto: conservar registros, formulario estructurado, tomas, síntomas, adherencia, inventario, exportación y recordatorios seguros; pendiente aprobar estrategia y conectar servicios de envío.
+
 - [x] Corregir alimentación vacía ante resultados alterados o en observación y el texto desbordado de las tarjetas del dashboard; 26 pruebas y recorrido con resultados reales, panel de alimentos y tarjetas sin desbordamiento a 320, 375, 634 y 1280 px.
 
 - [ ] Conectar WhatsApp Business para recordatorios con horario y médico; bloqueado: autorización rechazada, sin conexión ni envíos.
