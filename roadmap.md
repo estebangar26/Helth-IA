@@ -1,11 +1,11 @@
 # Hoja de ruta
 
-- [ ] Corregir alimentación vacía ante resultados alterados o en observación y el texto desbordado de las tarjetas del dashboard.
+- [x] Corregir alimentación vacía ante resultados alterados o en observación y el texto desbordado de las tarjetas del dashboard; 26 pruebas y recorrido con resultados reales, panel de alimentos y tarjetas sin desbordamiento a 320, 375, 634 y 1280 px.
 
 - [ ] Conectar WhatsApp Business para recordatorios con horario y médico; bloqueado: autorización rechazada, sin conexión ni envíos.
 - [x] Ampliar Alimentación recomendada con catálogo editable (59 alimentos, 8 reglas, 63 lugares), restricciones cruzadas y panel de apoyo; 28 pruebas y verificación visual aislada con catálogo real.
 - [ ] Habilitar bucket público foods y comprobar carga de fotos como administrador; bloqueado por política del espacio y ausencia de sesión administrativa disponible.
-- [ ] Verificar alimentación desde resultados reales de paciente; la sesión disponible es médica sin pacientes compartidos.
+- [x] Verificar alimentación desde resultados reales de paciente; HbA1c en observación abre frutas y otros alimentos del catálogo, hormonas y marcadores tumorales muestran orientación sin alimentos correctivos.
 
 - [x] Corregir el desbordamiento de tarjetas de resultados al cambiar el zoom en paciente y médico; comprobación visual aislada en ocho anchos (320–1920 px), sin desbordamientos. La cuenta disponible no tenía pacientes compartidos para verificar resultados reales.
 
