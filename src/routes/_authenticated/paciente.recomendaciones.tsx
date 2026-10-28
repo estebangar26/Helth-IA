@@ -33,5 +33,5 @@ function PantallaRecomendaciones() {
     );
   }
 
-  return <main className="space-y-6"><AlimentacionResultados resultados={panel.resultados} /></main>;
+  return <main className="min-w-0 space-y-6"><AlimentacionResultados resultados={panel.resultados} biomarcadores={panel.biomarcadores} examenes={panel.examenes} /></main>;
 }
