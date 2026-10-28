@@ -1,7 +1,9 @@
 # Hoja de ruta
 
-- [ ] Conectar WhatsApp Business para recordatorios con horario y médico; conexión pendiente de completar por el usuario.
-- [ ] Ampliar Alimentación recomendada con catálogo editable, restricciones cruzadas, panel de apoyo, lugares y fotos propias; sin cambiar clasificación ni extracción.
+- [ ] Conectar WhatsApp Business para recordatorios con horario y médico; bloqueado: autorización rechazada, sin conexión ni envíos.
+- [x] Ampliar Alimentación recomendada con catálogo editable (59 alimentos, 8 reglas, 63 lugares), restricciones cruzadas y panel de apoyo; 28 pruebas y verificación visual aislada con catálogo real.
+- [ ] Habilitar bucket público foods y comprobar carga de fotos como administrador; bloqueado por política del espacio y ausencia de sesión administrativa disponible.
+- [ ] Verificar alimentación desde resultados reales de paciente; la sesión disponible es médica sin pacientes compartidos.
 
 - [x] Corregir el desbordamiento de tarjetas de resultados al cambiar el zoom en paciente y médico; comprobación visual aislada en ocho anchos (320–1920 px), sin desbordamientos. La cuenta disponible no tenía pacientes compartidos para verificar resultados reales.
 

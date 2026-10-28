@@ -20,6 +20,7 @@ import { Route as SobreNosotrosRouteImport } from './routes/sobre-nosotros'
 import { Route as TiendaRouteImport } from './routes/tienda'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAlimentosAdminRouteImport } from './routes/_authenticated/alimentos-admin'
 import { Route as AuthenticatedPacienteRouteImport } from './routes/_authenticated/paciente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as ApiAsistenteRouteImport } from './routes/api/asistente'
@@ -92,6 +93,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAlimentosAdminRoute =
+  AuthenticatedAlimentosAdminRouteImport.update({
+    id: '/alimentos-admin',
+    path: '/alimentos-admin',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPacienteRoute = AuthenticatedPacienteRouteImport.update({
   id: '/paciente',
   path: '/paciente',
@@ -194,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/alimentos-admin': typeof AuthenticatedAlimentosAdminRoute
   '/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/alimentos-admin': typeof AuthenticatedAlimentosAdminRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -251,6 +260,7 @@ export interface FileRoutesById {
   '/tienda': typeof TiendaRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/alimentos-admin': typeof AuthenticatedAlimentosAdminRoute
   '/_authenticated/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/alimentos-admin'
     | '/paciente'
     | '/panel'
     | '/api/asistente'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/alimentos-admin'
     | '/panel'
     | '/api/asistente'
     | '/.lovable/oauth/consent'
@@ -337,6 +349,7 @@ export interface FileRouteTypes {
     | '/tienda'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/_authenticated/alimentos-admin'
     | '/_authenticated/paciente'
     | '/_authenticated/panel'
     | '/api/asistente'
@@ -450,6 +463,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/alimentos-admin': {
+      id: '/_authenticated/alimentos-admin'
+      path: '/alimentos-admin'
+      fullPath: '/alimentos-admin'
+      preLoaderRoute: typeof AuthenticatedAlimentosAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/paciente': {
@@ -597,6 +617,7 @@ const AuthenticatedPacienteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAlimentosAdminRoute: typeof AuthenticatedAlimentosAdminRoute
   AuthenticatedPacienteRoute: typeof AuthenticatedPacienteRouteWithChildren
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
   AuthenticatedMedicoPacienteIdRoute: typeof AuthenticatedMedicoPacienteIdRoute
@@ -605,6 +626,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAlimentosAdminRoute: AuthenticatedAlimentosAdminRoute,
   AuthenticatedPacienteRoute: AuthenticatedPacienteRouteWithChildren,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
   AuthenticatedMedicoPacienteIdRoute: AuthenticatedMedicoPacienteIdRoute,

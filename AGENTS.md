@@ -14,3 +14,5 @@
 - Keep the ESP32 access-point monitor on `/dispositivos` as a local-device link, not a cloud proxy or simulated live feed; its HTTP-only firmware cannot provide secure remote telemetry to the published HTTPS app.
 - Store medical observations as append-only exam-linked rows with active-sharing RLS and authenticated server functions; this permits feedback without granting doctors clinical edit rights.
 - Derive patient dietary guidance locally from real catalog results and their current laboratory references; this avoids recurring AI costs and unsupported treatment claims.
+
+- Keep the editable food catalog in foods, variable_food_rules and places with admin-only writes; support consumes existing result states and cross-result restrictions, never new clinical classification.
