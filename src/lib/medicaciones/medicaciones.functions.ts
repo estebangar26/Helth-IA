@@ -36,7 +36,7 @@ export const registrarSintoma=createServerFn({method:'POST'}).middleware([requir
 });
 export const eliminarMedicamento=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((x:unknown)=>idSchema.parse(x)).handler(async({context,data})=>{
  const db=context.supabase;const {data:m}=await db.from('medicaciones').select('detalle').eq('id',data.id).eq('user_id',context.userId).maybeSingle();
- const foto=m?.detalle&&typeof m.detalle==='object'&&!Array.isArray(m.detalle)?m.detalle.foto:undefined;
+ const foto=m?.detalle&&typeof m.detalle==='object'&&!Array.isArray(m.detalle)?m.detalle['foto']:undefined;
  if(typeof foto==='string'&&foto.startsWith(`${context.userId}/`)){const {error}=await db.storage.from('medication-photos').remove([foto]);if(error)throw new Error('No se pudo borrar la foto.');}
  const {error}=await db.from('medicaciones').delete().eq('id',data.id).eq('user_id',context.userId);if(error)throw new Error('No se pudo eliminar el tratamiento.');return {ok:true};
 });

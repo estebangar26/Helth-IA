@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Json } from '@/integrations/supabase/types';
 export const UNIDADES = ['mcg','mg','g','mL','UI','gotas','tabletas','puffs'] as const;
 const texto = (max=500) => z.string().trim().max(max);
 export const configuracion = z.object({
@@ -15,7 +16,7 @@ export const configuracion = z.object({
 });
 export type Config = z.infer<typeof configuracion>;
 export const guardarSchema=z.object({id:z.string().uuid().optional(),nombre:texto(120).min(2),notas:texto(1000),detalle:configuracion,confirmarDuplicado:z.boolean().default(false)});
-export type Med = {id:string;nombre:string;dosis:string|null;frecuencia:string|null;notas:string|null;creado_en:string;detalle:unknown};
+export type Med = {id:string;nombre:string;dosis:string|null;frecuencia:string|null;notas:string|null;creado_en:string;detalle:Json};
 export type Dosis = {id:string;medication_id:string;scheduled_at:string;status:string;recorded_at:string;postponed_until:string|null};
 export type Sintoma = {id:string;medication_id:string;occurred_at:string;symptom:string;severity:string;recent_dose:boolean;notes:string|null};
 export const fechaBogota=(date=new Date())=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
