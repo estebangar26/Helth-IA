@@ -19,7 +19,7 @@ export const guardarCatalogoAlimentos = createServerFn({method:'POST'}).middlewa
  const schema=data.tabla==='foods'?z.object({...comunes,categoria:z.enum(['fruta colombiana','leguminosa','verdura','proteína','cereal','limitar']),nutriente_clave:z.string(),por_que:z.string(),como_comerlo:z.string(),image_url:z.string().nullable(),image_credit:z.string().nullable(),tags_restriccion:z.array(z.enum(['potasio_alto','fosforo_alto','purinas_altas','azucar_alta','proteina_alta','sodio_alto']))}):data.tabla==='places'?z.object({...comunes,tipo:z.string(),ciudad:z.string(),que_se_consigue:z.string()}):z.object({id:comunes.id,analitos:z.array(z.string()),categorias:z.array(z.string()),estados:z.array(z.enum(['debajo','encima','dentro','sin_rango'])),recomendados:z.array(z.string()),limitar:z.array(z.string()),mensaje:z.string(),consejo:z.string()});
  const fila=schema.parse(data.fila);
  if('image_url' in fila && fila.image_url){
- const prefix=`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/foods/`;
+ const prefix=`${import.meta.env['VITE_SUPABASE_URL']}/storage/v1/object/public/foods/`;
  if(!fila.image_url.startsWith(prefix) || !('image_credit' in fila) || !fila.image_credit?.trim()) throw new Error('Use una foto del catálogo con autor y licencia.');
  }
  const {error}=await context.supabase.from(data.tabla).upsert(fila as never); if(error) throw new Error('No se pudo guardar el catálogo.'); return {ok:true};
