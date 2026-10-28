@@ -1,0 +1,25 @@
+import { useEffect, useState } from 'react';
+import { Apple, MapPin } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { obtenerCatalogoAlimentos } from '@/lib/alimentacion/catalogo.functions';
+import { apoyo } from '@/lib/alimentacion/apoyo';
+import { AVISO, type Catalogo, type Food, type Lectura } from '@/lib/alimentacion/tipos';
+const etiquetas={dentro:'Dentro del rango reportado',debajo:'Por debajo del rango reportado',encima:'Por encima del rango reportado',sin_rango:'Sin rango de referencia'};
+export function FotoAlimento({food}:{food:Food}) {return <div className="aspect-[3/2] w-full overflow-hidden rounded bg-panel-soft">{food.image_url && food.image_credit ? <img src={food.image_url} alt={food.nombre} className="h-full w-full object-cover" loading="lazy"/>:<div className="grid h-full place-items-center text-brand-lime" aria-label={`Sin foto de ${food.nombre}`}><Apple className="size-8"/></div>}</div>;}
+export function PanelAlimentacion({resultado,todos,cerrar}:{resultado:Lectura|null;todos:Lectura[];cerrar:()=>void}) {
+ const [catalogo,setCatalogo]=useState<Catalogo|null>(null); const [error,setError]=useState(''); const [filtro,setFiltro]=useState('Todos'); const [ciudad,setCiudad]=useState('Medellín');
+ useEffect(()=>{if(!resultado)return;setFiltro('Todos'); obtenerCatalogoAlimentos().then(setCatalogo).catch(e=>setError(e instanceof Error?e.message:'No se pudo cargar.'));},[resultado]);
+ const guia=resultado && catalogo?apoyo(resultado,todos,catalogo):null;
+ const categoria:Record<string,string>={Frutas:'fruta colombiana',Legumbres:'leguminosa',Proteínas:'proteína',Verduras:'verdura'};
+ const visibles=guia?.recomendados.filter(f=>filtro==='Todos'||f.categoria===categoria[filtro]) ?? [];
+ return <Sheet open={!!resultado} onOpenChange={open=>{if(!open)cerrar();}}><SheetContent className="w-full overflow-y-auto sm:max-w-xl"><SheetHeader><SheetTitle>Alimentación de apoyo</SheetTitle><SheetDescription>{resultado?.nombre} · {resultado?.valor} {resultado?.unidad} · {resultado?etiquetas[resultado.estado]:''}</SheetDescription></SheetHeader><div className="space-y-5 p-4">
+ <p className="border-l-4 border-brand-lime pl-3 text-sm text-ink">{AVISO}</p>{error?<p role="alert">{error}</p>:!guia?<p role="status">Cargando alimentos…</p>:<>
+ <p className="text-sm text-ink">{guia.mensaje}</p>{guia.consejo && <p className="text-sm text-ink-dim">{guia.consejo}</p>}
+ {guia.recomendados.length>0 && <div className="flex flex-wrap gap-2">{['Todos','Frutas','Legumbres','Proteínas','Verduras'].map(f=><Button key={f} size="sm" variant={filtro===f?'default':'outline'} onClick={()=>setFiltro(f)} aria-pressed={filtro===f}>{f}</Button>)}</div>}
+ {['Frutas colombianas','Otros alimentos'].map((titulo,i)=>{const lista=visibles.filter(f=>i===0?f.categoria==='fruta colombiana':f.categoria!=='fruta colombiana');return lista.length>0?<section key={titulo}><h3 className="mb-3 font-display font-bold">{titulo}</h3><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{lista.map(f=><article key={f.id} className="min-w-0 rounded-md border border-clinical-border p-3"><FotoAlimento food={f}/><h4 className="mt-2 font-semibold">{f.nombre}</h4><p className="mt-1 text-xs text-ink-dim">{f.por_que}</p><p className="mt-2 text-xs">{f.como_comerlo}</p>{f.image_url&&<p className="mt-2 text-[10px] text-ink-dim">{f.image_credit}</p>}</article>)}</div></section>:null;})}
+ {guia.limitados.length>0 && <section><h3 className="mb-3 font-display font-bold">Mejor limitar</h3><div className="grid grid-cols-2 gap-3">{guia.limitados.map(f=><article key={f.id} className="min-w-0"><FotoAlimento food={f}/><p className="mt-1 text-xs">{f.nombre}</p></article>)}</div></section>}
+ <p className="text-xs text-ink-dim">{guia.precaucion}</p>
+ <section><h3 className="mb-3 font-display font-bold">Dónde conseguirlos</h3><label className="text-xs" htmlFor="ciudad-alimentos">Ciudad</label><select id="ciudad-alimentos" value={ciudad} onChange={e=>setCiudad(e.target.value)} className="mt-1 w-full rounded-md border border-clinical-border bg-panel p-2">{[...new Set(catalogo?.places.map(p=>p.ciudad))].map(c=><option key={c}>{c}</option>)}</select><ul className="my-3 space-y-2">{catalogo?.places.filter(p=>p.ciudad===ciudad).map(p=><li key={p.id} className="text-sm"><span className="font-semibold">{p.nombre}</span><p className="text-xs text-ink-dim">{p.tipo} · {p.que_se_consigue}</p></li>)}</ul><Button asChild variant="outline"><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('plaza de mercado cerca de mí')}`} target="_blank" rel="noopener noreferrer"><MapPin/>Buscar cerca de mí</a></Button><p className="mt-2 text-xs text-ink-dim">Verifica horarios y disponibilidad. Las cadenas se listan como opciones generales; confirma presencia en tu ciudad.</p></section>
+ </>}</div></SheetContent></Sheet>;
+}
