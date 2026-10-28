@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
-import { guardarSchema, esDuplicado, type Med } from './modelo';
+import { guardarSchema, esDuplicado, leerConfig, horariosEntre, type Med } from './modelo';
 const idSchema=z.object({id:z.string().uuid()});
 export const listarMedicamentos=createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
  const db=context.supabase,uid=context.userId;
@@ -28,10 +28,13 @@ export const guardarPreferencias=createServerFn({method:'POST'}).middleware([req
  const {error}=await context.supabase.from('notification_prefs').upsert({...data,user_id:context.userId,updated_at:new Date().toISOString()});if(error)throw new Error('No se pudieron guardar las preferencias.');return {ok:true};
 });
 export const registrarToma=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((x:unknown)=>z.object({id:z.string().uuid(),scheduled_at:z.string().datetime(),status:z.enum(['tomada','omitida','pospuesta'])}).parse(x)).handler(async({context,data})=>{
- const db=context.supabase;const {data:m}=await db.from('medicaciones').select('id').eq('id',data.id).eq('user_id',context.userId).maybeSingle();if(!m)throw new Error('Tratamiento no autorizado.');
+ const db=context.supabase;const {data:m}=await db.from('medicaciones').select('*').eq('id',data.id).eq('user_id',context.userId).maybeSingle();if(!m)throw new Error('Tratamiento no autorizado.');
+ const {data:p}=await db.from('notification_prefs').select('health_consent').eq('user_id',context.userId).maybeSingle();if(!p?.health_consent)throw new Error('Confirme el consentimiento para registrar datos de salud.');
+ const c=leerConfig(m);const scheduled=new Date(data.scheduled_at);if(!c||!horariosEntre(c,scheduled,scheduled).includes(data.scheduled_at))throw new Error('La toma no corresponde al horario de este tratamiento.');
  const now=new Date();const {error}=await db.from('medication_doses').upsert({medication_id:data.id,user_id:context.userId,scheduled_at:data.scheduled_at,status:data.status,recorded_at:now.toISOString(),postponed_until:data.status==='pospuesta'?new Date(now.getTime()+900000).toISOString():null},{onConflict:'medication_id,scheduled_at'});if(error)throw new Error('No se pudo registrar la toma.');return {ok:true};
 });
 export const registrarSintoma=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((x:unknown)=>z.object({id:z.string().uuid(),occurred_at:z.string().datetime(),symptom:z.string().trim().min(2).max(300),severity:z.enum(['leve','moderada','grave']),recent_dose:z.boolean(),notes:z.string().trim().max(1000)}).parse(x)).handler(async({context,data})=>{
+ const {data:p}=await context.supabase.from('notification_prefs').select('health_consent').eq('user_id',context.userId).maybeSingle();if(!p?.health_consent)throw new Error('Confirme el consentimiento para registrar datos de salud.');
  const {id,...fila}=data;const {error}=await context.supabase.from('medication_symptoms').insert({...fila,medication_id:id,user_id:context.userId});if(error)throw new Error('No se pudo registrar el síntoma.');return {ok:true};
 });
 export const eliminarMedicamento=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((x:unknown)=>idSchema.parse(x)).handler(async({context,data})=>{

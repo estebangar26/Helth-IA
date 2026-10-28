@@ -1,0 +1,26 @@
+import {describe,it,expect} from 'vitest';
+import {configuracion,legado,horariosEntre,estadoTratamiento,adherencia,alertas,alarmaSintoma,esDuplicado,enSilencio,reintentoVital,proxima,type Med,type Dosis} from './modelo';
+const c=configuracion.parse({cantidad:500,unidad:'mg',inicio:'2026-10-28',primera:'08:00'});
+const start=new Date('2026-10-28T00:00:00-05:00'),end=new Date('2026-10-28T23:59:59-05:00');
+describe('Reglas de Mis medicaciones',()=>{
+ it('prohíbe unidades en texto libre',()=>expect(configuracion.safeParse({...c,unidad:'miligramos'}).success).toBe(false));
+ it('exige dosis numérica positiva',()=>expect(configuracion.safeParse({...c,cantidad:0}).success).toBe(false));
+ it('rechaza fin anterior a inicio',()=>expect(configuracion.safeParse({...c,continuo:false,fin:'2026-10-27'}).success).toBe(false));
+ it('rechaza fechas imposibles',()=>expect(configuracion.safeParse({...c,inicio:'2026-02-30'}).success).toBe(false));
+ it('preserva lectura inequívoca 120 mg cada 8 horas sin inventar fecha',()=>{const m={dosis:'120 mg',frecuencia:'cada 8 horas'} as Med;expect(legado(m)).toEqual({cantidad:120,unidad:'mg',horas:8,recordatorioHoras:8});});
+ it('no inventa unidad para dosis ambigua',()=>expect(legado({dosis:'una dosis',frecuencia:'ocasional'} as Med)).toEqual({}));
+ it('cuenta cada 8 horas desde primera toma',()=>expect(horariosEntre(c,start,end)).toEqual(['2026-10-28T13:00:00.000Z','2026-10-28T21:00:00.000Z']));
+ it('horarios fijos sin duplicados',()=>expect(horariosEntre({...c,frecuencia:'fijos',horarios:['08:00','08:00','20:00']},start,end)).toHaveLength(2));
+ it('solo si lo necesito no programa tomas',()=>expect(horariosEntre({...c,frecuencia:'necesidad'},start,end)).toEqual([]));
+ it('pausado no programa tomas',()=>expect(horariosEntre({...c,estado:'pausado'},start,end)).toEqual([]));
+ it('finaliza después del fin y no programa nuevas tomas',()=>{const x={...c,continuo:false,fin:'2026-10-28'};expect(estadoTratamiento(x,new Date('2026-10-29T12:00:00Z'))).toBe('finalizado');expect(proxima(x,[],new Date('2026-10-29T12:00:00Z'))).toBe(null);});
+ it('stock avisa a 5 días y no a 6',()=>{expect(alertas({...c,stock:15}).bajo).toBe(true);expect(alertas({...c,stock:18}).bajo).toBe(false);});
+ it('vencimiento avisa a 30 días',()=>expect(alertas({...c,vencimiento:'2026-11-27'},new Date('2026-10-28T23:59:59-05:00')).vencePronto).toBe(true));
+ it('adherencia solo cuenta tomas confirmadas',()=>{const dates=horariosEntre(c,start,end);const d={id:'x',medication_id:'m',scheduled_at:dates[0]??'',status:'tomada',recorded_at:dates[0]??'',postponed_until:null};expect(adherencia(c,[d],7,end)).toBe(50);expect(adherencia(c,[],30,end)).toBe(0);});
+ it('posponer deja próxima toma 15 minutos después',()=>{const now=new Date('2026-10-28T14:00:00Z');const d:Dosis={id:'x',medication_id:'m',scheduled_at:'2026-10-28T13:00:00.000Z',status:'pospuesta',recorded_at:now.toISOString(),postponed_until:'2026-10-28T14:15:00.000Z'};expect(proxima(c,[d],now)).toBe(d.postponed_until);});
+ it('síntoma grave y dificultad respiratoria alertan',()=>{expect(alarmaSintoma('náuseas','grave')).toBe(true);expect(alarmaSintoma('dificultad para respirar','leve')).toBe(true);expect(alarmaSintoma('náuseas','leve')).toBe(false);});
+ it('duplicado exige mismo nombre o genérico, dosis y frecuencia',()=>{const b:Med={id:'x',nombre:'Medicamento',dosis:'500 mg',frecuencia:'cada 8 horas',notas:null,creado_en:'',detalle:c};expect(esDuplicado({nombre:'medicamento',detalle:c},b)).toBe(true);expect(esDuplicado({nombre:'medicamento',detalle:{...c,cantidad:250}},b)).toBe(false);});
+ it('silencio 22 a 06 se respeta salvo Vital',()=>{const x={...c,silencioInicio:'22:00',silencioFin:'06:00'};const now=new Date('2026-10-28T23:00:00-05:00');expect(enSilencio(x,now)).toBe(true);expect(enSilencio({...x,vital:true},now)).toBe(false);});
+ it('Vital reintenta una sola vez desde 30 minutos sin confirmar',()=>{const now=new Date('2026-10-28T13:30:00Z'),x={...c,vital:true};expect(reintentoVital(x,'2026-10-28T13:00:00Z',0,false,now)).toBe(true);expect(reintentoVital(x,'2026-10-28T13:00:00Z',1,false,now)).toBe(false);expect(reintentoVital(x,'2026-10-28T13:00:00Z',0,true,now)).toBe(false);expect(reintentoVital(x,'2026-10-28T13:01:00Z',0,false,now)).toBe(false);});
+ it('sin conexión no permite activar envíos',()=>expect(configuracion.safeParse({...c,canal:'whatsapp'}).success).toBe(false));
+});
