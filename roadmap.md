@@ -1,7 +1,8 @@
 # Hoja de ruta
 
 - [x] Habilitar almacenamiento privado foods, subida administrativa con autor/licencia y fotos firmadas para pacientes; bucket público bloqueado, alternativa privada aplicada.
-- [ ] Autorizar la cuenta de Esteban como administradora, cargar fotografías reales acreditadas de frutas y legumbres y verificar el panel y su visualización.
+- [x] Autorizar la cuenta de Esteban como administradora y cargar 17 fotografías reales acreditadas de frutas y legumbres; subida desde el panel y persistencia tras nueva sesión verificadas.
+- [ ] Completar fotografías de manzana, maracuyá, fríjoles, pera y granadilla; bloqueado: fuentes de descarga rechazan solicitudes (403/429), imágenes iniciales no corresponden y se descartaron.
 
 - [x] Ampliar exclusivamente Mis medicaciones: registros originales conservados, formulario estructurado, alergias locales, médico, fecha, horarios, tomas, síntomas, adherencia, inventario, foto privada y PDF; 20 pruebas y recorrido con registro temporal eliminado.
 - [ ] Completar envíos y confirmaciones externas, reintento Vital y consentimiento del cuidador; bloqueado: conexión Resend rechazada y WhatsApp sin conexión/verificación/plantilla. No hay revisiones recurrentes activas; habilitar revisión cada 15 minutos solo al disponer de canal operativo.
@@ -10,7 +11,7 @@
 
 - [ ] Conectar WhatsApp Business para recordatorios con horario y médico; bloqueado: autorización rechazada, sin conexión ni envíos.
 - [x] Ampliar Alimentación recomendada con catálogo editable (59 alimentos, 8 reglas, 63 lugares), restricciones cruzadas y panel de apoyo; 28 pruebas y verificación visual aislada con catálogo real.
-- [ ] Comprobar carga de fotos como administrador; fotos privadas habilitadas porque la política bloquea bucket público, pendiente cuenta administrativa.
+- [x] Comprobar carga de fotos como administrador; 17 fotos privadas con créditos y visualización verificadas desde el panel real.
 - [x] Verificar alimentación desde resultados reales de paciente; HbA1c en observación abre frutas y otros alimentos del catálogo, hormonas y marcadores tumorales muestran orientación sin alimentos correctivos.
 
 - [x] Corregir el desbordamiento de tarjetas de resultados al cambiar el zoom en paciente y médico; comprobación visual aislada en ocho anchos (320–1920 px), sin desbordamientos. La cuenta disponible no tenía pacientes compartidos para verificar resultados reales.
