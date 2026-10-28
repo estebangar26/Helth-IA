@@ -1,5 +1,8 @@
 # Hoja de ruta
 
+- [ ] Conectar WhatsApp Business para recordatorios con horario y médico; conexión pendiente de completar por el usuario.
+- [ ] Ampliar Alimentación recomendada con catálogo editable, restricciones cruzadas, panel de apoyo, lugares y fotos propias; sin cambiar clasificación ni extracción.
+
 - [x] Corregir el desbordamiento de tarjetas de resultados al cambiar el zoom en paciente y médico; comprobación visual aislada en ocho anchos (320–1920 px), sin desbordamientos. La cuenta disponible no tenía pacientes compartidos para verificar resultados reales.
 
 - [x] Permitir observaciones médicas sobre exámenes y avisos dentro de Resultados del paciente, sin editar datos clínicos; envío y lectura verificados con ambas cuentas.
