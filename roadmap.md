@@ -1,6 +1,7 @@
 # Hoja de ruta
 
-- [ ] Ampliar exclusivamente Mis medicaciones conforme al documento adjunto: conservar registros, formulario estructurado, tomas, síntomas, adherencia, inventario, exportación y recordatorios seguros; pendiente aprobar estrategia y conectar servicios de envío.
+- [x] Ampliar exclusivamente Mis medicaciones: registros originales conservados, formulario estructurado, alergias locales, médico, fecha, horarios, tomas, síntomas, adherencia, inventario, foto privada y PDF; 20 pruebas y recorrido con registro temporal eliminado.
+- [ ] Completar envíos y confirmaciones externas, reintento Vital y consentimiento del cuidador; bloqueado: conexión Resend rechazada y WhatsApp sin conexión/verificación/plantilla. No hay revisiones recurrentes activas; habilitar revisión cada 15 minutos solo al disponer de canal operativo.
 
 - [x] Corregir alimentación vacía ante resultados alterados o en observación y el texto desbordado de las tarjetas del dashboard; 26 pruebas y recorrido con resultados reales, panel de alimentos y tarjetas sin desbordamiento a 320, 375, 634 y 1280 px.
 
@@ -15,7 +16,7 @@
 - [x] Añadir orientación alimentaria colombiana ligada a resultados reales e imágenes de alimentación y vida saludable; nueve pruebas y comprobación en celular.
 
 - [x] Consultar plan y costos registrados de Lovable Cloud para explicar el escalamiento de HelthIA.
-- [ ] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
+- [x] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
 - [ ] Configurar horarios y recordatorios económicos por correo y WhatsApp. Revisiones cada 15 minutos cuando haya recordatorios; pendiente conectar WhatsApp Business.
 
 - [x] Añadir la pestaña «Sobre nosotros» con la biografía de Esteban García Otálvaro y su fotografía, verificando la página en escritorio y celular.
