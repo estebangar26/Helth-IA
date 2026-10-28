@@ -18,3 +18,4 @@
 - Keep the editable food catalog in foods, variable_food_rules and places with admin-only writes; support consumes existing result states and cross-result restrictions, never new clinical classification.
 - Adapt legacy dashboard readings locally for dietary support when catalog references are missing; only join matching values and units, preserving catalog identity and never copying legacy clinical targets into laboratory references.
 - Keep medication tracking additive on `medicaciones` with owner-scoped schedule, dose, symptom and preference tables; preserve legacy text until the patient explicitly reviews structured fields, and keep provider-dependent sending disabled until verified connections and consent exist.
+- Store food photos by private Storage path and resolve short-lived signed URLs in authenticated catalog reads; admin-only uploads preserve credits without persisting expiring URLs.
