@@ -27,7 +27,7 @@ function Resultados() {
 
   return (
     <main className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
         <ObservacionesMedicas observaciones={observaciones} examenes={panel.examenes} />
         {panel.biomarcadores.length > 0 ? (
           <Biomarcadores biomarcadores={panel.biomarcadores} />
