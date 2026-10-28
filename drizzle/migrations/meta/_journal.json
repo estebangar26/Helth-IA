@@ -85,6 +85,13 @@
       "when": 1793168409898,
       "tag": "0011_medication_tracking_additive",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793168426586,
+      "tag": "0012_medication_photo_owner_access",
+      "breakpoints": true
     }
   ]
 }
