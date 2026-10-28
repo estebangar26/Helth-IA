@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { obtenerCatalogoAlimentos } from '@/lib/alimentacion/catalogo.functions';
 import { apoyo } from '@/lib/alimentacion/apoyo';
 import { AVISO, type Catalogo, type Food, type Lectura } from '@/lib/alimentacion/tipos';
-const etiquetas={dentro:'Dentro del rango reportado',debajo:'Por debajo del rango reportado',encima:'Por encima del rango reportado',sin_rango:'Sin rango de referencia'};
+export const etiquetas={dentro:'Dentro del rango reportado',debajo:'Por debajo del rango reportado',encima:'Por encima del rango reportado',sin_rango:'Sin rango de referencia',observacion:'En observación',accion:'Requiere acción',controlado:'Controlado'};
 export function FotoAlimento({food}:{food:Food}) {return <div className="aspect-[3/2] w-full overflow-hidden rounded bg-panel-soft">{food.image_url && food.image_credit ? <img src={food.image_url} alt={food.nombre} className="h-full w-full object-cover" loading="lazy"/>:<div className="grid h-full place-items-center text-brand-lime" aria-label={`Sin foto de ${food.nombre}`}><Apple className="size-8"/></div>}</div>;}
 export function PanelAlimentacion({resultado,todos,cerrar}:{resultado:Lectura|null;todos:Lectura[];cerrar:()=>void}) {
  const [catalogo,setCatalogo]=useState<Catalogo|null>(null); const [error,setError]=useState(''); const [filtro,setFiltro]=useState('Todos'); const [ciudad,setCiudad]=useState('Medellín');

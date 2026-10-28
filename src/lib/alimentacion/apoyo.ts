@@ -1,9 +1,12 @@
 /** Solo consume el estado recibido: no analiza ni modifica rangos. */
 import type { Catalogo, Lectura } from './tipos';
-const renal = (r: Lectura) => ['creatinina','tfg','bun','urea','cistatina_c'].includes(r.codigo) && ['debajo','encima'].includes(r.estado);
+const renal = (r: Lectura) => ['creatinina','tfg','bun','urea','cistatina_c'].includes(r.codigo) && ['debajo','encima','observacion','accion'].includes(r.estado);
 export function apoyo(r: Lectura, todos: Lectura[], c: Catalogo) {
- const alterado = ['debajo','encima'].includes(r.estado);
- const regla = c.rules.find(x => x.analitos.includes(r.codigo) && x.estados.includes(r.estado)) ?? c.rules.find(x => x.categorias.includes(r.categoria) && x.estados.includes(r.estado));
+ const alterado = ['debajo','encima','observacion','accion'].includes(r.estado) || (r.estado==='controlado' && ['glucemia_ayunas','hba1c'].includes(r.codigo));
+ // Sin dirección conocida solo usar reglas seguras para AMBAS direcciones.
+ const estadosRegla = ['observacion','accion','controlado'].includes(r.estado) ? ['debajo','encima'] : [r.estado];
+ const compatible = (x: Catalogo['rules'][number]) => estadosRegla.every(e=>x.estados.includes(e));
+ const regla = c.rules.find(x => x.analitos.includes(r.codigo) && compatible(x)) ?? c.rules.find(x => x.categorias.includes(r.categoria) && compatible(x));
  let ids = alterado ? [...(regla?.recomendados ?? [])] : [];
  let limitar = alterado ? [...(regla?.limitar ?? [])] : [];
  let mensaje = regla?.mensaje ?? 'La alimentación no corrige este valor de forma confiable; consulta con tu médico.';
@@ -27,8 +30,8 @@ export function apoyo(r: Lectura, todos: Lectura[], c: Catalogo) {
  if(todos.some(renal)) ['potasio_alto','fosforo_alto','proteina_alta'].forEach(x=>restricciones.add(x));
  if(todos.some(x=>x.codigo==='potasio' && x.estado==='encima')) restricciones.add('potasio_alto');
  if(todos.some(x=>x.codigo==='fosforo' && x.estado==='encima')) restricciones.add('fosforo_alto');
- if(todos.some(x=>x.codigo==='acido_urico' && x.estado==='encima')) restricciones.add('purinas_altas');
- if(todos.some(x=>x.categoria==='glucosa' && x.estado==='encima')) restricciones.add('azucar_alta');
+ if(todos.some(x=>x.codigo==='acido_urico' && ['encima','observacion','accion'].includes(x.estado))) restricciones.add('purinas_altas');
+ if(todos.some(x=>x.categoria==='glucosa' && ['encima','observacion','accion'].includes(x.estado))) restricciones.add('azucar_alta');
  const conflictos = c.foods.filter(f=>ids.includes(f.id) && f.tags_restriccion.some(t=>restricciones.has(t)));
  const recomendados = c.foods.filter(f=>ids.includes(f.id) && !conflictos.includes(f) && !limitar.includes(f.id));
  const limitados = c.foods.filter(f=>limitar.includes(f.id) || conflictos.includes(f));

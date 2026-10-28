@@ -16,3 +16,4 @@
 - Derive patient dietary guidance locally from real catalog results and their current laboratory references; this avoids recurring AI costs and unsupported treatment claims.
 
 - Keep the editable food catalog in foods, variable_food_rules and places with admin-only writes; support consumes existing result states and cross-result restrictions, never new clinical classification.
+- Adapt legacy dashboard readings locally for dietary support when catalog references are missing; only join matching values and units, preserving catalog identity and never copying legacy clinical targets into laboratory references.

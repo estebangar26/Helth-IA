@@ -1,5 +1,7 @@
 # Hoja de ruta
 
+- [ ] Corregir alimentación vacía ante resultados alterados o en observación y el texto desbordado de las tarjetas del dashboard.
+
 - [ ] Conectar WhatsApp Business para recordatorios con horario y médico; bloqueado: autorización rechazada, sin conexión ni envíos.
 - [x] Ampliar Alimentación recomendada con catálogo editable (59 alimentos, 8 reglas, 63 lugares), restricciones cruzadas y panel de apoyo; 28 pruebas y verificación visual aislada con catálogo real.
 - [ ] Habilitar bucket público foods y comprobar carga de fotos como administrador; bloqueado por política del espacio y ausencia de sesión administrativa disponible.

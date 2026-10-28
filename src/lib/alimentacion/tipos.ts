@@ -1,5 +1,5 @@
 import type { ResultadoCatalogo } from '@/lib/copiloto/tipos';
-export type Estado = 'dentro' | 'debajo' | 'encima' | 'sin_rango';
+export type Estado = 'dentro' | 'debajo' | 'encima' | 'sin_rango' | 'observacion' | 'accion' | 'controlado';
 export type Lectura = ResultadoCatalogo & { estado: Estado };
 export interface Food { id: string; nombre: string; categoria: string; nutriente_clave: string; por_que: string; como_comerlo: string; image_url: string | null; image_credit: string | null; tags_restriccion: string[] }
 export interface Rule { id: string; analitos: string[]; categorias: string[]; estados: string[]; recomendados: string[]; limitar: string[]; mensaje: string; consejo: string }
