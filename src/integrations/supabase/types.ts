@@ -251,6 +251,42 @@ export type Database = {
         }
         Relationships: []
       }
+      foods: {
+        Row: {
+          categoria: string
+          como_comerlo: string
+          id: string
+          image_credit: string | null
+          image_url: string | null
+          nombre: string
+          nutriente_clave: string
+          por_que: string
+          tags_restriccion: string[]
+        }
+        Insert: {
+          categoria: string
+          como_comerlo?: string
+          id: string
+          image_credit?: string | null
+          image_url?: string | null
+          nombre: string
+          nutriente_clave?: string
+          por_que?: string
+          tags_restriccion?: string[]
+        }
+        Update: {
+          categoria?: string
+          como_comerlo?: string
+          id?: string
+          image_credit?: string | null
+          image_url?: string | null
+          nombre?: string
+          nutriente_clave?: string
+          por_que?: string
+          tags_restriccion?: string[]
+        }
+        Relationships: []
+      }
       medicaciones: {
         Row: {
           creado_en: string
@@ -375,6 +411,30 @@ export type Database = {
         }
         Relationships: []
       }
+      places: {
+        Row: {
+          ciudad: string
+          id: string
+          nombre: string
+          que_se_consigue: string
+          tipo: string
+        }
+        Insert: {
+          ciudad: string
+          id: string
+          nombre: string
+          que_se_consigue?: string
+          tipo: string
+        }
+        Update: {
+          ciudad?: string
+          id?: string
+          nombre?: string
+          que_se_consigue?: string
+          tipo?: string
+        }
+        Relationships: []
+      }
       resultados_biomarcador: {
         Row: {
           categoria: string
@@ -444,6 +504,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      variable_food_rules: {
+        Row: {
+          analitos: string[]
+          categorias: string[]
+          consejo: string
+          estados: string[]
+          id: string
+          limitar: string[]
+          mensaje: string
+          recomendados: string[]
+        }
+        Insert: {
+          analitos?: string[]
+          categorias?: string[]
+          consejo?: string
+          estados?: string[]
+          id: string
+          limitar?: string[]
+          mensaje?: string
+          recomendados?: string[]
+        }
+        Update: {
+          analitos?: string[]
+          categorias?: string[]
+          consejo?: string
+          estados?: string[]
+          id?: string
+          limitar?: string[]
+          mensaje?: string
+          recomendados?: string[]
+        }
+        Relationships: []
       }
     }
     Views: {
