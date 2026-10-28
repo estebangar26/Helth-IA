@@ -257,6 +257,7 @@ export type Database = {
           como_comerlo: string
           id: string
           image_credit: string | null
+          image_path: string | null
           image_url: string | null
           nombre: string
           nutriente_clave: string
@@ -268,6 +269,7 @@ export type Database = {
           como_comerlo?: string
           id: string
           image_credit?: string | null
+          image_path?: string | null
           image_url?: string | null
           nombre: string
           nutriente_clave?: string
@@ -279,6 +281,7 @@ export type Database = {
           como_comerlo?: string
           id?: string
           image_credit?: string | null
+          image_path?: string | null
           image_url?: string | null
           nombre?: string
           nutriente_clave?: string
@@ -290,6 +293,7 @@ export type Database = {
       medicaciones: {
         Row: {
           creado_en: string
+          detalle: Json
           dosis: string | null
           frecuencia: string | null
           id: string
@@ -299,6 +303,7 @@ export type Database = {
         }
         Insert: {
           creado_en?: string
+          detalle?: Json
           dosis?: string | null
           frecuencia?: string | null
           id?: string
@@ -308,11 +313,182 @@ export type Database = {
         }
         Update: {
           creado_en?: string
+          detalle?: Json
           dosis?: string | null
           frecuencia?: string | null
           id?: string
           nombre?: string
           notas?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medication_doses: {
+        Row: {
+          id: string
+          medication_id: string
+          postponed_until: string | null
+          recorded_at: string
+          scheduled_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          medication_id: string
+          postponed_until?: string | null
+          recorded_at?: string
+          scheduled_at: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          medication_id?: string
+          postponed_until?: string | null
+          recorded_at?: string
+          scheduled_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_doses_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medication_schedules: {
+        Row: {
+          config: Json
+          medication_id: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          medication_id: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          medication_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_schedules_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: true
+            referencedRelation: "medicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medication_symptoms: {
+        Row: {
+          created_at: string
+          id: string
+          medication_id: string
+          notes: string | null
+          occurred_at: string
+          recent_dose: boolean
+          severity: string
+          symptom: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          medication_id: string
+          notes?: string | null
+          occurred_at: string
+          recent_dose?: boolean
+          severity: string
+          symptom: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          medication_id?: string
+          notes?: string | null
+          occurred_at?: string
+          recent_dose?: boolean
+          severity?: string
+          symptom?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_symptoms_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_log: {
+        Row: {
+          attempt: number
+          channel: string
+          created_at: string
+          id: string
+          medication_id: string
+          scheduled_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          attempt?: number
+          channel: string
+          created_at?: string
+          id?: string
+          medication_id: string
+          scheduled_at: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          attempt?: number
+          channel?: string
+          created_at?: string
+          id?: string
+          medication_id?: string
+          scheduled_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_prefs: {
+        Row: {
+          allergies: string
+          health_consent: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allergies?: string
+          health_consent?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allergies?: string
+          health_consent?: boolean
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

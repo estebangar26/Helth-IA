@@ -1,12 +1,16 @@
 # Hoja de ruta
 
-- [ ] Ampliar exclusivamente Mis medicaciones conforme al documento adjunto: conservar registros, formulario estructurado, tomas, síntomas, adherencia, inventario, exportación y recordatorios seguros; pendiente aprobar estrategia y conectar servicios de envío.
+- [x] Habilitar almacenamiento privado foods, subida administrativa con autor/licencia y fotos firmadas para pacientes; bucket público bloqueado, alternativa privada aplicada.
+- [ ] Verificar carga administrativa y reemplazar íconos por fotos reales; bloqueado: no hay cuenta con rol administrador ni fotos de alimentos aportadas.
+
+- [x] Ampliar exclusivamente Mis medicaciones: registros originales conservados, formulario estructurado, alergias locales, médico, fecha, horarios, tomas, síntomas, adherencia, inventario, foto privada y PDF; 20 pruebas y recorrido con registro temporal eliminado.
+- [ ] Completar envíos y confirmaciones externas, reintento Vital y consentimiento del cuidador; bloqueado: conexión Resend rechazada y WhatsApp sin conexión/verificación/plantilla. No hay revisiones recurrentes activas; habilitar revisión cada 15 minutos solo al disponer de canal operativo.
 
 - [x] Corregir alimentación vacía ante resultados alterados o en observación y el texto desbordado de las tarjetas del dashboard; 26 pruebas y recorrido con resultados reales, panel de alimentos y tarjetas sin desbordamiento a 320, 375, 634 y 1280 px.
 
 - [ ] Conectar WhatsApp Business para recordatorios con horario y médico; bloqueado: autorización rechazada, sin conexión ni envíos.
 - [x] Ampliar Alimentación recomendada con catálogo editable (59 alimentos, 8 reglas, 63 lugares), restricciones cruzadas y panel de apoyo; 28 pruebas y verificación visual aislada con catálogo real.
-- [ ] Habilitar bucket público foods y comprobar carga de fotos como administrador; bloqueado por política del espacio y ausencia de sesión administrativa disponible.
+- [ ] Comprobar carga de fotos como administrador; fotos privadas habilitadas porque la política bloquea bucket público, pendiente cuenta administrativa.
 - [x] Verificar alimentación desde resultados reales de paciente; HbA1c en observación abre frutas y otros alimentos del catálogo, hormonas y marcadores tumorales muestran orientación sin alimentos correctivos.
 
 - [x] Corregir el desbordamiento de tarjetas de resultados al cambiar el zoom en paciente y médico; comprobación visual aislada en ocho anchos (320–1920 px), sin desbordamientos. La cuenta disponible no tenía pacientes compartidos para verificar resultados reales.
@@ -15,7 +19,7 @@
 - [x] Añadir orientación alimentaria colombiana ligada a resultados reales e imágenes de alimentación y vida saludable; nueve pruebas y comprobación en celular.
 
 - [x] Consultar plan y costos registrados de Lovable Cloud para explicar el escalamiento de HelthIA.
-- [ ] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
+- [x] Añadir médico que indicó el medicamento y hora de registro a Medicaciones.
 - [ ] Configurar horarios y recordatorios económicos por correo y WhatsApp. Revisiones cada 15 minutos cuando haya recordatorios; pendiente conectar WhatsApp Business.
 
 - [x] Añadir la pestaña «Sobre nosotros» con la biografía de Esteban García Otálvaro y su fotografía, verificando la página en escritorio y celular.
