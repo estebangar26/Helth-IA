@@ -1,102 +1,47 @@
-/** FRONTEND · Registro de medicaciones del paciente (protegido por RLS: solo las propias). */
-import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, Pill, Plus, Trash2 } from "lucide-react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { useEffect, useState } from "react";
-
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-export const Route = createFileRoute("/_authenticated/paciente/medicaciones")({
-  head: () => ({ meta: [
-    { title: "Mis medicaciones · HelthIA" },
-    { name: "description", content: "Registre los medicamentos que toma, su dosis y frecuencia." },
-    { property: "og:title", content: "Mis medicaciones · HelthIA" },
-    { property: "og:description", content: "Lista privada de medicamentos del paciente." },
-    { property: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary" },
-  ] }),
-  component: Medicaciones,
+/** Seguimiento exclusivo de medicamentos; conserva los campos históricos. */
+import { createFileRoute } from '@tanstack/react-router';
+import { useServerFn } from '@tanstack/react-start';
+import { useState } from 'react';
+import { Pill, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { FormularioMedicacion } from '@/components/medicaciones/FormularioMedicacion';
+import { HistorialMedicacion } from '@/components/medicaciones/HistorialMedicacion';
+import { listarMedicamentos, guardarMedicamento, guardarPreferencias, registrarToma, eliminarMedicamento, borrarDatosMedicaciones } from '@/lib/medicaciones/medicaciones.functions';
+import { fechaBogota, horaLocal, leerConfig, estadoTratamiento, proxima, horariosEntre, adherencia, alertas, type Med, type Config } from '@/lib/medicaciones/modelo';
+import { supabase } from '@/integrations/supabase/client';
+export const Route=createFileRoute('/_authenticated/paciente/medicaciones')({
+ loader:()=>listarMedicamentos(),
+ head:()=>({meta:[{title:'Mis medicaciones · HelthIA'},{name:'description',content:'Tratamientos, horarios, tomas y síntomas registrados de forma privada.'},{property:'og:title',content:'Mis medicaciones · HelthIA'},{property:'og:description',content:'Seguimiento privado de medicamentos sin reemplazar la indicación médica.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),
+ component:Medicaciones,
 });
-
-type Med = { id: string; nombre: string; dosis: string | null; frecuencia: string | null; notas: string | null };
-
-function Medicaciones() {
-  const [lista, setLista] = useState<Med[]>([]);
-  const [f, setF] = useState({ nombre: "", dosis: "", frecuencia: "", notas: "" });
-  const [msg, setMsg] = useState<string | null>(null);
-  const [editando, setEditando] = useState<string | null>(null);
-
-  async function cargar() {
-    const { data } = await supabase.from("medicaciones").select("id,nombre,dosis,frecuencia,notas").order("creado_en", { ascending: false });
-    setLista(data ?? []);
-  }
-  useEffect(() => { void cargar(); }, []);
-
-  async function agregar(e: React.FormEvent) {
-    e.preventDefault();
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user || f.nombre.trim().length < 2) return setMsg("Escriba el nombre del medicamento.");
-    const fila = { nombre: f.nombre.trim().slice(0, 120), dosis: f.dosis.trim().slice(0, 80) || null, frecuencia: f.frecuencia.trim().slice(0, 80) || null, notas: f.notas.trim().slice(0, 300) || null };
-    const { error } = editando
-      ? await supabase.from("medicaciones").update(fila).eq("id", editando)
-      : await supabase.from("medicaciones").insert({ user_id: u.user.id, ...fila });
-    if (error) return setMsg("No se pudo guardar.");
-    setF({ nombre: "", dosis: "", frecuencia: "", notas: "" });
-    setMsg(editando ? "Cambios guardados." : "Medicamento guardado.");
-    setEditando(null);
-    void cargar();
-  }
-
-  async function borrar(id: string) {
-    await supabase.from("medicaciones").delete().eq("id", id);
-    void cargar();
-  }
-
-  const campo = (k: keyof typeof f, etiqueta: string) => (
-    <div><Label className="font-body text-xs font-semibold text-ink-dim">{etiqueta}</Label><Input value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} className="mt-1.5 bg-panel" /></div>
-  );
-
-  return (
-    <main className="mx-auto max-w-2xl space-y-6">
-      <section className="rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6">
-        <div className="flex items-center gap-3"><Pill className="text-brand-blue" aria-hidden="true" /><h1 className="font-display text-lg font-bold text-ink">Mis medicaciones</h1></div>
-        <form onSubmit={agregar} className="mt-5 space-y-3">
-          {campo("nombre", "Medicamento")}
-          <div className="grid gap-3 sm:grid-cols-2">{campo("dosis", "Dosis (ej. 850 mg)")}{campo("frecuencia", "Frecuencia (ej. cada 12 horas)")}</div>
-          {campo("notas", "Notas (opcional)")}
-          {msg && <p role="status" className="font-body text-xs text-ink-dim">{msg}</p>}
-          <div className="flex gap-2">
-            <Button type="submit">{editando ? <><Pencil aria-hidden="true" /> Guardar cambios</> : <><Plus aria-hidden="true" /> Agregar</>}</Button>
-            {editando && <Button type="button" variant="outline" onClick={() => { setEditando(null); setF({ nombre: "", dosis: "", frecuencia: "", notas: "" }); }}>Cancelar</Button>}
-          </div>
-        </form>
-      </section>
-      <section className="space-y-2">
-        {lista.length === 0 ? <p className="font-body text-sm text-ink-dim">Aún no ha registrado medicamentos.</p> : lista.map((m) => (
-          <div key={m.id} className="flex items-start justify-between gap-3 rounded-lg border border-clinical-border bg-panel p-4">
-            <div><p className="font-body font-semibold text-ink">{m.nombre}</p><p className="font-body text-sm text-ink-dim">{[m.dosis, m.frecuencia].filter(Boolean).join(" · ")}</p>{m.notas && <p className="font-body text-xs text-ink-dim">{m.notas}</p>}</div>
-            <div className="flex shrink-0">
-              <Button variant="ghost" size="icon" aria-label={`Editar ${m.nombre}`} onClick={() => { setEditando(m.id); setF({ nombre: m.nombre, dosis: m.dosis ?? "", frecuencia: m.frecuencia ?? "", notas: m.notas ?? "" }); window.scrollTo({ top: 0, behavior: "smooth" }); }}><Pencil /></Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild><Button variant="ghost" size="icon" aria-label={`Borrar ${m.nombre}`}><Trash2 /></Button></AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>¿Eliminar {m.nombre}?</AlertDialogTitle>
-                    <AlertDialogDescription>Este medicamento se borrará de su lista. Esta acción no se puede deshacer.</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => borrar(m.id)}>Eliminar</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          </div>
-        ))}
-      </section>
-    </main>
-  );
+function Medicaciones(){
+ const inicial=Route.useLoaderData();const [data,setData]=useState(inicial);const [form,setForm]=useState(false);const [med,setMed]=useState<Med|null>(null);const [filtro,setFiltro]=useState('activo');const [vista,setVista]=useState('tratamientos');const [msg,setMsg]=useState('');const [allergies,setAllergies]=useState(inicial.prefs?.allergies??'');const [consent,setConsent]=useState(inicial.prefs?.health_consent??false);const [duplicado,setDuplicado]=useState<{nombre:string;notas:string;detalle:Config}|null>(null);const [borrar,setBorrar]=useState<string|null>(null);const [foto,setFoto]=useState<string|null>(null);
+ const listar=useServerFn(listarMedicamentos),guardar=useServerFn(guardarMedicamento),prefs=useServerFn(guardarPreferencias),toma=useServerFn(registrarToma),eliminar=useServerFn(eliminarMedicamento),borrarTodo=useServerFn(borrarDatosMedicaciones);
+ async function actualizar(){setData(await listar());}
+ async function ejecutar(fn:()=>Promise<unknown>){try{await fn();await actualizar();setMsg('Registro actualizado.');}catch(e){setMsg(e instanceof Error?e.message:'No se pudo actualizar.');}}
+ async function save(nombre:string,notas:string,detalle:Config,confirmarDuplicado=false){const r=await guardar({data:{id:med?.id,nombre,notas,detalle,confirmarDuplicado}});if(r.duplicado){setDuplicado({nombre,notas,detalle});return;}setForm(false);setMed(null);setDuplicado(null);await actualizar();setMsg('Medicamento guardado.');}
+ async function estado(m:Med,c:Config,s:Config['estado']){await ejecutar(()=>guardar({data:{id:m.id,nombre:m.nombre,notas:m.notas??'',detalle:{...c,estado:s},confirmarDuplicado:true}}));}
+ const today=fechaBogota();const desde=new Date(`${today}T00:00:00-05:00`),hasta=new Date(`${today}T23:59:59-05:00`);
+ const hoy=data.meds.flatMap(m=>{const c=leerConfig(m);if(!c||estadoTratamiento(c)!=='activo')return [];return horariosEntre(c,desde,hasta).map(t=>({m,t,d:data.doses.find(d=>d.medication_id===m.id&&d.scheduled_at===t)}));}).sort((a,b)=>a.t.localeCompare(b.t));
+ return <main className="min-w-0 space-y-6 break-words font-body">
+ <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><div className="flex min-w-0 items-center gap-3"><Pill className="shrink-0 text-brand-blue"/><h1 className="min-w-0 font-display text-xl font-bold">Mis medicaciones</h1></div><Button size="icon" aria-label="Agregar medicamento" title="Agregar medicamento" onClick={()=>{setMed(null);setForm(true);}}><Plus/></Button></header>
+ <p className="border-l-4 border-brand-lime pl-3 text-sm">Esta app no reemplaza la indicación de tu médico. No cambies dosis ni suspendas medicamentos sin consultar.</p>
+ <details className="border-y border-clinical-border py-3" open={!data.prefs?.health_consent}><summary className="cursor-pointer font-semibold">Alergias y privacidad</summary><div className="mt-4 space-y-3"><label htmlFor="allergies-med" className="text-sm">Alergias a medicamentos (principios activos)</label><Input id="allergies-med" value={allergies} maxLength={1000} onChange={e=>setAllergies(e.target.value)}/><label className="flex items-start gap-3 text-sm"><input type="checkbox" className="mt-1 shrink-0" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>Autorizo el tratamiento de mis datos de salud para el seguimiento de medicamentos, conforme a la Ley 1581 de 2012. Puedo retirar esta autorización o borrar los datos de este módulo.</span></label><Button variant="outline" onClick={()=>void ejecutar(()=>prefs({data:{allergies,health_consent:consent}}))}>Guardar preferencias</Button><p className="text-xs text-ink-dim">Correo y WhatsApp no conectados: no hay envíos ni revisiones periódicas activas. Contactos de apoyo sin avisos hasta verificar su consentimiento.</p><Button variant="ghost" className="text-alert" onClick={()=>setBorrar('todos')}>Borrar todos mis datos de medicaciones</Button></div></details>
+ {msg&&<p role="status" className="text-sm text-ink-dim">{msg}</p>}
+ {form?<section className="min-w-0 border-y border-clinical-border py-4"><h2 className="font-display font-bold">{med?'Editar tratamiento':'Nuevo tratamiento'}</h2><FormularioMedicacion key={med?.id??'nuevo'} med={med} allergies={allergies} guardar={save} cancelar={()=>{setForm(false);setMed(null);}}/></section>:<>
+ <div className="flex flex-wrap gap-2" role="tablist" aria-label="Vista de medicaciones">{[['tratamientos','Tratamientos'],['hoy','Hoy']].map(([v,t])=><Button key={v} role="tab" aria-selected={vista===v} variant={vista===v?'default':'outline'} onClick={()=>setVista(v)}>{t}</Button>)}</div>
+ {vista==='hoy'?<section className="space-y-3"><h2 className="font-display font-bold">Hoy · {today}</h2>{!hoy.length&&<p className="text-sm text-ink-dim">Sin tomas programadas para hoy.</p>}{hoy.map(({m,t,d})=><article key={`${m.id}-${t}`} className="min-w-0 rounded-md border border-clinical-border bg-panel p-4"><h3 className="font-semibold">{m.nombre}</h3><p className="text-sm text-ink-dim">{m.dosis} · {horaLocal(t)}{d?` · ${d.status}`:''}{d?.postponed_until?` hasta ${horaLocal(d.postponed_until)}`:''}</p><div className="mt-3 flex flex-wrap gap-2">{['tomada','omitida','pospuesta'].map(s=><Button size="sm" variant={d?.status===s?'default':'outline'} key={s} onClick={()=>void ejecutar(()=>toma({data:{id:m.id,scheduled_at:t,status:s as 'tomada'|'omitida'|'pospuesta'}}))}>{s==='tomada'?'Tomada':s==='omitida'?'Omitida':'Posponer 15 min'}</Button>)}</div></article>)}</section>:<>
+ <div className="flex flex-wrap gap-2" aria-label="Filtrar tratamientos">{['activo','pausado','finalizado','todos'].map(s=><Button key={s} size="sm" variant={filtro===s?'default':'outline'} aria-pressed={filtro===s} onClick={()=>setFiltro(s)}>{s==='activo'?'Activos':s==='pausado'?'Pausados':s==='finalizado'?'Finalizados':'Todos'}</Button>)}</div>
+ <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),1fr))] items-start gap-4">{data.meds.filter(m=>{const c=leerConfig(m);return filtro==='todos'||(c?estadoTratamiento(c):'activo')===filtro;}).map(m=>{const c=leerConfig(m);const doses=data.doses.filter(d=>d.medication_id===m.id),symptoms=data.symptoms.filter(s=>s.medication_id===m.id);const next=c?proxima(c,doses):null;const a=c?alertas(c):null;return <article key={m.id} className="min-w-0 rounded-md border border-clinical-border bg-panel p-4">
+ <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2"><h2 className="min-w-0 font-display font-bold">{m.nombre}</h2><div className="flex shrink-0"><Button variant="ghost" size="icon" aria-label={`Editar ${m.nombre}`} onClick={()=>{setMed(m);setForm(true);}}><Pencil/></Button><Button variant="ghost" size="icon" aria-label={`Eliminar ${m.nombre}`} onClick={()=>setBorrar(m.id)}><Trash2/></Button></div></div>
+ <p className="mt-2 text-sm font-semibold">{[m.dosis,m.frecuencia].filter(Boolean).join(' · ')}</p><p className="mt-1 text-xs text-ink-dim">Registrado {horaLocal(m.creado_en)}</p>
+ {c?<><div className="mt-3 flex flex-wrap gap-2 text-xs"><span className="rounded border border-clinical-border px-2 py-1">{estadoTratamiento(c)}</span>{c.vital&&<span className="rounded bg-alert/10 px-2 py-1 text-alert">Vital</span>}{a?.bajo&&<span className="rounded bg-warn/10 px-2 py-1">Stock bajo · {a.diasStock?.toFixed(1)} días</span>}{a?.vencePronto&&<span className="rounded bg-warn/10 px-2 py-1">{a.vencido?'Vencido':'Vence pronto'}</span>}</div><p className="mt-3 text-sm">Próxima toma: {next?horaLocal(next):c.frecuencia==='necesidad'?'Solo si lo necesito':'No disponible'}</p>{c.prescrito&&<p className="mt-1 text-xs text-ink-dim">Prescrito por: {c.prescrito}</p>}<p className="mt-2 text-xs text-ink-dim">Inicio {c.inicio} · {c.continuo?'Continuo':`Fin ${c.fin} · ${Math.max(0,Math.ceil((new Date(`${c.fin}T23:59:59-05:00`).getTime()-Date.now())/86400000))} días restantes`}</p><p className="mt-2 text-xs">Adherencia 7 días: {adherencia(c,doses,7)===null?'Sin tomas programadas':`${adherencia(c,doses,7)}%`} · 30 días: {adherencia(c,doses,30)===null?'Sin tomas programadas':`${adherencia(c,doses,30)}%`}</p><div className="mt-3 flex flex-wrap gap-2">{estadoTratamiento(c)!=='finalizado'&&<><Button size="sm" variant="outline" onClick={()=>void estado(m,c,c.estado==='pausado'?'activo':'pausado')}>{c.estado==='pausado'?'Reanudar':'Pausar'}</Button><Button size="sm" variant="outline" onClick={()=>void estado(m,c,'finalizado')}>Finalizar tratamiento</Button></>}{c.foto&&<Button size="sm" variant="outline" onClick={async()=>{const {data,error}=await supabase.storage.from('medication-photos').createSignedUrl(c.foto,60);if(error||!data)return setMsg('No se pudo abrir la foto.');setFoto(data.signedUrl);}}>Ver foto</Button>}</div></>:<p className="mt-3 text-xs text-warn">Pendiente de revisión: confirme unidad, fecha y horario. Sin recordatorios automáticos.</p>}
+ {m.notas&&<p className="mt-3 text-sm text-ink-dim">{m.notas}</p>}<HistorialMedicacion med={m} doses={doses} symptoms={symptoms} actualizar={actualizar}/></article>;})}</div>{!data.meds.length&&<p className="text-sm text-ink-dim">Aún no ha registrado medicamentos.</p>}
+ </>}
+ </>}
+ {duplicado&&<div role="dialog" aria-modal="true" aria-label="Tratamiento duplicado" className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4"><div className="w-full max-w-md rounded-lg bg-panel p-5"><h2 className="font-display font-bold">Posible tratamiento duplicado</h2><p className="mt-3 text-sm">Ya existe un tratamiento activo con el mismo nombre o principio activo, dosis y frecuencia. ¿Desea guardar otro?</p><div className="mt-4 flex flex-wrap gap-2"><Button onClick={()=>void ejecutar(()=>save(duplicado.nombre,duplicado.notas,duplicado.detalle,true))}>Guardar de todos modos</Button><Button variant="outline" onClick={()=>setDuplicado(null)}>Cancelar</Button></div></div></div>}
+ {borrar&&<div role="dialog" aria-modal="true" aria-label="Confirmar eliminación" className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4"><div className="w-full max-w-md rounded-lg bg-panel p-5"><h2 className="font-display font-bold">¿Eliminar {borrar==='todos'?'todos los datos de medicaciones':'este tratamiento'}?</h2><p className="mt-3 text-sm">Se eliminarán las tomas, síntomas y fotos asociados. Para conservar el historial, cancele y elija Finalizar tratamiento. Esta acción no se puede deshacer.</p><div className="mt-4 flex gap-2"><Button variant="destructive" onClick={()=>{const id=borrar;setBorrar(null);void ejecutar(()=>id==='todos'?borrarTodo():eliminar({data:{id}}));}}>Eliminar</Button><Button variant="outline" onClick={()=>setBorrar(null)}>Cancelar</Button></div></div></div>}
+ {foto&&<div role="dialog" aria-label="Foto privada del medicamento" aria-modal="true" className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" onClick={()=>setFoto(null)}><div className="max-w-lg rounded-lg bg-panel p-4"><img src={foto} alt="Caja o receta del medicamento" className="max-h-[70dvh] max-w-full object-contain"/><Button variant="outline" className="mt-3" onClick={()=>setFoto(null)}>Cerrar</Button></div></div>}
+ </main>;
 }
