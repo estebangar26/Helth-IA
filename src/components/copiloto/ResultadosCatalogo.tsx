@@ -12,6 +12,8 @@ import type { ResultadoCatalogo } from "@/lib/copiloto/tipos";
 import { ETIQUETA_CATEGORIA, ORDEN_CATEGORIAS } from "@/lib/copiloto/catalogo-resultados";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PanelAlimentacion } from "@/components/alimentacion/PanelAlimentacion";
+import type { Lectura } from "@/lib/alimentacion/tipos";
 import { numerosRangoImpreso } from "@/lib/copiloto/rango-impreso";
 
 /** Estado analítico derivado SOLO del rango que reportó el laboratorio. */
@@ -35,7 +37,7 @@ const CHIP_ESTADO: Record<EstadoResultado, string> = {
  * Intenta leer "min-max" del texto de referencia del laboratorio.
  * Si no puede interpretarse con seguridad, devuelve null (sin rango).
  */
-function estadoDesdeReferencia(valor: number, referencia: string | null, analito: string): EstadoResultado {
+export function estadoDesdeReferencia(valor: number, referencia: string | null, analito: string): EstadoResultado {
   if (!referencia) return "sin_rango";
   const numeros = numerosRangoImpreso(referencia, analito);
   if (!numeros || numeros.length === 0) return "sin_rango";
@@ -91,6 +93,8 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
   const [estado, setEstado] = useState<string>("todos");
   const [abiertas, setAbiertas] = useState<Set<string>>(new Set(ORDEN_CATEGORIAS));
   const [detalle, setDetalle] = useState<ResultadoCatalogo | null>(null);
+  const [alimentacion, setAlimentacion] = useState<Lectura | null>(null);
+  const lecturas = resultados.map(r => ({ ...r, estado: estadoDesdeReferencia(r.valor, r.referencia, r.nombre) }));
 
   const porCategoria = useMemo(() => {
     const mapa = new Map<string, ResultadoCatalogo[]>();
@@ -177,7 +181,8 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
                     const est = estadoDesdeReferencia(r.valor, r.referencia, r.nombre);
                     const varia = variacion(r);
                     return (
-                      <Button variant="outline" key={r.codigo} type="button" onClick={() => setDetalle(r)} className="block h-auto min-w-0 w-full whitespace-normal rounded-md border border-clinical-border bg-panel-soft p-4 text-left break-words transition-shadow hover:bg-panel-soft hover:shadow-md">
+                      <div key={r.codigo} className="min-w-0">
+                      <Button variant="outline" type="button" onClick={() => setDetalle(r)} className="block h-auto min-w-0 w-full whitespace-normal rounded-md border border-clinical-border bg-panel-soft p-4 text-left break-words transition-shadow hover:bg-panel-soft hover:shadow-md">
                         <div className="mb-2 flex min-w-0 flex-col items-start gap-2">
                           <span className="font-body text-xs font-semibold text-ink-dim">{r.nombre}</span>
                           <span className={`max-w-full rounded px-1.5 py-0.5 text-[9px] font-bold ring-1 ${CHIP_ESTADO[est]}`}>{ETIQUETA_ESTADO[est]}</span>
@@ -193,6 +198,8 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
                         )}
                         {varia && <p className="mt-1 font-body text-[11px] font-semibold text-brand-blue">{varia}</p>}
                       </Button>
+                      {["debajo", "encima"].includes(est) && <Button variant="outline" className="mt-2 h-auto w-full whitespace-normal text-xs" onClick={() => setAlimentacion({ ...r, estado: est })}>Ver alimentación de apoyo</Button>}
+                      </div>
                     );
                   })}
                 </div>
@@ -202,6 +209,7 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
         })
       )}
 
+      <PanelAlimentacion resultado={alimentacion} todos={lecturas} cerrar={() => setAlimentacion(null)} />
       {/* Panel de detalle */}
       {detalle && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center" role="dialog" aria-modal="true" aria-label={`Detalle de ${detalle.nombre}`} onClick={() => setDetalle(null)}>

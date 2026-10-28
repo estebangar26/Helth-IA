@@ -19,7 +19,7 @@ const enlaces = [
   { to: "/paciente/perfil", etiqueta: "Mi perfil", icono: UserRound, exacto: false },
   { to: "/paciente/examenes", etiqueta: "Exámenes", icono: FileUp, exacto: false },
   { to: "/paciente/resultados", etiqueta: "Resultados", icono: HeartPulse, exacto: false },
-  { to: "/paciente/recomendaciones", etiqueta: "Recomendaciones", icono: Lightbulb, exacto: false },
+  { to: "/paciente/recomendaciones", etiqueta: "Alimentación recomendada", icono: Lightbulb, exacto: false },
   { to: "/paciente/medicaciones", etiqueta: "Medicaciones", icono: Pill, exacto: false },
 ] as const;
 
