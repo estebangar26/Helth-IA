@@ -1,5 +1,7 @@
 # Hoja de ruta
 
+- [ ] Corregir el desbordamiento de tarjetas de resultados al cambiar el zoom, en paciente y médico; verificar tamaños estrechos y amplios.
+
 - [x] Permitir observaciones médicas sobre exámenes y avisos dentro de Resultados del paciente, sin editar datos clínicos; envío y lectura verificados con ambas cuentas.
 - [x] Añadir orientación alimentaria colombiana ligada a resultados reales e imágenes de alimentación y vida saludable; nueve pruebas y comprobación en celular.
 

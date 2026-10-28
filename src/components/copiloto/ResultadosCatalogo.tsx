@@ -11,6 +11,7 @@ import { ChevronDown, Search, X } from "lucide-react";
 import type { ResultadoCatalogo } from "@/lib/copiloto/tipos";
 import { ETIQUETA_CATEGORIA, ORDEN_CATEGORIAS } from "@/lib/copiloto/catalogo-resultados";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 /** Estado analítico derivado SOLO del rango que reportó el laboratorio. */
 type EstadoResultado = "dentro" | "debajo" | "encima" | "sin_rango";
@@ -119,8 +120,8 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
   }
 
   return (
-    <section className="rounded-lg border border-clinical-border bg-panel p-5 shadow-sm sm:p-6">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+    <section className="@container min-w-0 rounded-lg border border-clinical-border bg-panel p-4 shadow-sm sm:p-6">
+      <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2">
         <div>
           <p className="font-body text-xs font-semibold uppercase text-brand-blue">Catálogo de laboratorio</p>
           <h2 className="mt-1 font-display text-lg font-bold text-ink">Resultados por categoría</h2>
@@ -129,16 +130,16 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
       </div>
 
       {/* Buscador y filtros */}
-      <div className="mb-5 grid gap-2 sm:grid-cols-[1fr_auto_auto]">
-        <div className="relative">
+      <div className="mb-5 grid min-w-0 gap-2 @min-[40rem]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="relative min-w-0">
           <Search className="absolute top-2.5 left-3 size-4 text-ink-dim" aria-hidden="true" />
           <Input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar biomarcador…" className="bg-panel pl-9" aria-label="Buscar biomarcador" />
         </div>
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="rounded-md border border-clinical-border bg-panel px-3 py-2 font-body text-sm text-ink" aria-label="Filtrar por categoría">
+        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="min-w-0 w-full rounded-md border border-clinical-border bg-panel px-3 py-2 font-body text-sm text-ink" aria-label="Filtrar por categoría">
           <option value="todas">Todas las categorías</option>
           {ORDEN_CATEGORIAS.map((c) => <option key={c} value={c}>{ETIQUETA_CATEGORIA[c]}</option>)}
         </select>
-        <select value={estado} onChange={(e) => setEstado(e.target.value)} className="rounded-md border border-clinical-border bg-panel px-3 py-2 font-body text-sm text-ink" aria-label="Filtrar por estado">
+        <select value={estado} onChange={(e) => setEstado(e.target.value)} className="min-w-0 w-full rounded-md border border-clinical-border bg-panel px-3 py-2 font-body text-sm text-ink" aria-label="Filtrar por estado">
           <option value="todos">Todos los resultados</option>
           <option value="fuera">Solo fuera del rango</option>
           <option value="sin_rango">Sin rango de referencia</option>
@@ -160,27 +161,27 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
           if (todos.length === 0 && categoria === "todas" && !busqueda) return null;
           return (
             <div key={cat} className="mb-3 overflow-hidden rounded-md border border-clinical-border">
-              <button type="button" onClick={() => alternar(cat)} className="flex w-full items-center justify-between bg-panel-soft px-4 py-3 text-left" aria-expanded={abiertas.has(cat)}>
-                <span className="font-display text-sm font-bold text-ink">{ETIQUETA_CATEGORIA[cat]}</span>
-                <span className="flex items-center gap-2 font-body text-xs text-ink-dim">
+              <Button variant="ghost" type="button" onClick={() => alternar(cat)} className="grid h-auto w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-none bg-panel-soft px-4 py-3 text-left whitespace-normal" aria-expanded={abiertas.has(cat)}>
+                <span className="min-w-0 break-words font-display text-sm font-bold text-ink">{ETIQUETA_CATEGORIA[cat]}</span>
+                <span className="flex shrink-0 items-center gap-2 font-body text-xs text-ink-dim">
                   {visibles.length} resultado{visibles.length === 1 ? "" : "s"}
                   <ChevronDown className={`size-4 transition-transform ${abiertas.has(cat) ? "rotate-180" : ""}`} aria-hidden="true" />
                 </span>
-              </button>
+              </Button>
               {abiertas.has(cat) && (
-                <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3 p-4">
                   {visibles.length === 0 ? (
-                    <p className="font-body text-xs text-ink-dim sm:col-span-2 lg:col-span-3">Sin resultados registrados en esta categoría con los filtros actuales.</p>
+                    <p className="col-span-full font-body text-xs text-ink-dim">Sin resultados registrados en esta categoría con los filtros actuales.</p>
                   ) : visibles.map((r) => {
                     const est = estadoDesdeReferencia(r.valor, r.referencia);
                     const varia = variacion(r);
                     return (
-                      <button key={r.codigo} type="button" onClick={() => setDetalle(r)} className="rounded-md border border-clinical-border bg-panel-soft p-4 text-left transition-shadow hover:shadow-md">
-                        <div className="mb-2 flex items-center justify-between gap-2">
+                      <Button variant="outline" key={r.codigo} type="button" onClick={() => setDetalle(r)} className="block h-auto min-w-0 w-full whitespace-normal rounded-md border border-clinical-border bg-panel-soft p-4 text-left break-words transition-shadow hover:bg-panel-soft hover:shadow-md">
+                        <div className="mb-2 flex min-w-0 flex-col items-start gap-2">
                           <span className="font-body text-xs font-semibold text-ink-dim">{r.nombre}</span>
-                          <span className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold ring-1 ${CHIP_ESTADO[est]}`}>{ETIQUETA_ESTADO[est]}</span>
+                          <span className={`max-w-full rounded px-1.5 py-0.5 text-[9px] font-bold ring-1 ${CHIP_ESTADO[est]}`}>{ETIQUETA_ESTADO[est]}</span>
                         </div>
-                        <p className="font-body text-2xl leading-none font-bold text-ink">
+                        <p className="break-words font-body text-2xl leading-snug font-bold text-ink">
                           {r.valor}{r.unidad ? <span className="text-sm font-medium text-ink-dim"> {r.unidad}</span> : null}
                         </p>
                         <p className="mt-2 font-body text-[11px] text-ink-dim">{r.fecha}</p>
@@ -190,7 +191,7 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
                           <p className="font-body text-[11px] text-ink-dim">Rango de referencia no disponible</p>
                         )}
                         {varia && <p className="mt-1 font-body text-[11px] font-semibold text-brand-blue">{varia}</p>}
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -203,20 +204,20 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
       {/* Panel de detalle */}
       {detalle && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center" role="dialog" aria-modal="true" aria-label={`Detalle de ${detalle.nombre}`} onClick={() => setDetalle(null)}>
-          <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-lg border border-clinical-border bg-panel p-5 shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="mb-3 flex items-start justify-between gap-3">
+          <div className="max-h-[85dvh] min-w-0 w-full max-w-lg break-words overflow-y-auto rounded-lg border border-clinical-border bg-panel p-5 shadow-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
               <div>
                 <p className="font-body text-xs font-semibold uppercase text-brand-blue">{ETIQUETA_CATEGORIA[detalle.categoria as keyof typeof ETIQUETA_CATEGORIA] ?? detalle.categoria}</p>
                 <h3 className="font-display text-lg font-bold text-ink">{detalle.nombre}</h3>
               </div>
-              <button type="button" onClick={() => setDetalle(null)} aria-label="Cerrar detalle" className="rounded p-1 text-ink-dim hover:bg-panel-soft"><X className="size-5" /></button>
+              <Button variant="ghost" size="icon" type="button" onClick={() => setDetalle(null)} aria-label="Cerrar detalle" className="shrink-0 text-ink-dim hover:bg-panel-soft"><X className="size-5" /></Button>
             </div>
             <p className="font-body text-3xl font-bold text-ink">{detalle.valor}{detalle.unidad ? <span className="text-base font-medium text-ink-dim"> {detalle.unidad}</span> : null}</p>
             <dl className="mt-4 space-y-2 font-body text-sm">
-              <div className="flex justify-between gap-3"><dt className="text-ink-dim">Fecha del examen</dt><dd className="font-semibold text-ink">{detalle.fecha}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-ink-dim">Estado analítico</dt><dd className="font-semibold text-ink">{ETIQUETA_ESTADO[estadoDesdeReferencia(detalle.valor, detalle.referencia)]}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-ink-dim">Rango de referencia</dt><dd className="text-right font-semibold text-ink">{detalle.referencia ?? "Rango de referencia no disponible"}</dd></div>
-              {variacion(detalle) && <div className="flex justify-between gap-3"><dt className="text-ink-dim">Variación</dt><dd className="font-semibold text-brand-blue">{variacion(detalle)}</dd></div>}
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Fecha del examen</dt><dd className="font-semibold text-ink">{detalle.fecha}</dd></div>
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Estado analítico</dt><dd className="font-semibold text-ink">{ETIQUETA_ESTADO[estadoDesdeReferencia(detalle.valor, detalle.referencia)]}</dd></div>
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Rango de referencia</dt><dd className="min-w-0 font-semibold text-ink sm:text-right">{detalle.referencia ?? "Rango de referencia no disponible"}</dd></div>
+              {variacion(detalle) && <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Variación</dt><dd className="font-semibold text-brand-blue">{variacion(detalle)}</dd></div>}
             </dl>
             <div className="mt-5">
               <p className="mb-2 font-body text-xs font-semibold uppercase text-ink-dim">Evolución</p>
@@ -224,7 +225,7 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
               {detalle.historial.length > 0 && (
                 <ul className="mt-2 space-y-1">
                   {[...detalle.historial].reverse().map((p, i) => (
-                    <li key={i} className="flex justify-between font-body text-xs text-ink-dim"><span>{p.fecha}</span><span className="font-semibold text-ink">{p.valor}{detalle.unidad ? ` ${detalle.unidad}` : ""}</span></li>
+                    <li key={i} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3 font-body text-xs text-ink-dim"><span>{p.fecha}</span><span className="font-semibold text-ink">{p.valor}{detalle.unidad ? ` ${detalle.unidad}` : ""}</span></li>
                   ))}
                 </ul>
               )}
