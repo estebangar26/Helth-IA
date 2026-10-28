@@ -257,6 +257,7 @@ export type Database = {
           como_comerlo: string
           id: string
           image_credit: string | null
+          image_path: string | null
           image_url: string | null
           nombre: string
           nutriente_clave: string
@@ -268,6 +269,7 @@ export type Database = {
           como_comerlo?: string
           id: string
           image_credit?: string | null
+          image_path?: string | null
           image_url?: string | null
           nombre: string
           nutriente_clave?: string
@@ -279,6 +281,7 @@ export type Database = {
           como_comerlo?: string
           id?: string
           image_credit?: string | null
+          image_path?: string | null
           image_url?: string | null
           nombre?: string
           nutriente_clave?: string
