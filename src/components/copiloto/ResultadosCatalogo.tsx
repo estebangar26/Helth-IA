@@ -12,6 +12,7 @@ import type { ResultadoCatalogo } from "@/lib/copiloto/tipos";
 import { ETIQUETA_CATEGORIA, ORDEN_CATEGORIAS } from "@/lib/copiloto/catalogo-resultados";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { numerosRangoImpreso } from "@/lib/copiloto/rango-impreso";
 
 /** Estado analítico derivado SOLO del rango que reportó el laboratorio. */
 type EstadoResultado = "dentro" | "debajo" | "encima" | "sin_rango";
@@ -34,9 +35,9 @@ const CHIP_ESTADO: Record<EstadoResultado, string> = {
  * Intenta leer "min-max" del texto de referencia del laboratorio.
  * Si no puede interpretarse con seguridad, devuelve null (sin rango).
  */
-function estadoDesdeReferencia(valor: number, referencia: string | null): EstadoResultado {
+function estadoDesdeReferencia(valor: number, referencia: string | null, analito: string): EstadoResultado {
   if (!referencia) return "sin_rango";
-  const numeros = referencia.match(/-?\d+(?:[.,]\d+)?/g)?.map((n) => Number(n.replace(",", ".")));
+  const numeros = numerosRangoImpreso(referencia, analito);
   if (!numeros || numeros.length === 0) return "sin_rango";
   if (numeros.length >= 2) {
     const min = numeros[0]!;
@@ -106,8 +107,8 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
     return resultados.filter((r) => {
       if (q && !r.nombre.toLowerCase().includes(q)) return false;
       if (categoria !== "todas" && r.categoria !== categoria) return false;
-      if (estado === "fuera" && !["debajo", "encima"].includes(estadoDesdeReferencia(r.valor, r.referencia))) return false;
-      if (estado === "sin_rango" && estadoDesdeReferencia(r.valor, r.referencia) !== "sin_rango") return false;
+      if (estado === "fuera" && !["debajo", "encima"].includes(estadoDesdeReferencia(r.valor, r.referencia, r.nombre))) return false;
+      if (estado === "sin_rango" && estadoDesdeReferencia(r.valor, r.referencia, r.nombre) !== "sin_rango") return false;
       return true;
     });
   }, [resultados, busqueda, categoria, estado]);
@@ -173,7 +174,7 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
                   {visibles.length === 0 ? (
                     <p className="col-span-full font-body text-xs text-ink-dim">Sin resultados registrados en esta categoría con los filtros actuales.</p>
                   ) : visibles.map((r) => {
-                    const est = estadoDesdeReferencia(r.valor, r.referencia);
+                    const est = estadoDesdeReferencia(r.valor, r.referencia, r.nombre);
                     const varia = variacion(r);
                     return (
                       <Button variant="outline" key={r.codigo} type="button" onClick={() => setDetalle(r)} className="block h-auto min-w-0 w-full whitespace-normal rounded-md border border-clinical-border bg-panel-soft p-4 text-left break-words transition-shadow hover:bg-panel-soft hover:shadow-md">
@@ -215,7 +216,7 @@ export function ResultadosCatalogo({ resultados }: { resultados: ResultadoCatalo
             <p className="font-body text-3xl font-bold text-ink">{detalle.valor}{detalle.unidad ? <span className="text-base font-medium text-ink-dim"> {detalle.unidad}</span> : null}</p>
             <dl className="mt-4 space-y-2 font-body text-sm">
               <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Fecha del examen</dt><dd className="font-semibold text-ink">{detalle.fecha}</dd></div>
-              <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Estado analítico</dt><dd className="font-semibold text-ink">{ETIQUETA_ESTADO[estadoDesdeReferencia(detalle.valor, detalle.referencia)]}</dd></div>
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Estado analítico</dt><dd className="font-semibold text-ink">{ETIQUETA_ESTADO[estadoDesdeReferencia(detalle.valor, detalle.referencia, detalle.nombre)]}</dd></div>
               <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Rango de referencia</dt><dd className="min-w-0 font-semibold text-ink sm:text-right">{detalle.referencia ?? "Rango de referencia no disponible"}</dd></div>
               {variacion(detalle) && <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-3"><dt className="text-ink-dim">Variación</dt><dd className="font-semibold text-brand-blue">{variacion(detalle)}</dd></div>}
             </dl>
