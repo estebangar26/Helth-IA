@@ -1,5 +1,7 @@
 # Hoja de ruta
 
+- [ ] Habilitar fotos reales de frutas y legumbres en el panel de alimentos y reemplazar placeholders cuando exista foto con autor y licencia.
+
 - [x] Ampliar exclusivamente Mis medicaciones: registros originales conservados, formulario estructurado, alergias locales, médico, fecha, horarios, tomas, síntomas, adherencia, inventario, foto privada y PDF; 20 pruebas y recorrido con registro temporal eliminado.
 - [ ] Completar envíos y confirmaciones externas, reintento Vital y consentimiento del cuidador; bloqueado: conexión Resend rechazada y WhatsApp sin conexión/verificación/plantilla. No hay revisiones recurrentes activas; habilitar revisión cada 15 minutos solo al disponer de canal operativo.
 
