@@ -22,3 +22,11 @@ describe('Alimentación consume estados existentes y prioriza restricciones',()=
  it('no aplica regla 15 a mmol/L sin conversión autorizada',()=>{const x={...r('glucemia_ayunas',3,'debajo','glucosa'),unidad:'mmol/L'};expect(apoyo(x,[x],catalogo).mensaje).not.toContain('15 minutos');});
  it.each(['hormonal','tumoral'])('no ofrece alimentos para %s',cat=>{const x=r('marcador',20,'encima',cat);expect(apoyo(x,[x],catalogo).recomendados).toEqual([]);});
 });
+describe('Caso hemoglobina baja + creatinina alta',()=>{
+ it('excluye hígado y banano con etiquetas reales del catálogo',()=>{
+  const f=(id:string,t:string[]):Food=>({id,nombre:id,categoria:'proteína',nutriente_clave:'',por_que:'',como_comerlo:'',image_url:null,image_credit:null,tags_restriccion:t as Food['tags_restriccion']});
+  const c:Catalogo={foods:[f('higado',['proteina_alta','purinas_altas']),f('banano',['potasio_alto','azucar_alta']),f('lentejas',[]),f('guayaba',[])],places:[],rules:[rule('hierro',['hemoglobina'],['higado','banano','lentejas','guayaba'],['debajo'])]};
+  const hb=r('hemoglobina',9,'debajo','hemograma');const ids=apoyo(hb,[hb,r('creatinina',2.1,'encima')],c).recomendados.map(x=>x.id);
+  expect(ids).not.toContain('higado');expect(ids).not.toContain('banano');expect(ids).toEqual(['lentejas','guayaba']);
+ });
+});
