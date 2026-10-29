@@ -2,7 +2,7 @@
 
 - [x] Habilitar almacenamiento privado foods, subida administrativa con autor/licencia y fotos firmadas para pacientes; bucket público bloqueado, alternativa privada aplicada.
 - [x] Autorizar la cuenta de Esteban como administradora y cargar 17 fotografías reales acreditadas de frutas y legumbres; subida desde el panel y persistencia tras nueva sesión verificadas.
-- [ ] Completar fotografías de manzana, maracuyá, fríjoles, pera y granadilla; bloqueado: fuentes de descarga rechazan solicitudes (403/429), imágenes iniciales no corresponden y se descartaron.
+- [x] Completar fotografías de manzana, maracuyá, fríjoles, pera y granadilla desde Wikimedia Commons con autor y licencia; subidas al bucket privado foods y servicio por URL firmada verificado para las cinco.
 
 - [x] Ampliar exclusivamente Mis medicaciones: registros originales conservados, formulario estructurado, alergias locales, médico, fecha, horarios, tomas, síntomas, adherencia, inventario, foto privada y PDF; 20 pruebas y recorrido con registro temporal eliminado.
 - [ ] Completar envíos y confirmaciones externas, reintento Vital y consentimiento del cuidador; bloqueado: conexión Resend rechazada y WhatsApp sin conexión/verificación/plantilla. No hay revisiones recurrentes activas; habilitar revisión cada 15 minutos solo al disponer de canal operativo.
