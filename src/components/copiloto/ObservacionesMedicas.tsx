@@ -20,8 +20,11 @@ export function ObservacionesMedicas({ observaciones, examenes, pacienteId }: { 
     if (!pacienteId || enviando) return;
     setEnviando(true); setAviso('');
     try {
-      await enviar({ data: { pacienteId, examenId, mensaje } });
-      setMensaje(''); await router.invalidate(); setAviso('Observación enviada al paciente.');
+      const resultado = await enviar({ data: { pacienteId, examenId, mensaje } });
+      setMensaje(''); await router.invalidate();
+      setAviso(resultado.correoEnviado
+        ? 'Observación enviada. El paciente recibió un aviso por correo.'
+        : 'Observación enviada, pero no se pudo entregar el aviso por correo.');
     } catch (error) { setAviso(error instanceof Error ? error.message : 'No se pudo enviar la observación.'); }
     finally { setEnviando(false); }
   }

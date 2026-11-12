@@ -30,7 +30,27 @@ export const crearObservacion = createServerFn({ method: 'POST' })
       context.supabase.from('examenes').select('id').eq('id', data.examenId).eq('user_id', data.pacienteId).maybeSingle(),
     ]);
     if (!puedeAnotar(Boolean(rol), Boolean(acceso), Boolean(examen))) throw new Error('No tiene permiso para dejar observaciones sobre este examen.');
-    const { error } = await context.supabase.from('observaciones_medicas').insert({ paciente_id: data.pacienteId, medico_id: context.userId, examen_id: data.examenId, mensaje: data.mensaje });
-    if (error) throw new Error('No se pudo enviar la observación. Compruebe que el acceso siga activo.');
-    return { ok: true };
+    const { data: observacion, error } = await context.supabase.from('observaciones_medicas')
+      .insert({ paciente_id: data.pacienteId, medico_id: context.userId, examen_id: data.examenId, mensaje: data.mensaje })
+      .select('id').single();
+    if (error || !observacion) throw new Error('No se pudo enviar la observación. Compruebe que el acceso siga activo.');
+
+    // El correo se obtiene solo en el servidor después de validar rol, acceso y examen.
+    // Nunca se devuelve al médico ni se incluye contenido clínico en la notificación.
+    let correoEnviado = false;
+    try {
+      const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+      const { data: usuario, error: errorUsuario } = await supabaseAdmin.auth.admin.getUserById(data.pacienteId);
+      if (errorUsuario || !usuario.user.email) throw new Error('Correo del paciente no disponible.');
+      const { sendTemplateEmail } = await import('@/lib/email-templates/send-email');
+      const resultado = await sendTemplateEmail('mensaje-medico', usuario.user.email, {
+        templateData: { enlace: 'https://helthicorp.tech/paciente/resultados' },
+        idempotencyKey: `mensaje-medico-${observacion.id}`,
+      });
+      correoEnviado = resultado.sent;
+    } catch (e) {
+      // La observación ya quedó guardada; el médico verá que el aviso no se envió.
+      console.error('No se pudo enviar el aviso de observación médica', e);
+    }
+    return { ok: true, correoEnviado };
   });

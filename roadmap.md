@@ -1,5 +1,8 @@
 # Hoja de ruta
 
+- [x] Corregir y probar recuperación completa con cambio e ingreso temporal; enlace de Angelower validado sin cambiar su contraseña. Su reenvío final fue limitado temporalmente por frecuencia (429).
+- [x] Notificar por correo los mensajes médicos con enlace seguro y sin datos clínicos; envío, evento de entrega y lectura privada verificados con cuentas temporales eliminadas.
+
 - [x] Habilitar almacenamiento privado foods, subida administrativa con autor/licencia y fotos firmadas para pacientes; bucket público bloqueado, alternativa privada aplicada.
 - [x] Autorizar la cuenta de Esteban como administradora y cargar 17 fotografías reales acreditadas de frutas y legumbres; subida desde el panel y persistencia tras nueva sesión verificadas.
 - [x] Completar fotografías de manzana, maracuyá, fríjoles, pera y granadilla desde Wikimedia Commons con autor y licencia; subidas al bucket privado foods y servicio por URL firmada verificado para las cinco.

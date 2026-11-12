@@ -18,10 +18,11 @@ import { CampoClave, ReglasClave, claveCumple } from "@/components/copiloto/Clav
 import { obtenerMiRol } from "@/lib/copiloto/roles.functions";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { redirect?: "/medico" | undefined; next?: string | undefined } => ({
+  validateSearch: (search: Record<string, unknown>): { redirect?: "/medico" | undefined; next?: string | undefined; recuperada?: boolean | undefined } => ({
     redirect: search["redirect"] === "/medico" ? "/medico" : undefined,
     // Solo rutas internas (p. ej. la autorización de asistentes de IA).
     next: typeof search["next"] === "string" && search["next"].startsWith("/") && !search["next"].startsWith("//") ? search["next"] : undefined,
+    recuperada: search["recuperada"] === true || search["recuperada"] === "true" ? true : undefined,
   }),
   head: () => ({
     meta: [
@@ -45,13 +46,13 @@ export const Route = createFileRoute("/auth")({
 
 function PantallaAcceso() {
   const navegar = useNavigate();
-  const { redirect, next } = Route.useSearch();
+  const { redirect, next, recuperada } = Route.useSearch();
   const [modo, setModo] = useState<"entrar" | "registrar">("entrar");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
   const [nombre, setNombre] = useState("");
   const [clave2, setClave2] = useState("");
-  const [mensaje, setMensaje] = useState<string | null>(null);
+  const [mensaje, setMensaje] = useState<string | null>(recuperada ? "Contraseña actualizada. Ya puede ingresar con su nueva contraseña." : null);
   const [cargando, setCargando] = useState(false);
 
   async function destinoSegunRol(): Promise<"/paciente" | "/medico" | "/admin"> {
@@ -163,7 +164,7 @@ function PantallaAcceso() {
               <p className="font-body text-xs text-ink-dim">Después de crear la cuenta, complete su perfil (documento de identidad y tipo de atención) para poder subir exámenes.</p>
             </>)}
 
-            {mensaje && <p className="font-body text-sm text-alert">{mensaje}</p>}
+            {mensaje && <p role="status" className={`font-body text-sm ${recuperada && mensaje.startsWith("Contraseña actualizada") ? "text-brand-blue" : "text-alert"}`}>{mensaje}</p>}
 
             <Button
               type="submit"
@@ -185,9 +186,10 @@ function PantallaAcceso() {
 
           {modo === "entrar" && (
             <Button type="button" variant="link" className="mt-2 w-full" disabled={cargando} onClick={async () => {
-              if (!correo) return setMensaje("Escriba su correo para enviarle el enlace de recuperación.");
+              if (!correo.trim()) return setMensaje("Escriba su correo para enviarle el enlace de recuperación.");
               setCargando(true);
-              const { error } = await supabase.auth.resetPasswordForEmail(correo, { redirectTo: `${window.location.origin}/restablecer` });
+              setMensaje(null);
+              const { error } = await supabase.auth.resetPasswordForEmail(correo.trim(), { redirectTo: `${window.location.origin}/restablecer` });
               setCargando(false);
               if (error?.status === 429) return setMensaje("Ya le enviamos un enlace. Espere un minuto antes de pedir otro y use solo el correo más reciente.");
               setMensaje(error ? "No se pudo enviar el enlace." : "Le enviamos un enlace. Use solo el correo más reciente; los anteriores dejan de funcionar.");
