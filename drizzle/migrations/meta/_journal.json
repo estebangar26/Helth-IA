@@ -99,6 +99,13 @@
       "when": 1793168763173,
       "tag": "0013_food_photo_private_paths",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794618495403,
+      "tag": "0014_foods_photos_admin_read",
+      "breakpoints": true
     }
   ]
 }

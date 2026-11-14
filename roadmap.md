@@ -47,3 +47,5 @@
 - [x] Registrar alertas para el médico tratante cuando un valor sale del rango.
 - [ ] Enviar la alerta por correo al médico. Bloqueado: falta configurar y verificar el dominio de correo.
 - [x] Ampliar exclusivamente la pestaña Resultados: catálogo de 9 categorías, tabla hija de resultados, buscador, filtros, detalle e historial real.
+- [ ] Conectar la cuenta publicitaria del proyecto (Google o Meta).
+- [ ] Crear la primera campaña publicitaria (brief, tipo, creativos, aprobación).

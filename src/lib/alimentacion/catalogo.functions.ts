@@ -4,7 +4,9 @@ import { z } from 'zod';
 import type { Catalogo } from './tipos';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
-async function fotosFirmadas(db:SupabaseClient<Database>,foods:Database['public']['Tables']['foods']['Row'][]){
+/** Firma las fotos del catálogo en el servidor, solo tras validar la sesión del llamador. */
+async function fotosFirmadas(_db:SupabaseClient<Database>,foods:Database['public']['Tables']['foods']['Row'][]){
+ const {supabaseAdmin:db}=await import('@/integrations/supabase/client.server');
  return Promise.all(foods.map(async food=>{if(!food.image_path)return food;const {data,error}=await db.storage.from('foods').createSignedUrl(food.image_path,3600);return {...food,image_url:error?null:data?.signedUrl??null};}));
 }
 export const obtenerCatalogoAlimentos = createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async ({context}): Promise<Catalogo> => {
