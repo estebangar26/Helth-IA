@@ -51,6 +51,6 @@
 - [ ] Crear la primera campaña publicitaria (brief, tipo, creativos, aprobación).
 - [x] Recordatorios de medicamentos por Telegram (bot @helthIA_bot, revisión cada 15 min). Pendiente: probar vinculación tras publicar.
 
-- [ ] Probar aviso de Desmopresina por Telegram; bloqueado: la cuenta del paciente aún no conectó su chat con @helthIA_bot.
-- [x] Recordatorios Telegram desactivados temporalmente el 19 de noviembre de 2026; reactivar la revisión de 6:00 a. m. a 11:45 p. m. (Bogotá) solo cuando Esteban lo indique.
+- [x] Probar aviso por Telegram: la revisión ejecutó el envío al chat vinculado de Esteban y Telegram lo confirmó; la Desmopresina cada hora desde las 10:28 queda cubierta.
+- [x] Reactivar recordatorios Telegram el 19 de noviembre de 2026 (schedule id 2): revisión cada 15 minutos de 6:00 a. m. a 11:45 p. m. (Bogotá); envío real verificado y registro temporal eliminado.
 - [x] Añadir contacto directo y PQRS en Sobre nosotros, con copia privada, radicado y aviso al correo de Esteban; WhatsApp como alternativa. Envío real, correo, validaciones y vista móvil verificados; registros de prueba eliminados.
