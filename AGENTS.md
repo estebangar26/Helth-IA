@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep the public device catalog on `/tienda`, separate from the homepage, with provider links and CDN asset pointers; this isolates shopping from clinical workflows without implying a live commerce integration.
+- Keep the public device catalog on `/tienda` with Shopify Storefront products, a persistent Zustand cart and Shopify checkout; editorial data (manufacturer sheet, photo credit) is joined locally by product title.
 - Derive store provider filters from the product catalog so new manufacturers remain discoverable without maintaining a second list.
 - Keep the ESP32 access-point monitor on `/dispositivos` as a local-device link, not a cloud proxy or simulated live feed; its HTTP-only firmware cannot provide secure remote telemetry to the published HTTPS app.
 - Store medical observations as append-only exam-linked rows with active-sharing RLS and authenticated server functions; this permits feedback without granting doctors clinical edit rights.

@@ -24,6 +24,7 @@ import { Route as AuthenticatedAlimentosAdminRouteImport } from './routes/_authe
 import { Route as AuthenticatedPacienteRouteImport } from './routes/_authenticated/paciente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as ApiAsistenteRouteImport } from './routes/api/asistente'
+import { Route as ProductoHandleRouteImport } from './routes/producto.$handle'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedMedicoIndexRouteImport } from './routes/_authenticated/medico.index'
 import { Route as AuthenticatedMedicoPacienteIdRouteImport } from './routes/_authenticated/medico.$pacienteId'
@@ -115,6 +116,11 @@ const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
 const ApiAsistenteRoute = ApiAsistenteRouteImport.update({
   id: '/api/asistente',
   path: '/api/asistente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductoHandleRoute = ProductoHandleRouteImport.update({
+  id: '/producto/$handle',
+  path: '/producto/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
@@ -225,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
+  '/producto/$handle': typeof ProductoHandleRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/alimentos-admin': typeof AuthenticatedAlimentosAdminRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
+  '/producto/$handle': typeof ProductoHandleRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/_authenticated/paciente': typeof AuthenticatedPacienteRouteWithChildren
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/api/asistente': typeof ApiAsistenteRoute
+  '/producto/$handle': typeof ProductoHandleRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/medico/$pacienteId': typeof AuthenticatedMedicoPacienteIdRoute
   '/_authenticated/paciente/especialistas': typeof AuthenticatedPacienteEspecialistasRoute
@@ -324,6 +333,7 @@ export interface FileRouteTypes {
     | '/paciente'
     | '/panel'
     | '/api/asistente'
+    | '/producto/$handle'
     | '/.lovable/oauth/consent'
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
@@ -355,6 +365,7 @@ export interface FileRouteTypes {
     | '/alimentos-admin'
     | '/panel'
     | '/api/asistente'
+    | '/producto/$handle'
     | '/.lovable/oauth/consent'
     | '/medico/$pacienteId'
     | '/paciente/especialistas'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/_authenticated/paciente'
     | '/_authenticated/panel'
     | '/api/asistente'
+    | '/producto/$handle'
     | '/.lovable/oauth/consent'
     | '/_authenticated/medico/$pacienteId'
     | '/_authenticated/paciente/especialistas'
@@ -418,6 +430,7 @@ export interface RootRouteChildren {
   TiendaRoute: typeof TiendaRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiAsistenteRoute: typeof ApiAsistenteRoute
+  ProductoHandleRoute: typeof ProductoHandleRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   ApiPublicContactoRoute: typeof ApiPublicContactoRoute
   ApiPublicTelegramRecordatoriosRoute: typeof ApiPublicTelegramRecordatoriosRoute
@@ -532,6 +545,13 @@ declare module '@tanstack/react-router' {
       path: '/api/asistente'
       fullPath: '/api/asistente'
       preLoaderRoute: typeof ApiAsistenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/producto/$handle': {
+      id: '/producto/$handle'
+      path: '/producto/$handle'
+      fullPath: '/producto/$handle'
+      preLoaderRoute: typeof ProductoHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
@@ -711,6 +731,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiAsistenteRoute: ApiAsistenteRoute,
+  ProductoHandleRoute: ProductoHandleRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   ApiPublicContactoRoute: ApiPublicContactoRoute,
   ApiPublicTelegramRecordatoriosRoute: ApiPublicTelegramRecordatoriosRoute,
