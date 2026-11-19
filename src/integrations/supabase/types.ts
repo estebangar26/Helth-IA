@@ -119,6 +119,36 @@ export type Database = {
           },
         ]
       }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          mensaje: string
+          nombre: string
+          owner_notified_at: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          mensaje: string
+          nombre: string
+          owner_notified_at?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          mensaje?: string
+          nombre?: string
+          owner_notified_at?: string | null
+          tipo?: string
+        }
+        Relationships: []
+      }
       especialistas: {
         Row: {
           ciudad: string

@@ -52,4 +52,5 @@
 - [x] Recordatorios de medicamentos por Telegram (bot @helthIA_bot, revisión cada 15 min). Pendiente: probar vinculación tras publicar.
 
 - [ ] Probar aviso de Desmopresina por Telegram; bloqueado: la cuenta del paciente aún no conectó su chat con @helthIA_bot.
-- [x] Recordatorios Telegram solo de 6:00 a. m. a 11:45 p. m. (Bogotá) para ahorrar base de datos
+- [x] Recordatorios Telegram desactivados temporalmente el 19 de noviembre de 2026; reactivar la revisión de 6:00 a. m. a 11:45 p. m. (Bogotá) solo cuando Esteban lo indique.
+- [x] Añadir contacto directo y PQRS en Sobre nosotros, con copia privada, radicado y aviso al correo de Esteban; WhatsApp como alternativa. Envío real, correo, validaciones y vista móvil verificados; registros de prueba eliminados.

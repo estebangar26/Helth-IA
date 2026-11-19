@@ -34,6 +34,7 @@ import { Route as AuthenticatedPacienteMedicacionesRouteImport } from './routes/
 import { Route as AuthenticatedPacientePerfilRouteImport } from './routes/_authenticated/paciente.perfil'
 import { Route as AuthenticatedPacienteRecomendacionesRouteImport } from './routes/_authenticated/paciente.recomendaciones'
 import { Route as AuthenticatedPacienteResultadosRouteImport } from './routes/_authenticated/paciente.resultados'
+import { Route as ApiPublicContactoRouteImport } from './routes/api/public/contacto'
 import { Route as ApiPublicTelegramRecordatoriosRouteImport } from './routes/api/public/telegram/recordatorios'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -175,6 +176,11 @@ const AuthenticatedPacienteResultadosRoute =
     path: '/resultados',
     getParentRoute: () => AuthenticatedPacienteRoute,
   } as any)
+const ApiPublicContactoRoute = ApiPublicContactoRouteImport.update({
+  id: '/api/public/contacto',
+  path: '/api/public/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTelegramRecordatoriosRoute =
   ApiPublicTelegramRecordatoriosRouteImport.update({
     id: '/api/public/telegram/recordatorios',
@@ -227,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
+  '/api/public/contacto': typeof ApiPublicContactoRoute
   '/medico/': typeof AuthenticatedMedicoIndexRoute
   '/paciente/': typeof AuthenticatedPacienteIndexRoute
   '/api/public/telegram/recordatorios': typeof ApiPublicTelegramRecordatoriosRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
+  '/api/public/contacto': typeof ApiPublicContactoRoute
   '/medico': typeof AuthenticatedMedicoIndexRoute
   '/paciente': typeof AuthenticatedPacienteIndexRoute
   '/api/public/telegram/recordatorios': typeof ApiPublicTelegramRecordatoriosRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/_authenticated/paciente/perfil': typeof AuthenticatedPacientePerfilRoute
   '/_authenticated/paciente/recomendaciones': typeof AuthenticatedPacienteRecomendacionesRoute
   '/_authenticated/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
+  '/api/public/contacto': typeof ApiPublicContactoRoute
   '/_authenticated/medico/': typeof AuthenticatedMedicoIndexRoute
   '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
   '/api/public/telegram/recordatorios': typeof ApiPublicTelegramRecordatoriosRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
     | '/paciente/perfil'
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
+    | '/api/public/contacto'
     | '/medico/'
     | '/paciente/'
     | '/api/public/telegram/recordatorios'
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/paciente/perfil'
     | '/paciente/recomendaciones'
     | '/paciente/resultados'
+    | '/api/public/contacto'
     | '/medico'
     | '/paciente'
     | '/api/public/telegram/recordatorios'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/_authenticated/paciente/perfil'
     | '/_authenticated/paciente/recomendaciones'
     | '/_authenticated/paciente/resultados'
+    | '/api/public/contacto'
     | '/_authenticated/medico/'
     | '/_authenticated/paciente/'
     | '/api/public/telegram/recordatorios'
@@ -407,6 +419,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiAsistenteRoute: typeof ApiAsistenteRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  ApiPublicContactoRoute: typeof ApiPublicContactoRoute
   ApiPublicTelegramRecordatoriosRoute: typeof ApiPublicTelegramRecordatoriosRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -591,6 +604,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPacienteResultadosRouteImport
       parentRoute: typeof AuthenticatedPacienteRoute
     }
+    '/api/public/contacto': {
+      id: '/api/public/contacto'
+      path: '/api/public/contacto'
+      fullPath: '/api/public/contacto'
+      preLoaderRoute: typeof ApiPublicContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/telegram/recordatorios': {
       id: '/api/public/telegram/recordatorios'
       path: '/api/public/telegram/recordatorios'
@@ -692,6 +712,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiAsistenteRoute: ApiAsistenteRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  ApiPublicContactoRoute: ApiPublicContactoRoute,
   ApiPublicTelegramRecordatoriosRoute: ApiPublicTelegramRecordatoriosRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

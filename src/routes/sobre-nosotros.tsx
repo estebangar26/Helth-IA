@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import fotoEsteban from "@/assets/foto-esteban.jpg.asset.json";
+import { ContactoPqrs } from "@/components/copiloto/ContactoPqrs";
 import { NavegacionPublica } from "@/components/copiloto/NavegacionPublica";
 import { Button } from "@/components/ui/button";
 
@@ -153,6 +154,10 @@ function SobreNosotros() {
               </p>
             </div>
           </div>
+        </section>
+
+        <section className="border-t border-clinical-border py-14 sm:py-16" aria-labelledby="contacto-titulo">
+          <ContactoPqrs />
         </section>
 
         <section className="bg-trust-surface py-14 text-primary-foreground">
