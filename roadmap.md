@@ -53,4 +53,5 @@
 
 - [x] Probar aviso por Telegram: la revisión ejecutó el envío al chat vinculado de Esteban y Telegram lo confirmó; la Desmopresina cada hora desde las 10:28 queda cubierta.
 - [x] Reactivar recordatorios Telegram el 19 de noviembre de 2026 (schedule id 2): revisión cada 15 minutos de 6:00 a. m. a 11:45 p. m. (Bogotá); envío real verificado y registro temporal eliminado.
+- [x] Suspender temporalmente los recordatorios Telegram el 19 de noviembre de 2026: schedule id 2 pausado, configuración y horario conservados; reactivar solo cuando Esteban lo indique.
 - [x] Añadir contacto directo y PQRS en Sobre nosotros, con copia privada, radicado y aviso al correo de Esteban; WhatsApp como alternativa. Envío real, correo, validaciones y vista móvil verificados; registros de prueba eliminados.
