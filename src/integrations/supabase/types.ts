@@ -361,6 +361,24 @@ export type Database = {
           },
         ]
       }
+      medication_reminders_sent: {
+        Row: {
+          medication_id: string
+          scheduled_at: string
+          sent_at: string
+        }
+        Insert: {
+          medication_id: string
+          scheduled_at: string
+          sent_at?: string
+        }
+        Update: {
+          medication_id?: string
+          scheduled_at?: string
+          sent_at?: string
+        }
+        Relationships: []
+      }
       medication_schedules: {
         Row: {
           config: Json
@@ -654,6 +672,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      telegram_links: {
+        Row: {
+          chat_id: number | null
+          code_expires_at: string | null
+          link_code: string | null
+          linked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chat_id?: number | null
+          code_expires_at?: string | null
+          link_code?: string | null
+          linked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chat_id?: number | null
+          code_expires_at?: string | null
+          link_code?: string | null
+          linked_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {

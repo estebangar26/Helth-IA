@@ -34,6 +34,8 @@ import { Route as AuthenticatedPacienteMedicacionesRouteImport } from './routes/
 import { Route as AuthenticatedPacientePerfilRouteImport } from './routes/_authenticated/paciente.perfil'
 import { Route as AuthenticatedPacienteRecomendacionesRouteImport } from './routes/_authenticated/paciente.recomendaciones'
 import { Route as AuthenticatedPacienteResultadosRouteImport } from './routes/_authenticated/paciente.resultados'
+import { Route as ApiPublicTelegramRecordatoriosRouteImport } from './routes/api/public/telegram/recordatorios'
+import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -173,6 +175,18 @@ const AuthenticatedPacienteResultadosRoute =
     path: '/resultados',
     getParentRoute: () => AuthenticatedPacienteRoute,
   } as any)
+const ApiPublicTelegramRecordatoriosRoute =
+  ApiPublicTelegramRecordatoriosRouteImport.update({
+    id: '/api/public/telegram/recordatorios',
+    path: '/api/public/telegram/recordatorios',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicTelegramWebhookRoute =
+  ApiPublicTelegramWebhookRouteImport.update({
+    id: '/api/public/telegram/webhook',
+    path: '/api/public/telegram/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   id: '/lovable/email/auth/preview',
   path: '/lovable/email/auth/preview',
@@ -215,6 +229,8 @@ export interface FileRoutesByFullPath {
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/medico/': typeof AuthenticatedMedicoIndexRoute
   '/paciente/': typeof AuthenticatedPacienteIndexRoute
+  '/api/public/telegram/recordatorios': typeof ApiPublicTelegramRecordatoriosRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -243,6 +259,8 @@ export interface FileRoutesByTo {
   '/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/medico': typeof AuthenticatedMedicoIndexRoute
   '/paciente': typeof AuthenticatedPacienteIndexRoute
+  '/api/public/telegram/recordatorios': typeof ApiPublicTelegramRecordatoriosRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -274,6 +292,8 @@ export interface FileRoutesById {
   '/_authenticated/paciente/resultados': typeof AuthenticatedPacienteResultadosRoute
   '/_authenticated/medico/': typeof AuthenticatedMedicoIndexRoute
   '/_authenticated/paciente/': typeof AuthenticatedPacienteIndexRoute
+  '/api/public/telegram/recordatorios': typeof ApiPublicTelegramRecordatoriosRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -305,6 +325,8 @@ export interface FileRouteTypes {
     | '/paciente/resultados'
     | '/medico/'
     | '/paciente/'
+    | '/api/public/telegram/recordatorios'
+    | '/api/public/telegram/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -333,6 +355,8 @@ export interface FileRouteTypes {
     | '/paciente/resultados'
     | '/medico'
     | '/paciente'
+    | '/api/public/telegram/recordatorios'
+    | '/api/public/telegram/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -363,6 +387,8 @@ export interface FileRouteTypes {
     | '/_authenticated/paciente/resultados'
     | '/_authenticated/medico/'
     | '/_authenticated/paciente/'
+    | '/api/public/telegram/recordatorios'
+    | '/api/public/telegram/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -381,6 +407,8 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiAsistenteRoute: typeof ApiAsistenteRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  ApiPublicTelegramRecordatoriosRoute: typeof ApiPublicTelegramRecordatoriosRoute
+  ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -563,6 +591,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPacienteResultadosRouteImport
       parentRoute: typeof AuthenticatedPacienteRoute
     }
+    '/api/public/telegram/recordatorios': {
+      id: '/api/public/telegram/recordatorios'
+      path: '/api/public/telegram/recordatorios'
+      fullPath: '/api/public/telegram/recordatorios'
+      preLoaderRoute: typeof ApiPublicTelegramRecordatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/telegram/webhook': {
+      id: '/api/public/telegram/webhook'
+      path: '/api/public/telegram/webhook'
+      fullPath: '/api/public/telegram/webhook'
+      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/auth/preview': {
       id: '/lovable/email/auth/preview'
       path: '/lovable/email/auth/preview'
@@ -650,6 +692,8 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiAsistenteRoute: ApiAsistenteRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  ApiPublicTelegramRecordatoriosRoute: ApiPublicTelegramRecordatoriosRoute,
+  ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,

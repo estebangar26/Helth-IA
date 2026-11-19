@@ -49,4 +49,4 @@
 - [x] Ampliar exclusivamente la pestaña Resultados: catálogo de 9 categorías, tabla hija de resultados, buscador, filtros, detalle e historial real.
 - [ ] Conectar la cuenta publicitaria del proyecto (Google o Meta).
 - [ ] Crear la primera campaña publicitaria (brief, tipo, creativos, aprobación).
-- [ ] Recordatorios de medicamentos por Telegram en lugar de WhatsApp (pendiente: conectar un bot de Telegram y que cada paciente lo vincule).
+- [x] Recordatorios de medicamentos por Telegram (bot @helthIA_bot, revisión cada 15 min). Pendiente: probar vinculación tras publicar.
