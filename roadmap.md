@@ -50,3 +50,5 @@
 - [ ] Conectar la cuenta publicitaria del proyecto (Google o Meta).
 - [ ] Crear la primera campaña publicitaria (brief, tipo, creativos, aprobación).
 - [x] Recordatorios de medicamentos por Telegram (bot @helthIA_bot, revisión cada 15 min). Pendiente: probar vinculación tras publicar.
+
+- [ ] Probar aviso de Desmopresina por Telegram; bloqueado: la cuenta del paciente aún no conectó su chat con @helthIA_bot.
