@@ -23,7 +23,7 @@ El sistema busca:
 
 El proyecto contempla una arquitectura orientada a la interoperabilidad de datos clínicos, tomando como referencia el estándar **HL7 FHIR**, junto con un motor de reglas clínicas y un componente de inteligencia artificial para recomendaciones nutricionales.
 
-La aplicación web fue desarrollada inicialmente utilizando **Lovable**, permitiendo sincronizar los cambios del proyecto directamente con este repositorio.
+La aplicación web fue desarrollada inicialmente utilizando **mediante HTML,CSS Y JAVASCRIPT/TYPESCRIPT CON SU FRAMEWORK REACT**, permitiendo sincronizar los cambios del proyecto directamente con este repositorio.
 
 ## Demo
 
